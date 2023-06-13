@@ -1,53 +1,30 @@
-const { ApolloServer } = require('@apollo/server')
-const { startStandaloneServer } = require('@apollo/server/standalone')
+
+const express = require('express')
+const cors = require('cors')
+const http = require('http')
+const { expressMiddleware } = require('@apollo/server/express4')
+
+const config = require('./utils/config')
 const { mongoConnect } = require('./services/mongo')
-
-let users = [
-  { 
-    id: "122345",
-    name: "Mickey",
-    username: "mickey",
-  },
-  {
-    id: "122345",
-    name: "Klcikey",
-    username: "klickey",
-  }
-]
-
-const typeDefs = `
-type User {
-  id: ID!
-  name: String!
-  username: String!
-}
-
-type Query {
-  allUsers: [User!]!
-  findUser(username: String!): User
-}
-`
-
-const resolvers = {
-  Query: {
-    allUsers: () => users,
-    findUser: (root, args) => 
-      users.find(u => u.username === args.username)
-  }
-}
-
-const server = new ApolloServer({
-  typeDefs,
-  resolvers
-})
+const { startApolloServer } = require('./services/apollo')
 
 const startServer = async () => {
+  const app = express()
+  const httpServer = http.createServer(app)
+
   await mongoConnect()  
-  startStandaloneServer(server, {
-    listen: { port: 4000 },
-  }).then(({ url }) => {
-    console.log(`Server ready at ${url}`)
-  })
+  const apolloServer = await startApolloServer(httpServer)
+
+  app.use(
+    '/',
+    cors(),
+    express.json(),
+    expressMiddleware(apolloServer)
+  )
+
+  httpServer.listen(config.PORT, () =>
+    console.log(`Server is now running on http://localhost:${config.PORT}`)
+  )
 }
 
 startServer()
