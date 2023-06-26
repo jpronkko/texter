@@ -1,38 +1,15 @@
-import logo from './logo.svg';
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
-import Button from '@mui/material/Button'
+import React from 'react'
+import logo from './logo.svg'
 
-import './App.css';
+import UserList from './UserList'
+import './App.css'
 
-
-const client = new ApolloClient({
-  uri: 'http://localhost:4000',
-  cache: new InMemoryCache(),
-})
-
-const query = gql`
-  query {
-    allUsers {
-      username,
-      name,
-      id
-    }
-  }`
-
-client.query({ query })
-  .then((response) => {
-    console.log(response.data)
-  })
-
-function App() {
+const App = () => {
 
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -43,10 +20,10 @@ function App() {
         </a>
       </header>
       <div>
-        <Button variant="contained">Hello World</Button>
+        <UserList />
+      </div>
     </div>
-    </div>
-  );
+  )
 }
 
-export default App;
+export default App

@@ -1,0 +1,26 @@
+Todo next
+=========
+
+Client
+======
+Material UI based form handling & login
+Router with a few pages
+Redux
+
+Server
+======
+Additional rest endpoints besides /graphql
+Authentication (context) with apollo
+Some (more) graphql mutations, queries, subscriptions
+Test db 
+
+Both
+====
+Common package.json at project root
+* eslintrc
+first tests / health enp & graphql
+
+Pipeline
+========
+Git actions & fly.io
+

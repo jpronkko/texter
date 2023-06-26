@@ -8,3 +8,12 @@ type Query {
   allUsers: [User!]!
   findUser(username: String!): User
 }
+
+type Mutation {
+  createUser(name: String!, username: String!, password: String!): User
+}
+
+type Subscription {
+  userAdded: User!
+}
+

@@ -7,17 +7,23 @@
     "dotenv": "^16.1.4",
     "express": "^4.18.2",
     "graphql": "^16.6.0",
-    "mongoose": "^7.2.3"
+    "graphql-subscriptions": "^2.0.0",
+    "graphql-ws": "^5.14.0",
+    "mongoose": "^7.2.3",
+    "ws": "^8.13.0"
   },
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "NODE_ENV=production node server.js",
+    "dev": "NODE_ENV=development nodemon server.js",
+    "test": "NODE_ENV=test jest --verbose --runInBand"
   },
   "name": "server",
   "version": "1.0.0",
   "main": "server.js",
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "eslint": "^8.43.0",
+    "nodemon": "^2.0.22",
+    "supertest": "^6.3.3"
   },
   "keywords": [],
   "author": "",

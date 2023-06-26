@@ -4,6 +4,9 @@ const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/dra
 const { loadFilesSync } = require('@graphql-tools/load-files')
 const { makeExecutableSchema } = require('@graphql-tools/schema')
 
+const { WebSocketServer } = require('ws')
+const { useServer } = require('graphql-ws/lib/use/ws')
+
 const typesArray = loadFilesSync('**/*', {
   extensions: ['graphql']
 })
@@ -13,12 +16,31 @@ const resolversArray = loadFilesSync('**/*', {
 })
 
 const startApolloServer = async (httpServer) => {
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: '/',
+  })
+
+  const schema = makeExecutableSchema({
+    typeDefs: typesArray,
+    resolvers: resolversArray
+  })
+  const serverCleanup = useServer({ schema }, wsServer)
+
   const server = new ApolloServer({
-    schema: makeExecutableSchema({ 
-      typeDefs: typesArray, 
-      resolvers: resolversArray 
-    }),
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    schema,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose()
+            }
+          }
+        }
+      }
+    ],
   })
 
   await server.start()
@@ -26,5 +48,5 @@ const startApolloServer = async (httpServer) => {
 }
 
 module.exports = {
-  startApolloServer
+  startApolloServer,
 }
