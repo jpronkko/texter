@@ -8,8 +8,8 @@ const getAllUsers = async () => {
   return await User.find({}, { '__v': 0 })
 }
 
-const createUser = async (name, username, password) => {
-  const user = new User({ name, username, password })
+const createUser = async (name, username, password, email) => {
+  const user = new User({ name, username, password, email })
   return await user.save()
 }
 

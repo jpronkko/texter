@@ -41,7 +41,7 @@ const UserList = () => {
     }
   })
 
-  const { loading, data, error } = useQuery(ALL_USERS_QUERY)
+  const { loading, data, error, refetch } = useQuery(ALL_USERS_QUERY)
 
   //console.log(JSON.stringify(data))
   /*useEffect(() => {
@@ -63,14 +63,17 @@ const UserList = () => {
       </div>
     )
   }
-
+  const handleClick = () => {
+    logger.info('Trying refetch!')
+    refetch()
+  }
   const users = data.allUsers.map((user) => <ListItem  key={user.id}>{user.name}</ListItem>)
   return (
     <div>
       <List>
         {users}
       </List>
-      <Button variant="contained">Contained</Button>
+      <Button variant="contained" onClick={handleClick}>Test refetch</Button>
     </div>
   )
 }

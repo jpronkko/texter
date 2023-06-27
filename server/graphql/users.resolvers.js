@@ -10,7 +10,12 @@ module.exports = {
   },
   Mutation: {
     createUser: async (root, args) => {
-      const newUser = await usersModel.createUser(args.name, args.username, args.password)
+      const newUser = await usersModel.createUser(
+        args.name,
+        args.username,
+        args.password,
+        args.email
+      )
       pubsub.publish('USER_ADDED', { userAdded: newUser })
       return newUser
     }
