@@ -7,6 +7,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.3",
+    "@hookform/resolvers": "^3.1.1",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.4",
     "@testing-library/jest-dom": "^5.16.5",
@@ -18,7 +19,8 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.1",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yup": "^1.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
