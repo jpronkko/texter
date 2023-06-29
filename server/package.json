@@ -22,6 +22,7 @@
   "main": "server.js",
   "devDependencies": {
     "eslint": "^8.43.0",
+    "jest": "^29.5.0",
     "nodemon": "^2.0.22",
     "supertest": "^6.3.3"
   },

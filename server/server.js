@@ -23,7 +23,7 @@ const startServer = async () => {
   app.use('/health', healthCheckRouter)
 
   if(process.env.NODE_ENV === 'test') {
-    const testResetRouter = require('./controllers/test_reset')
+    const testResetRouter = require('./routes/test_reset')
     app.use('/api/testing', testResetRouter)
   }
 
@@ -37,6 +37,9 @@ const startServer = async () => {
   httpServer.listen(config.PORT, () =>
     logger.info(`Server is now running on http://localhost:${config.PORT}`)
   )
+  return { httpServer, apolloServer }
 }
 
 startServer()
+
+module.exports = { startServer }
