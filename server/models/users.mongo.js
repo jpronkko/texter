@@ -9,6 +9,7 @@ const schema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
+    unique: true,
     minlength: 4
   },
   password: {
@@ -19,8 +20,21 @@ const schema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
     minlength: 4,
-  }
+  },
+  ownedGroups: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Group'
+    }
+  ],
+  joinedGroups: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Group'
+    }
+  ],
 })
 
 

@@ -16,12 +16,7 @@ const App = () => {
   const handleCreate = (data) => {
     logger.info('Dataa!', data)
     createUser(
-      { variables: {
-        name: data.name,
-        email: data.email,
-        username: data.username,
-        password: data.password,
-      } })
+      { variables: { ...data.input } })
   }
 
   logger.info(JSON.stringify(data))

@@ -1,6 +1,7 @@
 const { PubSub } = require('graphql-subscriptions')
 const pubsub = new PubSub()
 const usersModel = require('../models/users.model')
+const logger = require('../utils/logger')
 
 module.exports = {
   Query: {
@@ -10,11 +11,11 @@ module.exports = {
   },
   Mutation: {
     createUser: async (root, args) => {
+      logger.info('UserInput', args)
+      const { input: { name, username, email, password } } = args
+
       const newUser = await usersModel.createUser(
-        args.name,
-        args.username,
-        args.password,
-        args.email
+        name, username, email, password
       )
       pubsub.publish('USER_ADDED', { userAdded: newUser })
       return newUser

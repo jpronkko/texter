@@ -3,18 +3,36 @@ type User {
   name: String!
   username: String!
   email: String!
+  password: String!
+  ownedGroups: [ID]
+  joinedGroups: [ID]
+}
+
+type UserInfo {
+  id: ID!
+  name: String!
+  username: String!
+  email: String!  
+}
+
+input UserInput {
+  name: String!
+  username: String!
+  email: String!
+  password: String!
 }
 
 type Query {
-  allUsers: [User!]!
-  findUser(username: String!): User
+  allUsers: [UserInfo!]!
+  findUser(username: String!): UserInfo
+  findGroups(groupId: ID!): [Group]
 }
 
 type Mutation {
-  createUser(name: String!, username: String!, password: String!, email: String!): User
+  createUser(input: UserInput): UserInfo
 }
 
 type Subscription {
-  userAdded: User!
+  userAdded: UserInfo!
 }
 

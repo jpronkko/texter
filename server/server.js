@@ -6,7 +6,7 @@ const { expressMiddleware } = require('@apollo/server/express4')
 const morgan = require('morgan')
 
 const config = require('./utils/config')
-const { mongoConnect } = require('./services/mongo')
+const { mongoConnect, mongoDisconnect } = require('./services/mongo')
 const { startApolloServer } = require('./services/apollo')
 const logger = require('./utils/logger')
 const healthCheckRouter = require('./routes/health_check')
@@ -19,7 +19,7 @@ const startServer = async () => {
   const apolloServer = await startApolloServer(httpServer)
 
   app.use(cors())
-  app.use(morgan('combined'))
+  //app.use(morgan('combined'))
   app.use('/health', healthCheckRouter)
 
   if(process.env.NODE_ENV === 'test') {
@@ -40,6 +40,12 @@ const startServer = async () => {
   return { httpServer, apolloServer }
 }
 
+const stopServer = async (httpServer, apolloServer) => {
+  mongoDisconnect()
+  await httpServer.close()
+  await apolloServer.stop()
+}
+
 startServer()
 
-module.exports = { startServer }
+module.exports = { startServer, stopServer }

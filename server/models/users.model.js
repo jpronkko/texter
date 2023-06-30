@@ -1,3 +1,5 @@
+const logger = require('../utils/logger')
+
 const User = require('./users.mongo')
 
 const findUser = async (username) => {
@@ -5,12 +7,15 @@ const findUser = async (username) => {
 }
 
 const getAllUsers = async () => {
-  return await User.find({}, { '__v': 0 })
+  return await User.find({}, { 'password': 0, '__v': 0 })
 }
 
 const createUser = async (name, username, password, email) => {
+  logger.info('Create user mongo', name, username, password, email)
   const user = new User({ name, username, password, email })
-  return await user.save()
+  const result = await user.save()
+  logger.info('Trying create user save', result)
+  return result
 }
 
 module.exports = {

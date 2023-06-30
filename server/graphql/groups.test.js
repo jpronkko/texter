@@ -1,15 +1,15 @@
 const request = require('supertest')
-const { startServer, stopServer } = require('../server')
+const { startServer } = require('../server')
 
 const queryAllUsers = {
-  query: 'query foo { allUsers { name }}'
+  query: 'query foo { allGroups { name }}'
 }
 
-const createUser = {
-  mutation: 'mutation foo { createUser(input: { name: foo, email: huppa@jeep, username: rocketman, password: puupaa } ) { id }}'
+const createGroup = {
+  mutation: 'mutate foo { createGroup() }'
 }
 
-describe('user test', () => {
+describe('groups test', () => {
   const url = 'http://localhost:4000'
   let httpServer, apolloServer
 
@@ -18,18 +18,19 @@ describe('user test', () => {
   })
 
   afterAll(async () => {
-    await stopServer(httpServer, apolloServer)
+    await httpServer?.close()
+    await apolloServer?.stop()
   })
 
-  it('create user', async () => {
-    const response = await request(url).post('/').send(createUser)
+  it('has users', async () => {
+    const response = await request(url).post('/').send(queryAllUsers)
     expect(response.errors).toBeUndefined()
     console.debug(response.body)
     expect(response.body.data?.allUsers).toContain('mare')
   })
 
-  it('has users', async () => {
-    const response = await request(url).post('/').send(queryAllUsers)
+  it('create group', async () => {
+    const response = await request(url).post('/').send(createGroup)
     expect(response.errors).toBeUndefined()
     console.debug(response.body)
     expect(response.body.data?.allUsers).toContain('mare')

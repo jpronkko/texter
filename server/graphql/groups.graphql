@@ -1,0 +1,19 @@
+type Group {
+  id: ID!
+  name: String!
+  ownerId: ID!
+  messages: [ID]
+}
+
+input GroupInput {
+  name: String!
+  ownerId: ID!
+}
+
+type Query {
+  findUserGroups(userId: ID): [Group]!
+}
+
+type Mutation {
+  createGroup(userId: ID, input: GroupInput): Message
+}

@@ -1,0 +1,18 @@
+type Message {
+  id: ID!
+  fromUser: ID!
+  body: String!
+}
+
+input MessageInput {
+  fromUser: ID!
+  body: String!
+}
+
+type Query {
+   findMessages(groupId: ID): [Message]
+}
+
+type Mutation {
+  createMessage(groupId:ID, input: MessageInput): Message
+}
