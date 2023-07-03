@@ -29,7 +29,7 @@ type Query {
 }
 
 type Mutation {
-  createUser(input: UserInput): UserInfo
+  createUser(user: UserInput): UserInfo
 }
 
 type Subscription {

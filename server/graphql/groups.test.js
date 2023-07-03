@@ -6,7 +6,7 @@ const queryAllUsers = {
 }
 
 const createGroup = {
-  mutation: 'mutate foo { createGroup() }'
+  mutation: 'mutate foo { createGroup(name, userId) }'
 }
 
 describe('groups test', () => {

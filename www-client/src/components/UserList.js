@@ -6,7 +6,7 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 
 import { gql, useQuery, useSubscription } from '@apollo/client'
-import logger from './utils/logger'
+import logger from '../utils/logger'
 
 const ALL_USERS_QUERY = gql`
 {

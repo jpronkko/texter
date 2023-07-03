@@ -6,7 +6,7 @@ const queryAllUsers = {
 }
 
 const createUser = {
-  mutation: 'mutation foo { createUser(input: { name: foo, email: huppa@jeep, username: rocketman, password: puupaa } ) { id }}'
+  mutation: 'mutation foo { createUser(user: { name: foo, email: huppa@jeep, username: rocketman, password: puupaa } ) { id }}'
 }
 
 describe('user test', () => {

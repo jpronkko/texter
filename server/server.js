@@ -2,14 +2,16 @@
 const express = require('express')
 const cors = require('cors')
 const http = require('http')
+const bodyParser = require('body-parser')
+const morganBody = require('morgan-body')
 const { expressMiddleware } = require('@apollo/server/express4')
-const morgan = require('morgan')
+//const morgan = require('morgan')
 
 const config = require('./utils/config')
 const { mongoConnect, mongoDisconnect } = require('./services/mongo')
 const { startApolloServer } = require('./services/apollo')
 const logger = require('./utils/logger')
-const healthCheckRouter = require('./routes/health_check')
+const healthCheckRouter = require('./routes/healthCheckRouter')
 
 const startServer = async () => {
   const app = express()
@@ -20,16 +22,19 @@ const startServer = async () => {
 
   app.use(cors())
   //app.use(morgan('combined'))
+  app.use(bodyParser.json())
+  morganBody(app)
   app.use('/health', healthCheckRouter)
 
-  if(process.env.NODE_ENV === 'test') {
-    const testResetRouter = require('./routes/test_reset')
-    app.use('/api/testing', testResetRouter)
+  if(process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
+    logger.info('Adding test routes.')
+    const testRouter = require('./routes/testRouter')
+    app.use('/test', testRouter)
   }
 
   app.use(
     '/',
-    //cors(),
+    cors(),
     express.json(),
     expressMiddleware(apolloServer),
   )

@@ -12,7 +12,7 @@ module.exports = {
   Mutation: {
     createUser: async (root, args) => {
       logger.info('UserInput', args)
-      const { input: { name, username, email, password } } = args
+      const { user: { name, username, email, password } } = args
 
       const newUser = await usersModel.createUser(
         name, username, email, password
