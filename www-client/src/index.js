@@ -2,6 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './components/App'
+import { Provider } from 'react-redux'
+
 //import reportWebVitals from './reportWebVitals'
 import {
   ApolloClient, InMemoryCache, ApolloProvider, createHttpLink,
@@ -11,6 +13,8 @@ import {
 import { getMainDefinition } from '@apollo/client/utilities'
 import { GraphQLWsLink } from  '@apollo/client/link/subscriptions'
 import { createClient } from 'graphql-ws'
+
+import store from './app/store'
 
 const httpLink = createHttpLink({ uri: 'http://localhost:4000' })
 const wsLink = new GraphQLWsLink(createClient({
@@ -39,9 +43,12 @@ const client = new ApolloClient({
 const root = ReactDOM.createRoot(document.getElementById('root'))
 
 root.render(
-  <ApolloProvider client={client}>
-    <App />
-  </ApolloProvider>,
+  <Provider store={store}>
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
+  </Provider>
+  ,
 )
 
 // If you want to start measuring performance in your app, pass a function
