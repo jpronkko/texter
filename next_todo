@@ -10,7 +10,7 @@ hooks
 
 Server
 ======
-Additional rest endpoints besides /graphql
+* Additional rest endpoints besides /graphql
 Authentication (context) with apollo
 Some (more) graphql mutations, queries, subscriptions
 Test db 
@@ -19,9 +19,9 @@ REST endpoint tests
 
 Both
 ====
-Common package.json at project root
+* Common package.json at project root
 * eslintrc
-first tests / health enp & graphql
+* first tests / health enp & graphql
 
 Pipeline
 ========

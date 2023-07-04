@@ -5,33 +5,12 @@ import Button from '@mui/material/Button'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 
-import { gql, useQuery, useSubscription } from '@apollo/client'
+import { useQuery, useSubscription } from '@apollo/client'
+
 import logger from '../utils/logger'
+import { USER_ADDED } from '../graphql/subscriptions'
+import { GET_ALL_USERS } from '../graphql/queries'
 
-const ALL_USERS_QUERY = gql`
-{
-  allUsers {
-      name
-      id
-    }
-}`
-
-const USER_DETAILS = gql`
-  fragment UserDetails on User {
-    id
-    username
-    name
-  }
-`
-
-const USER_ADDED = gql`
-  subscription {
-    userAdded {
-      name
-    }
-  }
-  ${USER_DETAILS}
-`
 
 const UserList = () => {
   //const [users, setUsers] = useState([])
@@ -41,7 +20,7 @@ const UserList = () => {
     }
   })
 
-  const { loading, data, error, refetch } = useQuery(ALL_USERS_QUERY)
+  const { loading, data, error, refetch } = useQuery(GET_ALL_USERS)
 
   //console.log(JSON.stringify(data))
   /*useEffect(() => {

@@ -1,29 +1,10 @@
 // Based on: https://blog.logrocket.com/using-material-ui-with-react-hook-form/
 import React from 'react'
 
-/*import { useController } from 'react-hook-form'
-
-
-function Input(props) {
-  const { field, fieldState } = useController(props)
-
-  return (
-    <div>
-      <input {...field} placeholder={props.name} />
-      <p>{fieldState.isTouched && 'Touched'}</p>
-      <p>{fieldState.isDirty && 'Dirty'}</p>
-      <p>{fieldState.invalid ? 'invalid' : 'valid'}</p>
-    </div>
-  )
-}
-
-export default Input*/
-
-//import { TextField } from '@material-ui/core'
 import TextField from '@mui/material/TextField'
 import { useController } from 'react-hook-form'
 
-function Input({ control, id, name, label, type }) {
+function Input({ control, id, testId, name, label, type }) {
   const {
     field,
     fieldState: { error },
@@ -34,6 +15,8 @@ function Input({ control, id, name, label, type }) {
     control,
     rules: { required: true },
   })
+
+  const inputProps = { 'data-testid': testId }
 
   return (
     <TextField
@@ -49,6 +32,7 @@ function Input({ control, id, name, label, type }) {
       type={type}
       variant='outlined'
       inputRef={field.ref} // send input ref, so we can focus on input when error appear
+      inputProps={inputProps}
     />
   )
 }

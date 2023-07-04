@@ -35,7 +35,6 @@ const CreateUserForm = ({ handleCreate }) => {
   })
 
   const onSubmit = (data) => {
-    console.log(data)
     handleCreate(data)
   }
 
@@ -70,6 +69,7 @@ const CreateUserForm = ({ handleCreate }) => {
         />
         <FormTextInput
           id='password'
+          testId='password'
           name='password'
           control={control}
           label='Password'
