@@ -1,5 +1,7 @@
 Todo next
 =========
+"Permanent" mongo test db install to local server
+
 
 Client
 ======
@@ -7,11 +9,12 @@ Material UI based form handling & login
 Router with a few pages
 Redux
 hooks
+authentication & token save
 
 Server
 ======
 * Additional rest endpoints besides /graphql
-Authentication (context) with apollo
+* Authentication (context) with apollo
 Some (more) graphql mutations, queries, subscriptions
 Test db 
 GraphQL tests
