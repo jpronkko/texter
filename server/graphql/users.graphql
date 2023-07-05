@@ -27,6 +27,11 @@ input UserLoginInput {
   password: String!
 }
 
+type Token {
+  userId: ID!
+  token: String!
+}
+
 type Query {
   allUsers: [UserInfo!]!
   findUser(username: String!): UserInfo
@@ -34,8 +39,8 @@ type Query {
 }
 
 type Mutation {
-  createUser(user: UserInput): UserInfo
-  login(credentials: UserLoginInput): UserInfo 
+  createUser(user: UserInput): Token
+  login(credentials: UserLoginInput): Token 
 }
 
 type Subscription {

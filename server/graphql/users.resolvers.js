@@ -1,12 +1,12 @@
 const { PubSub } = require('graphql-subscriptions')
 const pubsub = new PubSub()
+const { GraphQLError } = require('graphql')
+
 const usersModel = require('../models/users.model')
 const logger = require('../utils/logger')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-
-const config = require('../utils/config')
 const User = require('../models/users.mongo')
+
+const { tokenFromUser, getHash, pwCompare } = require('../utils/pwtoken')
 
 module.exports = {
   Query: {
@@ -19,29 +19,30 @@ module.exports = {
       logger.info('UserInput', args)
       const { user: { name, username, email, password } } = args
 
-      const passwordHash = await bcrypt.hash(password)
+      const user = await User.findOne({ username: args.username })
+      if(user) {
+        throw new GraphQLError( 'Username taken', { extensions: { code: 304 } })
+      }
+      const passwordHash = await getHash(password)
       const newUser = await usersModel.createUser(
-        name, username, email, password, passwordHash
+        name, username, email, passwordHash
       )
       pubsub.publish('USER_ADDED', { userAdded: newUser })
-      return newUser
+
+      return tokenFromUser(newUser)
     },
     login: async (root, args) => {
       logger.info('Login ', args.username)
       const user = await User.findOne({ username: args.username })
+
       const passwordCorrect = user === null ? false :
-        await bcrypt.compare(args.password, user.passwordHash)
+        pwCompare(args.password, user.passwordHash)
 
       if (!passwordCorrect) {
-        //throw new UserInputError("wrong credentials")
+        throw new GraphQLError( 'Wrong credentials', { extensions: { code: 304 } })
       }
 
-      const userForToken = {
-        username: user.username,
-        id: user._id,
-      }
-
-      return { token: jwt.sign(userForToken, config.JWT_SECRET), favoriteGenre: user.favoriteGenre }
+      return tokenFromUser(user)
     }
   },
   Subscription: {

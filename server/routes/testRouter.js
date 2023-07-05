@@ -1,5 +1,6 @@
 const testRouter = require('express').Router()
 const User = require('../models/users.mongo')
+const { getHash } = require('../utils/pwtoken')
 
 const testUsers = [
   {
@@ -28,7 +29,12 @@ testRouter.get('/users', async (request, response) => {
 })
 
 testRouter.post('/addusers', async (request, response) => {
-  await User.insertMany( testUsers )
+  await User.insertMany( testUsers.map(user => ({
+    name: user.name,
+    username: user.username,
+    email: user.email,
+    passwordHash: await getHash(user.password)
+  })) )
 
   response.status(204).end()
 })
