@@ -3,7 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const http = require('http')
 const bodyParser = require('body-parser')
-const morganBody = require('morgan-body')
+//const morganBody = require('morgan-body')
 const { expressMiddleware } = require('@apollo/server/express4')
 //const morgan = require('morgan')
 
@@ -23,7 +23,7 @@ const startServer = async () => {
   app.use(cors())
   //app.use(morgan('combined'))
   app.use(bodyParser.json())
-  morganBody(app)
+  //morganBody(app)
   app.use('/health', healthCheckRouter)
 
   if(process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
@@ -34,7 +34,6 @@ const startServer = async () => {
 
   app.use(
     '/',
-    cors(),
     express.json(),
     expressMiddleware(apolloServer),
   )

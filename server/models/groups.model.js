@@ -1,18 +1,44 @@
 const logger = require('../utils/logger')
 
 const Group = require('./groups.mongo')
+const User = require('./users.mongo')
 
-const findUserGroups = async (userId) => {
-  return await Group.find({ userId })
+const findUserGroups = async (ownerId) => {
+  return await Group.find({ ownerId })
 }
 
-const createGroup = async (userId, name) => {
-  logger.info('createGroup')
-  const group = new Group({ ownerId: userId, name })
-  return await group.save()
+const findGroup = async (groupId) => {
+  return await Group.findOne({ _id: groupId })
+}
+const findGroupWithName = async (ownerId, groupName) => {
+  return await Group.findOne({ ownerId, name: groupName })
+}
+
+// Hash check...
+const createGroup = async (ownerId, name) => {
+  logger.info('createGroup: ', ownerId, name)
+  const existingGroup = await findGroupWithName(ownerId, name)
+  logger.info('Create group existing group', existingGroup)
+  if(existingGroup) {
+    throw new Error(`User already has group with name ${name}.`)
+  }
+
+  const user = await User.findById(ownerId)
+  if(!user) {
+    throw new Error('No such user found!')
+  }
+
+  const group = new Group({ ownerId, name })
+  const savedGroup = await group.save()
+  logger.info('user: ', user.ownedGroups)
+  user.ownedGroups = user.ownedGroups.concat(savedGroup._id)
+  await user.save()
+  return savedGroup
 }
 
 module.exports = {
   findUserGroups,
+  findGroup,
+  findGroupWithName,
   createGroup,
 }

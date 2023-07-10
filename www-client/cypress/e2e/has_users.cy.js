@@ -1,17 +1,19 @@
 //import { gql } from '@apollo/client'
 
+/*
 const query = 'mutation foo { createUser(user: { name: "nepo", email: "huppa@jeep", username: "rocketman", password: "hulivili" } ) { id }}'
-
-describe('template spec', function() {
-  beforeEach(function () {
-    cy.request('POST', 'http://localhost:4000/test/reset')
-    cy.request({
+cy.request({
       method: 'post',
       url: 'http://localhost:4000/graphql',
       body: { query }
     }).then((res) => {
       console.log(res.body)
     })
+*/
+
+describe('template spec', function() {
+  beforeEach(function () {
+    cy.request('POST', 'http://localhost:4000/test/reset')
   })
 
   it('passes', function () {

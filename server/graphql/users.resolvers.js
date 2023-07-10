@@ -4,9 +4,8 @@ const { GraphQLError } = require('graphql')
 
 const usersModel = require('../models/users.model')
 const logger = require('../utils/logger')
-const User = require('../models/users.mongo')
 
-const { tokenFromUser, getHash, pwCompare } = require('../utils/pwtoken')
+const { tokenFromUser, getHash } = require('../utils/pwtoken')
 
 module.exports = {
   Query: {
@@ -19,30 +18,45 @@ module.exports = {
       logger.info('UserInput', args)
       const { user: { name, username, email, password } } = args
 
-      const user = await User.findOne({ username: args.username })
+      const user = await usersModel.findUser(args.username)
       if(user) {
-        throw new GraphQLError( 'Username taken', { extensions: { code: 304 } })
+        logger.error('Username taken', user)
+        throw new GraphQLError( 'Username taken', { extensions: { code: 'USERNAME_TAKEN' } })
       }
-      const passwordHash = await getHash(password)
-      const newUser = await usersModel.createUser(
-        name, username, email, passwordHash
-      )
-      pubsub.publish('USER_ADDED', { userAdded: newUser })
 
-      return tokenFromUser(newUser)
+      const passwordHash = await getHash(password)
+
+      try {
+        const newUser = await usersModel.createUser(
+          name, username, email, passwordHash
+        )
+        pubsub.publish('USER_ADDED', { userAdded: newUser })
+        return tokenFromUser(newUser)
+      } catch(error) {
+        throw new GraphQLError('Creating user failed', {
+          extensions: {
+            code: 'USER_CREATE_FAILED',
+            invalidArgs: args.name,
+            error
+          }
+        })
+      }
     },
     login: async (root, args) => {
-      logger.info('Login ', args.username)
-      const user = await User.findOne({ username: args.username })
-
-      const passwordCorrect = user === null ? false :
-        pwCompare(args.password, user.passwordHash)
-
-      if (!passwordCorrect) {
-        throw new GraphQLError( 'Wrong credentials', { extensions: { code: 304 } })
-      }
-
-      return tokenFromUser(user)
+      logger.info('Login arguments', args, args.username, args.password)
+      const { credentials: { username, password } } = args
+      // try {
+      const token = await usersModel.login(username, password)
+      return token
+      /* } catch(error) {
+        logger.error('Login failed', error)
+        throw new GraphQLError('User login failed', {
+          extensions: {
+            code: 'USER_LOGIN_FAILED',
+            error
+          }
+        })
+      }*/
     }
   },
   Subscription: {

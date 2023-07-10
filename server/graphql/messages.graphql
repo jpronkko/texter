@@ -1,11 +1,12 @@
 type Message {
   id: ID!
-  fromUser: ID!
+  fromUserId: ID!
   body: String!
 }
 
-input MessageInput {
-  fromUser: ID!
+input CreateMessageInput {
+  groupId:ID
+  fromUserId: ID!
   body: String!
 }
 
@@ -14,5 +15,5 @@ type Query {
 }
 
 type Mutation {
-  createMessage(groupId:ID, input: MessageInput): Message
+  createMessage(MessageInput: CreateMessageInput): Message
 }

@@ -28,14 +28,12 @@ input UserLoginInput {
 }
 
 type Token {
-  userId: ID!
   token: String!
 }
 
 type Query {
-  allUsers: [UserInfo!]!
+  allUsers: [UserInfo!]
   findUser(username: String!): UserInfo
-  findGroups(groupId: ID!): [Group]
 }
 
 type Mutation {

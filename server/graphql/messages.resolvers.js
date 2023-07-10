@@ -8,10 +8,10 @@ module.exports = {
   Mutation: {
     createMessage: async (root, args) => {
       logger.info('Create messages', args)
-      const { input: { fromUser, body } } = args
+      const { MessageInput: { groupId, fromUserId, body } } = args
 
       const newUser = await messagesModel.createMessage(
-        fromUser, body
+        groupId, fromUserId, body
       )
       //pubsub.publish('USER_ADDED', { userAdded: newUser })
       return newUser

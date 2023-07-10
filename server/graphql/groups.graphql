@@ -11,9 +11,10 @@ input GroupInput {
 }
 
 type Query {
-  findUserGroups(userId: ID): [Group]!
+  findGroups(ownerId: ID!): [Group],
+  findGroup(ownerId: ID!, name: String!): Group
 }
 
 type Mutation {
-  createGroup(userId: ID, input: GroupInput): Message
+  createGroup(input: GroupInput): Group
 }

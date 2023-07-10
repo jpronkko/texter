@@ -6,8 +6,12 @@ const info = (...prms) => {
 const error = (...prms) => {
   console.error(...prms)
 }
+
+const debug = (...prms) => {
+  console.debug(...prms)
+}
 /* eslint-enable no-console */
 
 module.exports = {
-  info, error
+  info, error, debug
 }

@@ -1,17 +1,16 @@
-const request = require('supertest')
 const { startServer } = require('../server')
 
-const queryAllUsers = {
-  query: 'query foo { allGroups { name }}'
-}
+const {
+  createTestUser,
+  createGroup,
+  resetDatabases,
+  test_user,
+} = require('../utils/testHelpers')
 
-const createGroup = {
-  mutation: 'mutate foo { createGroup(name, userId) }'
-}
+const Group = require('../models/groups.model')
 
 describe('groups test', () => {
-  const url = 'http://localhost:4000'
-  let httpServer, apolloServer
+  let httpServer, apolloServer, userId
 
   beforeAll(async () => {
     ({ httpServer, apolloServer } = await startServer())
@@ -22,17 +21,22 @@ describe('groups test', () => {
     await apolloServer?.stop()
   })
 
-  it('has users', async () => {
-    const response = await request(url).post('/').send(queryAllUsers)
-    expect(response.errors).toBeUndefined()
-    console.debug(response.body)
-    expect(response.body.data?.allUsers).toContain('mare')
+  beforeEach(async () => {
+    // Empty the test db
+    await resetDatabases()
+    // Create test users
+    const user = await createTestUser()
+    userId = user.id
   })
 
-  it('create group', async () => {
-    const response = await request(url).post('/').send(createGroup)
+  it('create group with existing userId, non-existing group', async () => {
+    const response = await createGroup('test_group', userId)
     expect(response.errors).toBeUndefined()
     console.debug(response.body)
-    expect(response.body.data?.allUsers).toContain('mare')
+    const groupId = response.body.id
+    const groupInDb =  await Group.findGroup(groupId)
+    if(!groupInDb)
+      console.debug('Error!')
+    //expect(response.body.data?.allUsers).toContain()
   })
 })
