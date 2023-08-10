@@ -9,6 +9,9 @@ const { tokenFromUser, getHash } = require('../utils/pwtoken')
 
 module.exports = {
   Query: {
+    me: (root, ards, context) => {
+      return context.createUser
+    },
     allUsers: async () => await usersModel.getAllUsers(),
     findUser: async (root, args) =>
       await usersModel.findUser(args.username)
@@ -46,7 +49,7 @@ module.exports = {
       logger.info('Login arguments', args, args.username, args.password)
       const { credentials: { username, password } } = args
       // try {
-      const token = await usersModel.login(username, password)
+      const token  = await usersModel.login(username, password)
       return token
       /* } catch(error) {
         logger.error('Login failed', error)

@@ -5,16 +5,11 @@ type Group {
   messages: [ID]
 }
 
-input GroupInput {
-  name: String!
-  ownerId: ID!
-}
-
 type Query {
   findGroups(ownerId: ID!): [Group],
   findGroup(ownerId: ID!, name: String!): Group
 }
 
 type Mutation {
-  createGroup(input: GroupInput): Group
+  createGroup(name: String!): Group
 }

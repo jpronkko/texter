@@ -1,15 +1,14 @@
 //import { useEffect, useState } from 'react';
 import React from 'react'
 
-import Button from '@mui/material/Button'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
+import { Button, List } from '@mui/material'
+import UserListItem from '../UserListItem'
 
 import { useQuery, useSubscription } from '@apollo/client'
 
-import logger from '../utils/logger'
-import { USER_ADDED } from '../graphql/subscriptions'
-import { GET_ALL_USERS } from '../graphql/queries'
+import logger from '../../utils/logger'
+import { USER_ADDED } from '../../graphql/subscriptions'
+import { GET_ALL_USERS } from '../../graphql/queries'
 
 
 const UserList = () => {
@@ -46,7 +45,7 @@ const UserList = () => {
     logger.info('Trying refetch!')
     refetch()
   }
-  const users = data.allUsers.map((user) => <ListItem  key={user.id}>{user.name}</ListItem>)
+  const users = data.allUsers.map((user) => <UserListItem  key={user.id} user={user} />)
   return (
     <div>
       <List>

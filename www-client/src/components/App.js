@@ -1,21 +1,28 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { logIn, logOut } from '../app/userSlice'
-
-import UserList from './UserList'
-import './App.css'
-import './TopBar'
-
-import CreateUserForm from './forms/CreateUserForm'
-import useCreateUser from '../hooks/useCreateUser'
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import {
   BrowserRouter as Router,
   Routes, Route, Link
 } from 'react-router-dom'
 
+import { addGroup } from '../app/userSlice'
+
+import GroupList from './pages/GroupList'
+import UserList from './pages/UserList'
+import ErrorMessage from './ErrorMessage'
+import CreateGroupForm from './forms/CreateGroupForm'
+
+import './App.css'
+import './TopBar'
+
+import CreateUser from './pages/CreateUser'
+import Login from './pages/Login'
+
 import logger from '../utils/logger'
 import TopBar from './TopBar'
+import useCreateGroup from '../hooks/useCreateGroup'
+
 const MainPage = () => {
   return (
     <div>
@@ -25,31 +32,42 @@ const MainPage = () => {
 }
 
 const App = () => {
-  const [createUser, result] = useCreateUser()
-  const userLoggedIn = useSelector(state => state.user.hasLoggedIn)
+  const userLoggedIn = useSelector(state => state.user.username)
+  const userGroups = useSelector(state => state.user.groups)
+
+  const [isCreatingGroup, setIsCreatingGroup] = useState(true)
+  const [createGroup, ] = useCreateGroup()
+
   const dispatch = useDispatch()
 
-  const handleCreate = async (data) => {
+  console.log(userLoggedIn)
+  console.log('User groups', userGroups)
+  const handleCreateUser = async (data) => {
     logger.info('Create user input data:', data)
-    const foo = await createUser(data)
-    logger.info('foo on handlecreate', foo)
-    dispatch(logIn())
-    dispatch(logOut())
   }
 
-  logger.info('result of createUser', result)
-  /*logger.info(JSON.stringify(data))
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>Error...{error.message}</p>*/
+  const loginUser = async (data) => {
+    logger.info('Login user input data:', data)
+  }
+
   const padding = {
     padding: 5
+  }
+
+  const handleCreateGroup = async (name) => {
+    console.log('Creating group', name)
+    setIsCreatingGroup(false)
+    const id = await createGroup(name)
+    dispatch(addGroup(id))
   }
 
   return (
     <div>
       <Router>
         <TopBar />
-        <p>{userLoggedIn ? 'user logged in' : 'user logged out'}</p>
+        <p>{userLoggedIn !== '' ? `user logged in ${userLoggedIn}` : 'user logged out'}</p>
+        <ErrorMessage />
+        { userLoggedIn !== '' && isCreatingGroup && <CreateGroupForm handleCreate={handleCreateGroup} /> }
         <div>
           <Link style={padding} to='/'>home</Link>
           <Link style={padding} to='/users'>Users</Link>
@@ -58,26 +76,15 @@ const App = () => {
 
         <Routes>
           <Route path='/' element={<MainPage />} />
+          <Route path='/login' element={<Login handleLogin={loginUser}/>} />
+          <Route path='/groups' element={<GroupList />} />
           <Route path='/users' element={<UserList />} />
-          <Route path='/create_account' element={<CreateUserForm handleCreate={handleCreate} />} />
+          <Route path='/create_account' element={<CreateUser handleCreate={handleCreateUser} />} />
         </Routes>
       </Router>
     </div>
   )
 }
 
-/*
-   <div className="App">
-      <TopBar />
-      <div>
-        {userLoggedIn ? 'User has logged in' : 'User has not logged in'}
-      </div>
-      <div>
-        <CreateUserForm handleCreate={handleCreate} />
-      </div>
-      <div>
-        <UserList />
-      </div>
-    </div>
-*/
+
 export default App

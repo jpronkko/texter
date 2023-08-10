@@ -32,13 +32,14 @@ type Token {
 }
 
 type Query {
-  allUsers: [UserInfo!]
+  me: User
+  allUsers: [UserInfo]
   findUser(username: String!): UserInfo
 }
 
 type Mutation {
   createUser(user: UserInput): Token
-  login(credentials: UserLoginInput): Token 
+  login(credentials: UserLoginInput): Token
 }
 
 type Subscription {

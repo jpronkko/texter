@@ -9,3 +9,21 @@ mutation createUser(
   ) { id }
 }
 `
+
+export const CREATE_GROUP = gql`
+mutation createGroup($name: String!) {
+  createGroup(
+    name: $name
+  ) { id }
+}
+`
+
+export const LOGIN = gql`
+mutation login(
+  $credentials: UserLoginInput
+) {
+  login(
+    credentials: $credentials
+  ) { token }
+}
+`
