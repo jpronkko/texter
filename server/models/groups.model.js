@@ -4,7 +4,7 @@ const Group = require('./groups.mongo')
 const User = require('./users.mongo')
 
 const findUserGroups = async (ownerId) => {
-  return await Group.find({ ownerId })
+  return await Group.find({ ownerId }).select({ 'name': 1, '_id': 1 })
 }
 
 const findGroup = async (groupId) => {
@@ -28,7 +28,7 @@ const createGroup = async (ownerId, name) => {
     throw new Error('No such user found!')
   }
 
-  const group = new Group({ ownerId, name })
+  const group = new Group({ owner: ownerId, name })
   const savedGroup = await group.save()
   logger.info('user: ', user.ownedGroups)
   user.ownedGroups = user.ownedGroups.concat(savedGroup._id)

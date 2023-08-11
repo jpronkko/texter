@@ -8,7 +8,7 @@ import {
 
 import { addGroup } from '../app/userSlice'
 
-import GroupList from './pages/GroupList'
+import GroupList from './GroupList'
 import UserList from './pages/UserList'
 import ErrorMessage from './ErrorMessage'
 import CreateGroupForm from './forms/CreateGroupForm'
@@ -35,7 +35,7 @@ const App = () => {
   const userLoggedIn = useSelector(state => state.user.username)
   const userGroups = useSelector(state => state.user.groups)
 
-  const [isCreatingGroup, setIsCreatingGroup] = useState(true)
+  const [isCreatingGroup, setIsCreatingGroup] = useState(false)
   const [createGroup, ] = useCreateGroup()
 
   const dispatch = useDispatch()
@@ -56,9 +56,9 @@ const App = () => {
 
   const handleCreateGroup = async (name) => {
     console.log('Creating group', name)
-    setIsCreatingGroup(false)
     const id = await createGroup(name)
     dispatch(addGroup(id))
+    setIsCreatingGroup(false)
   }
 
   return (
@@ -73,7 +73,7 @@ const App = () => {
           <Link style={padding} to='/users'>Users</Link>
           <Link style={padding} to='/create_account'>Create Account</Link>
         </div>
-
+        <GroupList />
         <Routes>
           <Route path='/' element={<MainPage />} />
           <Route path='/login' element={<Login handleLogin={loginUser}/>} />

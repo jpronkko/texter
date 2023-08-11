@@ -3,7 +3,6 @@ import { CREATE_USER } from '../graphql/mutations'
 import logger from '../utils/logger'
 
 const useCreateUser = () => {
-
   const [createUserMutation, result] = useMutation( CREATE_USER )
 
   const createUser = async (user) => {

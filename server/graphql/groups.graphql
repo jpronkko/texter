@@ -1,15 +1,25 @@
 type Group {
   id: ID!
   name: String!
-  ownerId: ID!
+  owner: ID!
+  members: [ID]
   messages: [ID]
 }
 
+type GroupInfo {
+  id: ID!
+  name: String!
+  ownerId: ID!
+}
+
 type Query {
-  findGroups(ownerId: ID!): [Group],
-  findGroup(ownerId: ID!, name: String!): Group
+  getUserGroupInfo: [GroupInfo]
 }
 
 type Mutation {
   createGroup(name: String!): Group
+}
+
+type Mutation {
+  addMemberToGroup(memberId: ID!) : Group
 }

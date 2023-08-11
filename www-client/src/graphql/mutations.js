@@ -11,7 +11,7 @@ mutation createUser(
 `
 
 export const CREATE_GROUP = gql`
-mutation createGroup($name: String!) {
+mutation createGroup($name: String) {
   createGroup(
     name: $name
   ) { id }
