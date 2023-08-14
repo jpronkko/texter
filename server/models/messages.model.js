@@ -4,30 +4,33 @@ const Message = require('./messages.mongo')
 
 const { findGroup } = require('./groups.model')
 
+const getAllMessages = async () => {
+  return await Message.find({})
+}
+
 const findMessages = async (groupId) => {
   return await Message.find({ groupId })
 }
 
-const createMessage = async (groupId, fromUserId, body) => {
-
+const createMessage = async (user, groupId, body) => {
   const group = await findGroup(groupId)
   if(!group) {
     throw new Error(`No such group found! ${groupId}`)
   }
 
-  logger.info('Create message', groupId, fromUserId, group, body)
+  logger.info('Create message', groupId, user.id, group, body)
 
-  if(fromUserId !== group.ownerId.toString()) {
-    throw new Error('Not owner of a message group!')
-  }
-
-  const message = new Message({ groupId, fromUserId, body })
+  const message = new Message({ fromUserId: user.id, body })
   const result = await message.save()
   logger.info('Trying create message save', result)
+
+  group.messages = group.messages.concat(message._id)
+  await group.save()
   return result
 }
 
 module.exports = {
+  getAllMessages,
   findMessages,
   createMessage
 }

@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client'
+
 import { CREATE_GROUP } from '../graphql/mutations'
 import logger from '../utils/logger'
 

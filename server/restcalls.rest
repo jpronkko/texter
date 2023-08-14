@@ -14,4 +14,3 @@ Content-Type: application/json
 
 ### Get list of all users
 GET http://localhost:4000/test/users HTTP/1.1
-

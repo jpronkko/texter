@@ -18,6 +18,15 @@ mutation createGroup($name: String) {
 }
 `
 
+export const CREATE_MESSAGE = gql`
+mutation createMessage($message: MessageInput) {
+  createMessage(
+    message: $message
+  ) { id }
+}
+`
+
+
 export const LOGIN = gql`
 mutation login(
   $credentials: UserLoginInput

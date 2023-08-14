@@ -5,19 +5,22 @@ export const userSlice = createSlice({
   initialState: {
     username: '',
     token: null,
-    groups: [],
+    ownedGroups: [],
+    joinedGroups: [],
   },
   reducers: {
     logIn: (state, action) => {
       console.log('action payload:', action.payload)
       state.username = action.payload.username
       state.token = action.payload.token
-      state.groups = action.payload.groups
+      state.ownedGroups = action.payload.ownedGroups
+      state.joinedGroups = action.payload.joinedGroups
     },
     logOut: state => {
       state.username = ''
       state.token = null
-      state.groups = []
+      state.ownedGroups = []
+      state.joinedGroups = []
     },
     addGroup: (state, action) => {
       state.groups.push(action.payload.id)

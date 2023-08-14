@@ -1,7 +1,6 @@
-type GroupMessage {
+type Message {
   id: ID!
   fromUser: ID!
-  group: ID!
   text: String!
   sentTime: String!
 }
@@ -12,9 +11,10 @@ input MessageInput {
 }
 
 type Query {
-   findMessages(groupName: String!): [GroupMessage]
+  allMessages: [Message]
+  findMessages(groupId: ID!): [Message]
 }
 
 type Mutation {
-  createMessage(MessageInput: MessageInput): GroupMessage
+  createMessage(MessageInput: MessageInput): Message
 }

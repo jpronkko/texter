@@ -36,9 +36,14 @@ const login = async (username, password) => {
     throw new Error( 'Wrong credentials')
   }
 
-  //throw new Error('Login error!')
-
   return tokenFromUser(user)
+}
+
+const addUserToGroup = async (userId, groupId) => {
+  const user = await User.findOne({ id: userId })
+  user.joinedGroups = user.joinedGroups.concat(groupId)
+  const updatedUser = await user.save()
+  return updatedUser
 }
 
 module.exports = {
@@ -47,4 +52,5 @@ module.exports = {
   getAllUsers,
   createUser,
   login,
+  addUserToGroup,
 }

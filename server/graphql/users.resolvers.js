@@ -6,10 +6,11 @@ const usersModel = require('../models/users.model')
 const logger = require('../utils/logger')
 
 const { tokenFromUser, getHash } = require('../utils/pwtoken')
+const { checkUser, checkUserInOwnedGroup } = require('../utils/checkUser')
 
 module.exports = {
   Query: {
-    me: (root, ards, context) => {
+    me: (root, args, context) => {
       return context.createUser
     },
     allUsers: async () => await usersModel.getAllUsers(),
@@ -48,18 +49,22 @@ module.exports = {
     login: async (root, args) => {
       logger.info('Login arguments', args, args.username, args.password)
       const { credentials: { username, password } } = args
-      // try {
       const token  = await usersModel.login(username, password)
       return token
-      /* } catch(error) {
-        logger.error('Login failed', error)
-        throw new GraphQLError('User login failed', {
-          extensions: {
-            code: 'USER_LOGIN_FAILED',
-            error
-          }
-        })
-      }*/
+    },
+    addUserToGroup: async (root, args, { currentUser }) => {
+      logger.info('Creating a group', args)
+
+      checkUser(currentUser, 'Adding a user to a group failed!')
+
+      const { groupId, userId } = args
+      if(!checkUserInOwnedGroup(currentUser, groupId)) {
+        throw new GraphQLError('No permission to add user to a group')
+      }
+
+      // should return without pw hash
+      const updatedUser = await usersModel.addUserToGroup(currentUser, groupId, userId)
+      return updatedUser
     }
   },
   Subscription: {

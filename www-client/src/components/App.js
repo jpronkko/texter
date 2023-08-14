@@ -33,7 +33,7 @@ const MainPage = () => {
 
 const App = () => {
   const userLoggedIn = useSelector(state => state.user.username)
-  const userGroups = useSelector(state => state.user.groups)
+  const userGroups = useSelector(state => state.user.ownedGroups)
 
   const [isCreatingGroup, setIsCreatingGroup] = useState(false)
   const [createGroup, ] = useCreateGroup()
