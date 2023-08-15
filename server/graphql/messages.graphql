@@ -1,13 +1,13 @@
 type Message {
   id: ID!
   fromUser: ID!
-  text: String!
+  body: String!
   sentTime: String!
 }
 
 input MessageInput {
   groupId: ID!
-  text: String!
+  body: String!
 }
 
 type Query {
@@ -17,4 +17,8 @@ type Query {
 
 type Mutation {
   createMessage(MessageInput: MessageInput): Message
+}
+
+type Subscription {
+  messageAdded(groupId: ID!): Message
 }

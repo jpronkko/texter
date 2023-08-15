@@ -4,8 +4,8 @@ type User {
   username: String!
   email: String!
   passwordHash: String!
-  ownedGroups: [ID]
-  joinedGroups: [ID]
+  ownedGroups: [GroupInfo]
+  joinedGroups: [GroupInfo]
 }
 
 type UserInfo {
@@ -27,23 +27,30 @@ input UserLoginInput {
   password: String!
 }
 
-type Token {
+type LoginData {
   token: String!
+  user: User!
+}
+
+type GroupInfos {
+  joinedGroups: [GroupInfo]
+  ownedGroups: [GroupInfo]
 }
 
 type Query {
   me: User
   allUsers: [UserInfo]
   findUser(username: String!): UserInfo
+  getUserGroupInfo: GroupInfos
+  findUserById(id: ID!): User
 }
 
 type Mutation {
-  createUser(user: UserInput): Token
-  login(credentials: UserLoginInput): Token
+  createUser(user: UserInput): LoginData
+  login(credentials: UserLoginInput): LoginData
   addUserToGroup(groupId: ID!, userId: ID!): User
 }
 
 type Subscription {
   userAdded: UserInfo!
 }
-

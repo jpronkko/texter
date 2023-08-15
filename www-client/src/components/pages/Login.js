@@ -23,6 +23,7 @@ const Login = () => {
       logger.info('Login token:', token)
       logger.info('Login result:', result)
       dispatch(logIn({ username: data.username, token }))
+
     } catch(error) {
       showError(error)
     }

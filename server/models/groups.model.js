@@ -7,10 +7,6 @@ const getAllGroups = async () => {
   return await Group.find({})
 }
 
-const findUserGroups = async (ownerId) => {
-  return await Group.find({ ownerId }).select({ 'name': 1, '_id': 1 })
-}
-
 const findGroup = async (groupId) => {
   return await Group.findOne({ _id: groupId })
 }
@@ -37,7 +33,6 @@ const createGroup = async (user, name) => {
 
 module.exports = {
   getAllGroups,
-  findUserGroups,
   findGroup,
   findGroupWithName,
   createGroup,

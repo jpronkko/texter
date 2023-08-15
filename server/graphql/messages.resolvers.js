@@ -2,6 +2,9 @@ const messagesModel = require('../models/messages.model')
 const logger = require('../utils/logger')
 const { checkUser, checkUserInGroup } = require('../utils/checkUser')
 const { GraphQLError } = require('graphql')
+const { PubSub, withFilter } = require('graphql-subscriptions')
+
+const pubsub = new PubSub()
 
 module.exports = {
   Query: {
@@ -23,17 +26,30 @@ module.exports = {
       logger.info('Create messages', args)
 
       checkUser(currentUser, 'Not authorized!')
+
+      const { MessageInput: { groupId, body } } = args
+
       if(!checkUserInGroup(currentUser, groupId)) {
         throw new GraphQLError('Not authorized!')
       }
 
-      const { MessageInput: { groupId, body } } = args
-
-      const newUser = await messagesModel.createMessage(
+      const message = await messagesModel.createMessage(
         currentUser, groupId, body
       )
-      //pubsub.publish('USER_ADDED', { userAdded: newUser })
-      return newUser
+
+      pubsub.publish('MESSAGE_ADDED', { messageAdded: message, groupId })
+      return message
     }
   },
+  Subscription: {
+    messageAdded: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator('messageAdded'),
+        (payload, variables) => {
+          return payload.groupId === variables.groupId
+        }
+      )
+    }
+  }
+
 }

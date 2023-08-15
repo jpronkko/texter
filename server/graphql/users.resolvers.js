@@ -10,12 +10,24 @@ const { checkUser, checkUserInOwnedGroup } = require('../utils/checkUser')
 
 module.exports = {
   Query: {
-    me: (root, args, context) => {
-      return context.createUser
+    me: (root, args, contextValue) => {
+      console.log('context', contextValue)
+      return contextValue.currentUser
     },
     allUsers: async () => await usersModel.getAllUsers(),
     findUser: async (root, args) =>
-      await usersModel.findUser(args.username)
+      await usersModel.findUser(args.username),
+    getUserGroupInfo: async (root, args, { currentUser }) => {
+      checkUser(currentUser, 'Getting user groups failed!')
+      const groupInfo = await usersModel.getUserGroups(currentUser.id)
+      console.log('Group Info', groupInfo)
+      return groupInfo
+    },
+    findUserById: async (root, args) => {
+      console.log(args)
+      const user = await usersModel.findUserWithId(args.id)
+      return user
+    }
   },
   Mutation: {
     createUser: async (root, args) => {
@@ -35,7 +47,7 @@ module.exports = {
           name, username, email, passwordHash
         )
         pubsub.publish('USER_ADDED', { userAdded: newUser })
-        return tokenFromUser(newUser)
+        return { token: tokenFromUser(newUser), user: newUser }
       } catch(error) {
         throw new GraphQLError('Creating user failed', {
           extensions: {
@@ -49,8 +61,8 @@ module.exports = {
     login: async (root, args) => {
       logger.info('Login arguments', args, args.username, args.password)
       const { credentials: { username, password } } = args
-      const token  = await usersModel.login(username, password)
-      return token
+      const tokenAndUser = await usersModel.login(username, password)
+      return tokenAndUser
     },
     addUserToGroup: async (root, args, { currentUser }) => {
       logger.info('Creating a group', args)
@@ -65,7 +77,7 @@ module.exports = {
       // should return without pw hash
       const updatedUser = await usersModel.addUserToGroup(currentUser, groupId, userId)
       return updatedUser
-    }
+    },
   },
   Subscription: {
     userAdded: () => pubsub.asyncIterator('USER_ADDED')

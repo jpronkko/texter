@@ -1,32 +1,36 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+const emptyUser = {
+  id: '',
+  name: '',
+  username: '',
+  ownedGroups: [],
+  joinedGroups: [],
+}
+
 export const userSlice = createSlice({
-  name: 'user',
+  name: 'userAndToken',
   initialState: {
-    username: '',
     token: null,
-    ownedGroups: [],
-    joinedGroups: [],
+    user: emptyUser
   },
   reducers: {
     logIn: (state, action) => {
       console.log('action payload:', action.payload)
-      state.username = action.payload.username
-      state.token = action.payload.token
-      state.ownedGroups = action.payload.ownedGroups
-      state.joinedGroups = action.payload.joinedGroups
+      state.user = action.payload
     },
     logOut: state => {
-      state.username = ''
       state.token = null
-      state.ownedGroups = []
-      state.joinedGroups = []
+      state.user = emptyUser
     },
-    addGroup: (state, action) => {
-      state.groups.push(action.payload.id)
+    addOwnedGroup: (state, action) => {
+      state.user.ownedGroups.push(action.payload.id)
+    },
+    addJoinedGroup: (state, action) => {
+      state.user.joinedGroups.push(action.payload.id)
     }
   }
 })
 
-export const { logIn, logOut, addGroup } = userSlice.actions
+export const { logIn, logOut, addOwnedGroup, addJoinedGroup } = userSlice.actions
 export default userSlice.reducer

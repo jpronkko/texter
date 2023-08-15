@@ -1,7 +1,5 @@
 const { ApolloServer } = require('@apollo/server')
 const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/drainHttpServer')
-const jwt = require('jsonwebtoken')
-const config = require('../utils/config')
 
 const { loadFilesSync } = require('@graphql-tools/load-files')
 const { makeExecutableSchema } = require('@graphql-tools/schema')
@@ -9,7 +7,6 @@ const { makeExecutableSchema } = require('@graphql-tools/schema')
 const { WebSocketServer } = require('ws')
 const { useServer } = require('graphql-ws/lib/use/ws')
 
-const User = require('../models/users.mongo')
 
 const typesArray = loadFilesSync('**/*', {
   extensions: ['graphql']
@@ -33,15 +30,6 @@ const startApolloServer = async (httpServer) => {
 
   const server = new ApolloServer({
     schema,
-    context: async ({ req }) => {
-      const auth = req ? req.headers.authorization : null
-      if (auth && auth.toLocaleLowerCase().startsWith('bearer ')) {
-        const decodedToken = jwt.verify(
-          auth.substring(7), config.JWT_SECRET
-        )
-        const currentUser = await User.findById(decodedToken.id)
-        return { currentUser }
-      }},
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       {

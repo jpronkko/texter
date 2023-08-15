@@ -7,12 +7,6 @@ module.exports = {
     allGroups: async () => {
       return await groupsModel.getAllGroups()
     },
-    getUserGroupInfo: async (root, args, { currentUser }) => {
-      checkUser(currentUser, 'Getting user groups failed!')
-      const groupInfo = await groupsModel.findUserGroups(currentUser.id)
-      console.log('Group Info', groupInfo)
-      return groupInfo
-    }
   },
   Mutation: {
     createGroup: async (root, args, { currentUser }) => {

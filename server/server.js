@@ -6,12 +6,14 @@ const bodyParser = require('body-parser')
 //const morganBody = require('morgan-body')
 const { expressMiddleware } = require('@apollo/server/express4')
 //const morgan = require('morgan')
-
+//const jwt = require('jsonwebtoken')
 const config = require('./utils/config')
 const { mongoConnect, mongoDisconnect } = require('./services/mongo')
 const { startApolloServer } = require('./services/apollo')
 const logger = require('./utils/logger')
 const healthCheckRouter = require('./routes/healthCheckRouter')
+
+const usersModel = require('./models/users.model')
 
 const startServer = async () => {
   const app = express()
@@ -35,7 +37,23 @@ const startServer = async () => {
   app.use(
     '/',
     express.json(),
-    expressMiddleware(apolloServer),
+    expressMiddleware(apolloServer, {
+      context: async({ req, res }) => {
+        const anniId = '64d354d431124339a3f368d7'
+        const currentUser = await usersModel.findUserWithId(anniId)
+        return { currentUser }
+        //
+        /*const auth = req ? req.headers.authorization : null
+        if (auth && auth.toLocaleLowerCase().startsWith('bearer ')) {
+          const decodedToken = jwt.verify(
+          auth.substring(7), config.JWT_SECRET
+        )
+        const currentUser = await User.findById(decodedToken.id)
+        return { currentUser }
+      }*/
+
+      }
+    }),
   )
 
   httpServer.listen(config.PORT, () =>

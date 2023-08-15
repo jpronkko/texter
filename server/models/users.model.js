@@ -8,7 +8,7 @@ const findUser = async (username) => {
 }
 
 const findUserWithId = async (userId) => {
-  return User.findOne({ _id: userId })
+  return User.findOne({ _id: userId }).populate('ownedGroups').populate('joinedGroups')
 }
 
 const getAllUsers = async () => {
@@ -24,7 +24,7 @@ const createUser = async (name, username, passwordHash, email) => {
 
 const login = async (username, password) => {
   logger.info('Login with username', username, 'password', password)
-  const user = await User.findOne({ username })
+  const user = await User.findOne({ username }).populate('ownedGroups').populate('joinedGroups')
 
   if(!user) {
     throw new Error('No such user')
@@ -36,7 +36,7 @@ const login = async (username, password) => {
     throw new Error( 'Wrong credentials')
   }
 
-  return tokenFromUser(user)
+  return { token: tokenFromUser(user), user }
 }
 
 const addUserToGroup = async (userId, groupId) => {
@@ -46,6 +46,14 @@ const addUserToGroup = async (userId, groupId) => {
   return updatedUser
 }
 
+/* Do we need this: */
+const getUserGroups = async (userId) => {
+  const result = await User.findById(userId).select({ 'joinedGroups': 1, 'ownedGroups': 1 }).populate('joinedGroups').populate('ownedGroups')
+  console.log('Group infos', result)
+  console.log(JSON.stringify(result.ownedGroups))
+  return { ownedGroups: result.ownedGroups, joinedGroups: result.joinedGroups }
+}
+
 module.exports = {
   findUser,
   findUserWithId,
@@ -53,4 +61,5 @@ module.exports = {
   createUser,
   login,
   addUserToGroup,
+  getUserGroups,
 }

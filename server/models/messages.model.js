@@ -20,7 +20,7 @@ const createMessage = async (user, groupId, body) => {
 
   logger.info('Create message', groupId, user.id, group, body)
 
-  const message = new Message({ fromUserId: user.id, body })
+  const message = new Message({ fromUser: user.id, body, sentTime: Date.now() })
   const result = await message.save()
   logger.info('Trying create message save', result)
 

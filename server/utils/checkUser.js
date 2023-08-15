@@ -11,7 +11,8 @@ const checkUser =  (currentUser, errorMessage) => {
 }
 
 const checkUserInGroup = (user, groupId) => {
-  if (user.joinedGroups.includes(groupId) || user.ownedGroups.includes(groupId)) {
+  if (user.joinedGroups.find(group => group.id === groupId) || 
+    user.ownedGroups.find(group => group.id === groupId)) {
     return true
   }
   return false

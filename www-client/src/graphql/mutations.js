@@ -33,6 +33,22 @@ mutation login(
 ) {
   login(
     credentials: $credentials
-  ) { token }
+  ) { 
+    token, 
+    user {
+      email
+      id
+      joinedGroups {
+        id
+        name
+      }
+      name
+      ownedGroups {
+        id
+        name
+      }
+      username
+    }
+  } 
 }
 `

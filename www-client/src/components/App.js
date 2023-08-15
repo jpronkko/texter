@@ -6,7 +6,7 @@ import {
   Routes, Route, Link
 } from 'react-router-dom'
 
-import { addGroup } from '../app/userSlice'
+import { addOwnedGroup } from '../app/userSlice'
 
 import GroupList from './GroupList'
 import UserList from './pages/UserList'
@@ -32,7 +32,7 @@ const MainPage = () => {
 }
 
 const App = () => {
-  const userLoggedIn = useSelector(state => state.user.username)
+  const userLoggedIn = useSelector(state => state.userAndToken.user.username)
   const userGroups = useSelector(state => state.user.ownedGroups)
 
   const [isCreatingGroup, setIsCreatingGroup] = useState(false)
@@ -40,7 +40,6 @@ const App = () => {
 
   const dispatch = useDispatch()
 
-  console.log(userLoggedIn)
   console.log('User groups', userGroups)
   const handleCreateUser = async (data) => {
     logger.info('Create user input data:', data)
@@ -57,7 +56,7 @@ const App = () => {
   const handleCreateGroup = async (name) => {
     console.log('Creating group', name)
     const id = await createGroup(name)
-    dispatch(addGroup(id))
+    dispatch(addOwnedGroup(id))
     setIsCreatingGroup(false)
   }
 
