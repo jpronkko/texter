@@ -1,100 +1,54 @@
 // Original: https://mui.com/material-ui/react-app-bar/, starting mods from there.
-import { useState } from 'react'
+
 import React from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
-import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import Menu from '@mui/material/Menu'
+
 //import MenuIcon from '@mui/icons-material/Menu'
 import Container from '@mui/material/Container'
-import Avatar from '@mui/material/Avatar'
+
 import Button from '@mui/material/Button'
-import Tooltip from '@mui/material/Tooltip'
-import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
 
 import { useNavigate } from 'react-router-dom'
 import { useSelector, /*useDispatch*/ } from 'react-redux'
+import useLogInOut from '../hooks/useLogInOut'
+import useConfirmMessage from '../hooks/useConfirmMessage'
+import UserMenu from './UserMenu'
 
-const loggedInPages = [
-  { name: 'Home', path: '/' },
-  { name: 'Groups', path: '/groups' },
-]
-
-const loggedOutPages = [
-  { name: 'Login', path: '/login' },
-  { name: 'Create Account', path: '/create_account' },
-]
-
-const settings = [
-  { name: 'Profile', path: '/profile' },
-  { name: 'Account', path: '/account' },
-  { name: 'Dashboard', path: '/dashboard' },
-  { name: 'Logout', path: '/logout' }
-]
 
 const TopBar = () => {
   const navigate = useNavigate()
-  const userLoggedIn = useSelector(state => state.user.username)
+  const [, logout] = useLogInOut()
+  const [showMessage] = useConfirmMessage()
 
-  const [anchorElUser, setAnchorElUser] = useState(null)
+  const user = useSelector(state => state.user.userData)
+  const userLoggedIn = () => user.username !== ''
 
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget)
+  const showLogout = () => {
+    showMessage('Logout','Are you sure you want to logout?', logout)
   }
 
-  /* const handleCloseNavMenu = (path) => {
-    //setAnchorElNav(null)
-    navigate(path)
-  }*/
+  const userMenuItems = [
+    { name: 'Profile', callback: () => navigate('/profile') },
+    { name: 'Logout', callback: showLogout }
+  ]
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null)
-  }
+  const loggedInPages = [
+    { name: 'Home', path: '/' },
+    { name: 'Groups', path: '/groups' },
+  ]
 
-  const navigateTo = (path) => {
-    console.log(path)
-    handleCloseUserMenu()
-    navigate(path)
-  }
+  const loggedOutPages = [
+    { name: 'Login', path: '/login' },
+    { name: 'Create Account', path: '/create_account' },
+  ]
 
-  const pages = () => { return userLoggedIn !== '' ? loggedInPages : loggedOutPages }
 
-  const userMenu = () => {
-    return(
-      <>
-        <Tooltip title="Open settings">
-          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-          </IconButton>
-        </Tooltip>
-        <Menu
-          sx={{ mt: '45px' }}
-          id="menu-appbar"
-          anchorEl={anchorElUser}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          open={Boolean(anchorElUser)}
-          onClose={handleCloseUserMenu}
-        >
-          {settings.map((setting) => (
-            <MenuItem key={setting.name} onClick={() => navigateTo(setting.path)}>
-              <Typography textAlign="center">{setting.name}</Typography>
-            </MenuItem>
-          ))}
-        </Menu>
-      </>
-    )
-  }
+  const pages = () => { return userLoggedIn() ? loggedInPages : loggedOutPages }
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -122,7 +76,7 @@ const TopBar = () => {
             {pages().map((page) => (
               <Button
                 key={page.name}
-                onClick={() => navigateTo(page.path)}
+                onClick={() => navigate(page.path)}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page.name}
@@ -131,7 +85,7 @@ const TopBar = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            {userLoggedIn && userMenu()}
+            {userLoggedIn() && <UserMenu itemList={userMenuItems}/>}
           </Box>
         </Toolbar>
       </Container>

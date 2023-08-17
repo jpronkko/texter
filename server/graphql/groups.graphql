@@ -14,5 +14,5 @@ type Query {
 }
 
 type Mutation {
-  createGroup(name: String!): Group
+  createGroup(name: String!): GroupInfo
 }

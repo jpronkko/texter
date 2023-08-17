@@ -9,25 +9,26 @@ const emptyUser = {
 }
 
 export const userSlice = createSlice({
-  name: 'userAndToken',
+  name: 'user',
   initialState: {
     token: null,
-    user: emptyUser
+    userData: emptyUser
   },
   reducers: {
     logIn: (state, action) => {
-      console.log('action payload:', action.payload)
-      state.user = action.payload
+      console.log('Login action payload:', action.payload)
+      state.token = action.payload.token
+      state.userData = action.payload.user
     },
     logOut: state => {
       state.token = null
-      state.user = emptyUser
+      state.userData = emptyUser
     },
     addOwnedGroup: (state, action) => {
-      state.user.ownedGroups.push(action.payload.id)
+      state.userData.ownedGroups.push(action.payload.id)
     },
     addJoinedGroup: (state, action) => {
-      state.user.joinedGroups.push(action.payload.id)
+      state.userData.joinedGroups.push(action.payload.id)
     }
   }
 })

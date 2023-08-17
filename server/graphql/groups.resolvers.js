@@ -23,7 +23,6 @@ module.exports = {
       return {
         id: newGroup.id,
         name: newGroup.name,
-        ownerId: newGroup.ownerId
       }
     },
   },

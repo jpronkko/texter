@@ -1,9 +1,14 @@
 import { useApolloClient, useMutation } from '@apollo/client'
+
 import { LOGIN } from '../graphql/mutations'
+import { useDispatch } from 'react-redux'
+import { logIn, logOut } from '../app/userSlice'
 import logger from '../utils/logger'
 
-const useLogin = () => {
+const useLogInOut = () => {
   const client = useApolloClient()
+  const dispatch = useDispatch()
+
   const [loginMutation, result] = useMutation( LOGIN,
     {
       onError: (error) => {
@@ -23,18 +28,21 @@ const useLogin = () => {
     logger.info('Login object', var_object)
     const loginResult = await loginMutation(var_object)
 
-    const token = loginResult.data.login.token
-    logger.info('Create user result:', )
-    localStorage.setItem('texter', token)
-    return loginResult.data.login.token
+    const loginData = loginResult.data.login
+
+    logger.info('Login data', loginData)
+    localStorage.setItem('texter', loginData)
+    dispatch(logIn(loginData))
+    return loginData
   }
 
   const logout = async () => {
     localStorage.clear()
     client.resetStore()
+    dispatch(logOut())
   }
 
   return [login, logout, result]
 }
 
-export default useLogin
+export default useLogInOut

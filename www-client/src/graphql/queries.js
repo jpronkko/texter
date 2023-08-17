@@ -45,6 +45,16 @@ query GetAllMessages {
 }
 `
 
+export const GET_MESSAGES = gql`
+query GetMessages {
+  getMessages(groupId: $ID) {
+    id
+    from
+    text
+  }
+}
+`
+
 export const GET_USERS_GROUPS = gql`
 query GetUserGroupInfo {
   getUserGroupInfo {

@@ -9,3 +9,15 @@ export const USER_ADDED = gql`
   }
   ${USER_DETAILS}
 `
+
+export const MESSAGE_ADDED = gql`
+  subscription messageAdded($groupId: ID) {
+    messageAdded(
+      groupId: groupId
+    ) {
+      id
+      sender
+      body
+    }
+  }
+`

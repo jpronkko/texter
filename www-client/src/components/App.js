@@ -1,17 +1,17 @@
-import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React from 'react'
+import { useSelector } from 'react-redux'
 
 import {
   BrowserRouter as Router,
   Routes, Route, Link
 } from 'react-router-dom'
 
-import { addOwnedGroup } from '../app/userSlice'
+import Button from '@mui/material/Button'
 
 import GroupList from './GroupList'
 import UserList from './pages/UserList'
 import ErrorMessage from './ErrorMessage'
-import CreateGroupForm from './forms/CreateGroupForm'
+import ConfirmMessage from './ConfirmMessage'
 
 import './App.css'
 import './TopBar'
@@ -21,7 +21,7 @@ import Login from './pages/Login'
 
 import logger from '../utils/logger'
 import TopBar from './TopBar'
-import useCreateGroup from '../hooks/useCreateGroup'
+import useConfirmMessage from '../hooks/useConfirmMessage'
 
 const MainPage = () => {
   return (
@@ -32,15 +32,14 @@ const MainPage = () => {
 }
 
 const App = () => {
-  const userLoggedIn = useSelector(state => state.userAndToken.user.username)
-  const userGroups = useSelector(state => state.user.ownedGroups)
 
-  const [isCreatingGroup, setIsCreatingGroup] = useState(false)
-  const [createGroup, ] = useCreateGroup()
+  const user = useSelector(state => state.user.userData)
+  const [ showMessage ] = useConfirmMessage()
 
-  const dispatch = useDispatch()
+  console.log('User', user)
 
-  console.log('User groups', userGroups)
+  const userLoggedIn = () => user.username !== ''
+
   const handleCreateUser = async (data) => {
     logger.info('Create user input data:', data)
   }
@@ -53,20 +52,14 @@ const App = () => {
     padding: 5
   }
 
-  const handleCreateGroup = async (name) => {
-    console.log('Creating group', name)
-    const id = await createGroup(name)
-    dispatch(addOwnedGroup(id))
-    setIsCreatingGroup(false)
-  }
-
   return (
     <div>
       <Router>
         <TopBar />
-        <p>{userLoggedIn !== '' ? `user logged in ${userLoggedIn}` : 'user logged out'}</p>
+        <p>{ userLoggedIn() ? `user logged in ${user.username}` : 'user logged out' }</p>
         <ErrorMessage />
-        { userLoggedIn !== '' && isCreatingGroup && <CreateGroupForm handleCreate={handleCreateGroup} /> }
+        <ConfirmMessage />
+        <Button onClick={() => showMessage('jddj', 'kgfjgj')}>Click</Button>
         <div>
           <Link style={padding} to='/'>home</Link>
           <Link style={padding} to='/users'>Users</Link>
@@ -84,6 +77,5 @@ const App = () => {
     </div>
   )
 }
-
 
 export default App

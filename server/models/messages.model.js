@@ -9,7 +9,7 @@ const getAllMessages = async () => {
 }
 
 const findMessages = async (groupId) => {
-  return await Message.find({ groupId })
+  return await Message.find({ groupId }).populate( 'from' )
 }
 
 const createMessage = async (user, groupId, body) => {
@@ -20,7 +20,7 @@ const createMessage = async (user, groupId, body) => {
 
   logger.info('Create message', groupId, user.id, group, body)
 
-  const message = new Message({ fromUser: user.id, body, sentTime: Date.now() })
+  const message = new Message({ from: user.id, body, sentTime: Date.now() })
   const result = await message.save()
   logger.info('Trying create message save', result)
 
