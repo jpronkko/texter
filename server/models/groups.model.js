@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 const logger = require('../utils/logger')
 
 const Group = require('./groups.mongo')
@@ -31,9 +32,28 @@ const createGroup = async (user, name) => {
   return savedGroup
 }
 
+const getMessages = async (groupId) => {
+  logger.info('Trying to find messages with groupId:', groupId)
+  const group = await Group
+    .findOne({ _id: groupId })
+    .populate(
+      { path: 'messages',
+        model: 'Message',
+        populate: {
+          path: 'fromUser',
+          model: 'User',
+          select: 'name'
+        }
+      }
+    )
+  logger.info('Messages', group.messages)
+  return group.messages
+}
+
 module.exports = {
   getAllGroups,
   findGroup,
   findGroupWithName,
   createGroup,
+  getMessages,
 }

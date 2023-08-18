@@ -11,15 +11,6 @@ module.exports = {
     allMessages: async () => {
       return await messagesModel.getAllMessages()
     },
-    findMessages: async (root, args, { currentUser }) => {
-      checkUser(currentUser, 'Not authorized!')
-      const { groupId } = args
-      if(!checkUserInGroup(currentUser, groupId)) {
-        throw new GraphQLError('Not authorized!')
-      }
-      const messages = await messagesModel.findMessages(groupId)
-      return messages
-    }
   },
   Mutation: {
     createMessage: async (root, args, { currentUser }) => {

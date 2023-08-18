@@ -7,8 +7,10 @@ import useLogInOut from '../../hooks/useLogInOut'
 
 import logger from '../../utils/logger'
 import useError from '../../hooks/useErrorMessage'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
+  const navigate = useNavigate()
   const [login, ,/*result*/] = useLogInOut()
   const [showError, /*clearError*/] = useError()
 
@@ -20,7 +22,7 @@ const Login = () => {
         credentials.password
       )
       logger.info('Login result:', user)
-
+      navigate('/')
     } catch(error) {
       showError(error)
     }

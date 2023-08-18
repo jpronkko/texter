@@ -8,10 +8,6 @@ const getAllMessages = async () => {
   return await Message.find({})
 }
 
-const findMessages = async (groupId) => {
-  return await Message.find({ groupId }).populate( 'from' )
-}
-
 const createMessage = async (user, groupId, body) => {
   const group = await findGroup(groupId)
   if(!group) {
@@ -31,6 +27,5 @@ const createMessage = async (user, groupId, body) => {
 
 module.exports = {
   getAllMessages,
-  findMessages,
   createMessage
 }

@@ -5,6 +5,18 @@ type Message {
   sentTime: String!
 }
 
+type MessageUserInfo {
+  id: ID!
+  name: String!
+}
+
+type MessageInfo {
+  id: ID!
+  fromUser: MessageUserInfo!
+  body: String!
+  sentTime: String!
+}
+
 input MessageInput {
   groupId: ID!
   body: String!
@@ -12,7 +24,6 @@ input MessageInput {
 
 type Query {
   allMessages: [Message]
-  findMessages(groupId: ID!): [Message]
 }
 
 type Mutation {

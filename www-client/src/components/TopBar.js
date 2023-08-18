@@ -25,6 +25,8 @@ const TopBar = () => {
   const [showMessage] = useConfirmMessage()
 
   const user = useSelector(state => state.user.userData)
+  const group = useSelector(state => state.group)
+
   const userLoggedIn = () => user.username !== ''
 
   const showLogout = () => {
@@ -36,21 +38,23 @@ const TopBar = () => {
     { name: 'Logout', callback: showLogout }
   ]
 
-  const loggedInPages = [
-    { name: 'Home', path: '/' },
-    { name: 'Groups', path: '/groups' },
-  ]
+  const loggedInPages = []
+  // const loggedInPages = [
+  //   { name: 'Home', path: '/' },
+  //   { name: 'Groups', path: '/groups' },
+  // ]
 
-  const loggedOutPages = [
-    { name: 'Login', path: '/login' },
-    { name: 'Create Account', path: '/create_account' },
-  ]
+  const loggedOutPages = []
+  // const loggedOutPages = [
+  //   { name: 'Login', path: '/login' },
+  //   { name: 'Create Account', path: '/create_account' },
+  // ]
 
 
   const pages = () => { return userLoggedIn() ? loggedInPages : loggedOutPages }
 
   return (
-    <AppBar position="static">
+    <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -69,9 +73,8 @@ const TopBar = () => {
               textDecoration: 'none',
             }}
           >
-          TEXTERiii
+          TEXTER - user: {user.username} group: {group.name}
           </Typography>
-          {/*{userLoggedIn && userMenu()}*/}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages().map((page) => (
               <Button

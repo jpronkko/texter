@@ -2,11 +2,11 @@ import React from 'react'
 
 import { ListItemButton, ListItemText } from '@mui/material'
 
-const MessageListItem = ({ sender, text, onClick }) => {
+const MessageListItem = ({ sender, sentTime, body, onClick }) => {
   return(
     <ListItemButton onClick={onClick}>
-      <ListItemText primary={sender} secondary="Jan 9, 2014">
-        {text} </ListItemText>
+      <ListItemText primary={sender.name} secondary={sentTime}>
+        {body} </ListItemText>
     </ListItemButton>
   )
 

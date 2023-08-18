@@ -1,12 +1,22 @@
 const groupsModel = require('../models/groups.model')
 const logger = require('../utils/logger')
-const { checkUser } = require('../utils/checkUser')
+const { checkUser, checkUserInGroup } = require('../utils/checkUser')
+const { GraphQLError } = require('graphql')
 
 module.exports = {
   Query: {
     allGroups: async () => {
       return await groupsModel.getAllGroups()
     },
+    getMessages: async (root, args, { currentUser }) => {
+      checkUser(currentUser, 'Not authorized!')
+
+      if(!checkUserInGroup(currentUser, args.groupId)) {
+        throw new GraphQLError('Not authorized!')
+      }
+      const messages = await groupsModel.getMessages(args.groupId)
+      return messages
+    }
   },
   Mutation: {
     createGroup: async (root, args, { currentUser }) => {

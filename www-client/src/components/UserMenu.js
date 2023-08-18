@@ -5,8 +5,11 @@ import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
+import { useSelector } from 'react-redux'
 
 const UserMenu = ({ itemList }) => {
+  const username = useSelector(state => state.user.userData.username)
+
   const [anchorElUser, setAnchorElUser] = useState(null)
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget)
@@ -23,7 +26,7 @@ const UserMenu = ({ itemList }) => {
 
   return(
     <>
-      <Tooltip title="Open settings">
+      <Tooltip title={username}>
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
           <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
         </IconButton>

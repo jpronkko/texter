@@ -11,6 +11,7 @@ type GroupInfo {
 
 type Query {
   allGroups: [GroupInfo]
+  getMessages(groupId: ID!): [MessageInfo]
 }
 
 type Mutation {

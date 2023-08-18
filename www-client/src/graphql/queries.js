@@ -46,11 +46,15 @@ query GetAllMessages {
 `
 
 export const GET_MESSAGES = gql`
-query GetMessages {
-  getMessages(groupId: $ID) {
+query GetMessages($groupId: ID) {
+  getMessages(groupId: $groupId) {
     id
-    from
-    text
+    body
+    sentTime
+    fromUser {
+      id
+      name
+    }
   }
 }
 `

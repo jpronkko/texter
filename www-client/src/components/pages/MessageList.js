@@ -9,6 +9,7 @@ import { useQuery, useSubscription } from '@apollo/client'
 import logger from '../../utils/logger'
 import { MESSAGE_ADDED } from '../../graphql/subscriptions'
 import { GET_MESSAGES } from '../../graphql/queries'
+import { useSelector } from 'react-redux'
 
 
 const MessageList = () => {
@@ -18,7 +19,10 @@ const MessageList = () => {
     }
   })
 
-  const { loading, data, error, refetch } = useQuery(GET_MESSAGES)
+  const group = useSelector(state => state.group)
+  const { loading, data, error, refetch } = useQuery(GET_MESSAGES, { variables: { groupId:  group.id } })
+
+  console.log('group', group)
 
   if(loading) {
     return (
@@ -31,7 +35,7 @@ const MessageList = () => {
   if(error) {
     return (
       <div>
-        Error {JSON.stringify(error)}
+        Error: {JSON.stringify(error)}
       </div>
     )
   }
@@ -40,7 +44,11 @@ const MessageList = () => {
     refetch()
   }
   const messages = data.getMessages.map((message) =>
-    <MessageListItem  key={message.id} sender={message.sender} text={message.body}/>)
+    <MessageListItem
+      key={message.id}
+      sender={message.sender}
+      sentTime={message.sentTime}
+      body={message.body}/>)
   return (
     <div>
       <List>
