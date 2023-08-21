@@ -13,6 +13,7 @@ import MainPage from './pages/MainPage'
 import UserList from './pages/UserList'
 import ErrorMessage from './ErrorMessage'
 import ConfirmMessage from './ConfirmMessage'
+import InputTextDlg from './dialogs/InputTextDlg'
 
 import CreateUser from './pages/CreateUser'
 import Login from './pages/Login'
@@ -40,6 +41,7 @@ const App = () => {
   return (
     <div>
       <Router>
+        <InputTextDlg />
         <ConfirmMessage />
         <ErrorMessage />
         <TopBar/>

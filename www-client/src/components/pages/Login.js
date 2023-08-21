@@ -8,6 +8,7 @@ import useLogInOut from '../../hooks/useLogInOut'
 import logger from '../../utils/logger'
 import useError from '../../hooks/useErrorMessage'
 import { useNavigate } from 'react-router-dom'
+import { Button } from '@mui/material'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -28,8 +29,19 @@ const Login = () => {
     }
   }
 
+  const fastLogin = async () => {
+    try {
+      await login('anni', 'klonksahtava')
+      navigate('/')
+    } catch(error) {
+      showError(error)
+    }
+  }
   return (
-    <LoginForm handleLogin={handleLogin} />
+    <div>
+      <Button onClick={() => fastLogin()} >Anni</Button>
+      <LoginForm handleLogin={handleLogin} />
+    </div>
   )
 }
 

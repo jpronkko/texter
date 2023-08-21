@@ -1,20 +1,16 @@
 import { gql } from '@apollo/client'
 
 export const CREATE_USER = gql`
-mutation createUser(
-  $user: UserInput
-  ) {
-  createUser(
-    user: $user
-  ) { id }
+mutation createUser($user: UserInput) {
+  createUser(user: $user) { 
+    id 
+  }
 }
 `
 
 export const CREATE_GROUP = gql`
-mutation createGroup($name: String) {
-  createGroup(
-    name: $name
-  ) { id }
+mutation createGroup($name: String!) {
+  createGroup(name: $name) { id, name }
 }
 `
 

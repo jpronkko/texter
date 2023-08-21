@@ -46,7 +46,7 @@ query GetAllMessages {
 `
 
 export const GET_MESSAGES = gql`
-query GetMessages($groupId: ID) {
+query GetMessages($groupId: ID!) {
   getMessages(groupId: $groupId) {
     id
     body

@@ -20,6 +20,7 @@ const MessageList = () => {
   })
 
   const group = useSelector(state => state.group)
+  // Use lazy query?
   const { loading, data, error, refetch } = useQuery(GET_MESSAGES, { variables: { groupId:  group.id } })
 
   console.log('group', group)
@@ -40,13 +41,14 @@ const MessageList = () => {
     )
   }
   const handleClick = () => {
-    logger.info('Trying refetch!')
+    logger.info('Trying refetch in message list!')
     refetch()
+    logger.info('Data', data)
   }
   const messages = data.getMessages.map((message) =>
     <MessageListItem
       key={message.id}
-      sender={message.sender}
+      sender={message.fromUser}
       sentTime={message.sentTime}
       body={message.body}/>)
   return (

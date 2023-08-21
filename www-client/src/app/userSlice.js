@@ -25,10 +25,10 @@ export const userSlice = createSlice({
       state.userData = emptyUser
     },
     addOwnedGroup: (state, action) => {
-      state.userData.ownedGroups.push(action.payload.id)
+      state.userData.ownedGroups.push(action.payload)
     },
     addJoinedGroup: (state, action) => {
-      state.userData.joinedGroups.push(action.payload.id)
+      state.userData.joinedGroups.push(action.payload)
     }
   }
 })
