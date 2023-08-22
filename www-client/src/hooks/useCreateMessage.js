@@ -5,11 +5,16 @@ import logger from '../utils/logger'
 const useCreateMessage = () => {
   const [mutation, result] = useMutation( CREATE_MESSAGE )
 
-  const createMessage = async (groupId, text) => {
-    const var_object = { variables: { groupId, text } }
-    const createResult = await mutation(var_object) //var_object)
+  const createMessage = async (groupId, body) => {
+    console.log(`group id ${groupId}, body: ${body}`)
+    const createResult = await mutation({ variables: { messageInput: { groupId, body } } }) //var_object)
     logger.info('Create message result:', createResult)
-    return createResult
+    return {
+      id: createResult.data.createMessage.id,
+      fromUser: createResult.data.createMessage.fromUser,
+      sentTime: createResult.data.createMessage.sentTime,
+      groupId,
+      body }
   }
 
   return [createMessage, result]

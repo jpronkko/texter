@@ -6,6 +6,7 @@ type Group {
 
 type GroupInfo {
   id: ID!
+  ownerId: ID!
   name: String!
 }
 

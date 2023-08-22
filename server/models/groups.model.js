@@ -24,7 +24,7 @@ const createGroup = async (user, name) => {
     throw new Error(`User already has group with name ${name}.`)
   }
 
-  const group = new Group({ name })
+  const group = new Group({ name, ownerId: user.id })
   const savedGroup = await group.save()
   user.ownedGroups = user.ownedGroups.concat(savedGroup._id)
   logger.info('user: ', user.ownedGroups)

@@ -10,7 +10,6 @@ const getDate = (month, day) => {
 }
 
 const MessageListItem = ({ sender, sentTime, body, onClick }) => {
-  console.log(sentTime, typeof(sentTime), parseInt(sentTime))
   const date = new Date(parseInt(sentTime))
   const dateNow = new Date(Date.now())
 
@@ -42,7 +41,7 @@ const MessageListItem = ({ sender, sentTime, body, onClick }) => {
             marginBottom: '2px',
             columnGap: '4px',
           }}>
-            <Typography variant='h6'>{sender.name}</Typography>
+            <Typography variant='h6'>Sender: {sender.name}</Typography>
             <Typography >{dateString}</Typography>
           </div>
           <div style={{ backgroundColor: 'green' }}>
@@ -57,5 +56,3 @@ const MessageListItem = ({ sender, sentTime, body, onClick }) => {
 }
 
 export default MessageListItem
-
-// <ListItemText primary={primary} secondary={body} />

@@ -18,7 +18,14 @@ export const userSlice = createSlice({
     logIn: (state, action) => {
       console.log('Login action payload:', action.payload)
       state.token = action.payload.token
-      state.userData = action.payload.user
+      const user = action.payload.user
+      state.userData = {
+        username: user.username,
+        name: user.name,
+        email: user.email,
+        ownedGroups: user.ownedGroups ? user.ownedGroups : [],
+        joinedGroups: user.joinedGroups ? user.joinedGroups: [],
+      }
     },
     logOut: state => {
       state.token = null

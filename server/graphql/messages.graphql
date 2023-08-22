@@ -27,7 +27,7 @@ type Query {
 }
 
 type Mutation {
-  createMessage(MessageInput: MessageInput): Message
+  createMessage(messageInput: MessageInput): Message
 }
 
 type Subscription {

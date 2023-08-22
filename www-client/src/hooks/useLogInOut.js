@@ -24,9 +24,8 @@ const useLogInOut = () => {
   )
 
   const login = async (username, password) => {
-    const var_object = { variables: { credentials: { username, password } } }
-    logger.info('Login object', var_object)
-    const loginResult = await loginMutation(var_object)
+    const loginResult = await loginMutation({ variables:
+      { credentials: { username, password } } })
 
     const loginData = loginResult.data.login
 

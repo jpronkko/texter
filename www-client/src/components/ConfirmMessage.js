@@ -28,7 +28,7 @@ const ConfirmMessage = () => {
     clearMessage()
   }
 
-  const isOpen = message !== ''
+  const isOpen = message !== undefined && message !== ''
 
   return (
     <div>

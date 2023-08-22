@@ -12,10 +12,15 @@ export const groupSlice = createSlice({
       console.log('Group set group action payload:', action.payload)
       state.id = action.payload.id
       state.name = action.payload.name
-      state.messages = action.payload.messages
+      state.messages = action.payload.messages ? action.payload.messages : []
     },
     addMessage: (state, action) => {
       state.messages.push(action.payload)
+    },
+    setMessages: (state, action) => {
+      console.log('Setting groups messages!!!', action.payload)
+      state.messages = action.payload
+      console.log('msg', state.messages)
     },
     clearGroup: (state) => {
       state.id = ''
@@ -25,5 +30,5 @@ export const groupSlice = createSlice({
   }
 })
 
-export const { setGroup, addMessage } = groupSlice.actions
+export const { setGroup, addMessage, setMessages } = groupSlice.actions
 export default groupSlice.reducer

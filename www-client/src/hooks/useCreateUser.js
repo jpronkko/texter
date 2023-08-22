@@ -3,14 +3,20 @@ import { CREATE_USER } from '../graphql/mutations'
 import logger from '../utils/logger'
 
 const useCreateUser = () => {
-  const [createUserMutation, result] = useMutation( CREATE_USER )
+  const [mutation, result] = useMutation( CREATE_USER )
 
   const createUser = async (user) => {
-    const var_object = { variables: { user: user } }
+    const var_object = {  }
     logger.info('create mut object', var_object)
-    const createResult = await createUserMutation(var_object)
+    const createResult = await mutation({
+      variables: { user: {
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        password: user.password,
+      } } } )
     logger.info('Create user result:', createResult)
-    return createResult
+    return { ...user, ...createResult.data.createUser }
   }
 
   return [createUser, result]

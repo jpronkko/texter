@@ -18,7 +18,7 @@ module.exports = {
 
       checkUser(currentUser, 'Not authorized!')
 
-      const { MessageInput: { groupId, body } } = args
+      const { messageInput: { groupId, body } } = args
 
       if(!checkUserInGroup(currentUser, groupId)) {
         throw new GraphQLError('Not authorized!')

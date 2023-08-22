@@ -1,31 +1,65 @@
 //import { useEffect, useState } from 'react';
-import React from 'react'
+import React, { useEffect } from 'react'
 
-import { Button, List } from '@mui/material'
-import MessageListItem from '../MessageListItem'
+import { useLazyQuery, useSubscription } from '@apollo/client'
+import { useDispatch, useSelector } from 'react-redux'
 
-import { useQuery, useSubscription } from '@apollo/client'
-
-import logger from '../../utils/logger'
 import { MESSAGE_ADDED } from '../../graphql/subscriptions'
 import { GET_MESSAGES } from '../../graphql/queries'
-import { useSelector } from 'react-redux'
 
+import { Button, Divider, List } from '@mui/material'
+import MessageListItem from '../MessageListItem'
+import CreateMessageForm from '../forms/CreateMessageForm'
+import { addMessage, setMessages } from '../../app/groupSlice'
+
+import logger from '../../utils/logger'
+import useCreateMessage from '../../hooks/useCreateMessage'
 
 const MessageList = () => {
+  const groupId = useSelector(state => state.group.id)
+  const groupMessages = useSelector(state => state.group.messages)
+
   useSubscription(MESSAGE_ADDED, {
+    variables: { groupId: groupId },
     onData: ({ data }) => {
-      logger.info(data)
+      logger.info('Subsribe add msg', data)
     }
   })
 
-  const group = useSelector(state => state.group)
-  // Use lazy query?
-  const { loading, data, error, refetch } = useQuery(GET_MESSAGES, { variables: { groupId:  group.id } })
+  const [getMessages, messagesResult] = useLazyQuery(GET_MESSAGES)
 
-  console.log('group', group)
+  const [createMessage, result] = useCreateMessage()
+  const dispatch = useDispatch()
 
-  if(loading) {
+  useEffect(() => {
+    if (groupId) {
+      getMessages({ variables: { groupId: groupId } })
+    }
+    // const initMessages = async () => {
+    //   const messages = getMessages()
+    //   console.log('dfäksgolfgs', messages)
+    //   dispatch(setMessages(messages))
+    // }
+    // initMessages()
+  }, [groupId])
+
+  useEffect(() => {
+    console.log('New messageResult')
+    if (messagesResult && messagesResult.data) {
+      const messages = messagesResult.data.getMessages
+      if(messages) {
+        dispatch(setMessages(messages.map(msg => {
+          const { id, body, sentTime } = msg
+          return { id, body, sentTime, fromUser: { id: msg.fromUser.id, name: msg.fromUser.name } }
+        })))
+      }
+    }
+  }, [messagesResult])
+
+  console.log(`group ${JSON.stringify(groupId)}, messageResult`,
+    messagesResult.data, 'group Msg:', groupMessages)
+
+  if(messagesResult.loading) {
     return (
       <div>
         Loading ...
@@ -33,30 +67,41 @@ const MessageList = () => {
     )
   }
 
-  if(error) {
+  if(messagesResult.error) {
     return (
       <div>
-        Error: {JSON.stringify(error)}
+        Error: {JSON.stringify(messagesResult.error)}
       </div>
     )
   }
+
   const handleClick = () => {
     logger.info('Trying refetch in message list!')
-    refetch()
-    logger.info('Data', data)
+    //refetch()
+    logger.info('Data', messagesResult.data)
   }
-  const messages = data.getMessages.map((message) =>
+
+  const handleCreate = async (data) => {
+    console.log(data, result)
+    const message = await createMessage(groupId, data)
+    dispatch(addMessage(message))
+  }
+  // data.getMessages.map((message) =>
+  const messages = groupMessages ? groupMessages.map((message) =>
     <MessageListItem
       key={message.id}
       sender={message.fromUser}
       sentTime={message.sentTime}
-      body={message.body}/>)
+      body={message.body}/>) : []
+
   return (
     <div>
       <List>
-        {messages}
+        {messages ? messages :'No messages'}
       </List>
       <Button variant="contained" onClick={handleClick}>Test refetch</Button>
+      <Divider />
+      <CreateMessageForm handleCreate={handleCreate} />
     </div>
   )
 }

@@ -19,7 +19,7 @@ const ErrorMessage = () => {
     clearError()
   }
 
-  const isOpen = errorMessage !== ''
+  const isOpen = errorMessage !== undefined && errorMessage !== ''
 
   return (
     <div>

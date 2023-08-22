@@ -31,6 +31,7 @@ export const GET_ALL_GROUPS = gql`
 query GetAllGroups {
   allGroups {
     id
+    ownerId
     name
   }
 }

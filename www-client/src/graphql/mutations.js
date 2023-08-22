@@ -3,7 +3,11 @@ import { gql } from '@apollo/client'
 export const CREATE_USER = gql`
 mutation createUser($user: UserInput) {
   createUser(user: $user) { 
-    id 
+    token
+    user {
+      email
+      id
+    }
   }
 }
 `
@@ -15,10 +19,8 @@ mutation createGroup($name: String!) {
 `
 
 export const CREATE_MESSAGE = gql`
-mutation createMessage($message: MessageInput) {
-  createMessage(
-    message: $message
-  ) { id }
+mutation createMessage($messageInput: MessageInput) {
+  createMessage(messageInput: $messageInput) { id, fromUser, sentTime }
 }
 `
 

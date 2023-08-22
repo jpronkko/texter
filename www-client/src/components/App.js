@@ -13,7 +13,6 @@ import MainPage from './pages/MainPage'
 import UserList from './pages/UserList'
 import ErrorMessage from './ErrorMessage'
 import ConfirmMessage from './ConfirmMessage'
-import InputTextDlg from './dialogs/InputTextDlg'
 
 import CreateUser from './pages/CreateUser'
 import Login from './pages/Login'
@@ -26,7 +25,7 @@ const App = () => {
 
   const user = useSelector(state => state.user.userData)
 
-  console.log('User', user)
+  console.log('User now', user)
 
   // const userLoggedIn = () => user.username !== ''
 
@@ -41,7 +40,6 @@ const App = () => {
   return (
     <div>
       <Router>
-        <InputTextDlg />
         <ConfirmMessage />
         <ErrorMessage />
         <TopBar/>

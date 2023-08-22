@@ -70,11 +70,12 @@ const GroupList = () => {
     handleClose()
   }
 
-  const handleCreateChannel = () => {
+  /*  const handleCreateChannel = () => {
     //showCreateGroup('Create Channel')
-  }
+  }*/
 
   const handleClose = () => {
+    console.log('handling close')
     setIsOpen(false)
   }
 
@@ -107,7 +108,7 @@ const GroupList = () => {
           defaultExpandIcon={<ChevronRightIcon />}
           sx={{ m: 2 }}
         >
-          <TreeItem key={1} nodeId='1' label="User Groups">
+          <TreeItem key={'1'} nodeId='1' label="User Groups">
             {groups}
           </TreeItem>
         </TreeView>
@@ -118,7 +119,16 @@ const GroupList = () => {
           <Typography>Add group</Typography>
         </Button>
         <Divider />
-        <TreeView
+        <Divider />
+      </Drawer>
+    </div>
+  )
+}
+
+export default GroupList
+
+/*
+   <TreeView
           aria-label="Channels"
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
@@ -131,10 +141,4 @@ const GroupList = () => {
         <Button variant="text" startIcon={<AddBox />} style={{ justifyContent: 'flex-start' }} onClick={handleCreateChannel}>
           <Typography>New channel</Typography>
         </Button>
-        <Divider />
-      </Drawer>
-    </div>
-  )
-}
-
-export default GroupList
+      */

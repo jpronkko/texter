@@ -17,7 +17,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import FormTextInput from '../forms/FormTextInput'
 
 const schema = yup.object({
-  name: yup.string().required(),
+  input: yup.string().required(),
 })
 
 const InputTextDlg = ({ title, handleInput, handleClose, isOpen }) => {
@@ -61,7 +61,7 @@ const InputTextDlg = ({ title, handleInput, handleClose, isOpen }) => {
             id='input'
             name='input'
             control={control}
-            label='Name'
+            label='Input'
           />
           <Button sx={{ marginLeft: '5px' }} onClick={() => reset()} variant={'outlined'}>x</Button>
         </DialogContent>
