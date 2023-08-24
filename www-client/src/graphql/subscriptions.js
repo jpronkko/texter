@@ -11,10 +11,8 @@ export const USER_ADDED = gql`
 `
 
 export const MESSAGE_ADDED = gql`
-  subscription messageAdded($groupId: ID) {
-    messageAdded(
-      groupId: groupId
-    ) {
+  subscription messageAdded($groupId: ID!) {
+    messageAdded(groupId: groupId) {
       id
       sender
       body

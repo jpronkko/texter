@@ -1,4 +1,4 @@
-import React, { useEffect, useState }/*{ useState }*/ from 'react'
+import React, { useEffect, useRef }/*{ useState }*/ from 'react'
 
 import {
   Button,
@@ -21,19 +21,14 @@ import useCreateGroup from '../hooks/useCreateGroup'
 import { useDispatch, useSelector } from 'react-redux'
 import { AddBox } from '@mui/icons-material'
 import { setGroup } from '../app/groupSlice'
-//import useTextInput from '../hooks/useTextInput'
 import InputTextDlg from './dialogs/InputTextDlg'
 
 const drawerWidth = 240
 
 const GroupList = () => {
-  const [isOpen, setIsOpen] = useState(false)
+  const inputDlgRef = useRef()
   const user = useSelector(state => state.user.userData)
-  //const newGroupLabel = useSelector(state => state.input.inputText)
-
   const dispatch = useDispatch()
-
-  //const [showCreateGroup, clearCreateGroup] = useTextInput()
   const [createGroup, ] = useCreateGroup()
 
   useEffect(() => {
@@ -44,20 +39,6 @@ const GroupList = () => {
 
   }, [])
 
-
-  /*useEffect(() => {
-    const foffed = async () => {
-      const id = await createGroup(newGroupLabel)
-      dispatch(addOwnedGroup(id))
-      clearCreateGroup()
-    }
-    if (newGroupLabel && newGroupLabel !== '') {
-      console.log('GroupList: creating group', newGroupLabel)
-      foffed()
-    }
-  }, [newGroupLabel])*/
-
-  //console.log('INPUT', newGroupLabel)
   const handleSelectGroup = async (group) => {
     dispatch(setGroup(group))
   }
@@ -66,18 +47,12 @@ const GroupList = () => {
     console.log('Create griysdssdds', name)
     const group = await createGroup(name)
     dispatch(addOwnedGroup(group))
-    //clearCreateGroup()
-    handleClose()
+    inputDlgRef.current.close()
   }
 
   /*  const handleCreateChannel = () => {
     //showCreateGroup('Create Channel')
   }*/
-
-  const handleClose = () => {
-    console.log('handling close')
-    setIsOpen(false)
-  }
 
   console.log(user)
   const groups = user.ownedGroups.map((group) => (
@@ -91,7 +66,7 @@ const GroupList = () => {
 
   return (
     <div>
-      <InputTextDlg title='CreateGroup' handleInput={handleCreateGroup} handleClose={handleClose} isOpen={isOpen} />
+      <InputTextDlg ref={inputDlgRef} title='CreateGroup' handleInput={handleCreateGroup}  />
       <Drawer
         sx={{
           width: drawerWidth,
@@ -115,7 +90,7 @@ const GroupList = () => {
 
         <Button variant="text" startIcon={<AddBox />}
           style={{ justifyContent: 'flex-start' }}
-          onClick={() => setIsOpen(true)}>
+          onClick={() => inputDlgRef.current.open()}>
           <Typography>Add group</Typography>
         </Button>
         <Divider />

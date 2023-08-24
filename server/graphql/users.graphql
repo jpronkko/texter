@@ -48,9 +48,14 @@ type Query {
 type Mutation {
   createUser(user: UserInput): LoginData
   login(credentials: UserLoginInput): LoginData
-  addUserToGroup(groupId: ID!, userId: ID!): User
+  addUserToGroup(groupId: ID!, userId: ID!): ID
+}
+
+type AddedGroups {
+  userId: ID!
+  joinedGroups: [GroupInfo]
 }
 
 type Subscription {
-  userAdded: UserInfo!
+  userAddedToGroup(userId: ID!): AddedGroups
 }

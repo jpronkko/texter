@@ -21,23 +21,29 @@ module.exports = {
       const { messageInput: { groupId, body } } = args
 
       if(!checkUserInGroup(currentUser, groupId)) {
-        throw new GraphQLError('Not authorized!')
+        throw new GraphQLError('Not authorized! User not in group!')
       }
 
       const message = await messagesModel.createMessage(
         currentUser, groupId, body
       )
 
-      pubsub.publish('MESSAGE_ADDED', { messageAdded: message, groupId })
+      pubsub.publish('MESSAGE_ADDED', {
+        messageAdded: {
+          groupId,
+          message,
+        },
+      })
       return message
     }
   },
   Subscription: {
     messageAdded: {
       subscribe: withFilter(
-        () => pubsub.asyncIterator('messageAdded'),
+        () => pubsub.asyncIterator(['MESSAGE_ADDED']),
         (payload, variables) => {
-          return payload.groupId === variables.groupId
+          console.log('paykload', payload)
+          return payload.messageAdded.groupId === variables.groupId
         }
       )
     }

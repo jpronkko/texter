@@ -22,6 +22,11 @@ input MessageInput {
   body: String!
 }
 
+type MessageOut {
+  groupId: ID!
+  message: Message!
+}
+
 type Query {
   allMessages: [Message]
 }
@@ -31,5 +36,5 @@ type Mutation {
 }
 
 type Subscription {
-  messageAdded(groupId: ID!): Message
+  messageAdded(groupId: ID!): MessageOut
 }

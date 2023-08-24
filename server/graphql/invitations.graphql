@@ -1,0 +1,30 @@
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  CANCELLED
+  REJECTED
+}
+
+type Invitation {
+  id: ID!
+  fromUser: ID!
+  toUser: ID!
+  status: InvitationStatus
+  sentTime: String!
+}
+
+input InvitationInput {
+  groupId: ID!
+  fromUser: ID!
+  toUser: ID!
+}
+
+type Query {
+  getReceivedInvitations(toUserId: ID!): Invitation
+  getSentInvitations(fromUserId: ID!): Invitation
+}
+
+type Mutation {
+  createInvitation(invitation: InvitationInput): Invitation
+  changeInvitationStatus(id: ID!, status: InvitationStatus): Invitation
+}

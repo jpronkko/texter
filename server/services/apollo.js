@@ -26,6 +26,7 @@ const startApolloServer = async (httpServer) => {
     typeDefs: typesArray,
     resolvers: resolversArray
   })
+
   const serverCleanup = useServer({ schema }, wsServer)
 
   const server = new ApolloServer({

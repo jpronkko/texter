@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { logOut } from './userSlice'
 
 export const groupSlice = createSlice({
   name: 'group',
   initialState: {
     id: '',
     name: '',
-    messages: [],
   },
   reducers: {
     setGroup: (state, action) => {
@@ -14,19 +14,16 @@ export const groupSlice = createSlice({
       state.name = action.payload.name
       state.messages = action.payload.messages ? action.payload.messages : []
     },
-    addMessage: (state, action) => {
-      state.messages.push(action.payload)
-    },
-    setMessages: (state, action) => {
-      console.log('Setting groups messages!!!', action.payload)
-      state.messages = action.payload
-      console.log('msg', state.messages)
-    },
     clearGroup: (state) => {
       state.id = ''
       state.name = ''
-      state.messages = []
     }
+  },
+  extraReducers(builder) {
+    builder.addCase(logOut, (state) => {
+      state.id = ''
+      state.name = ''
+    })
   }
 })
 

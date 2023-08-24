@@ -17,7 +17,7 @@ import useCreateMessage from '../../hooks/useCreateMessage'
 
 const MessageList = () => {
   const groupId = useSelector(state => state.group.id)
-  const groupMessages = useSelector(state => state.group.messages)
+  const groupMessages = useSelector(state => state.messages.messages)
 
   useSubscription(MESSAGE_ADDED, {
     variables: { groupId: groupId },
@@ -35,12 +35,6 @@ const MessageList = () => {
     if (groupId) {
       getMessages({ variables: { groupId: groupId } })
     }
-    // const initMessages = async () => {
-    //   const messages = getMessages()
-    //   console.log('dfäksgolfgs', messages)
-    //   dispatch(setMessages(messages))
-    // }
-    // initMessages()
   }, [groupId])
 
   useEffect(() => {

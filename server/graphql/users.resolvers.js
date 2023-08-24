@@ -1,5 +1,5 @@
-const { PubSub } = require('graphql-subscriptions')
-const pubsub = new PubSub()
+const { PubSub, withFilter } = require('graphql-subscriptions')
+
 const { GraphQLError } = require('graphql')
 
 const usersModel = require('../models/users.model')
@@ -7,6 +7,8 @@ const logger = require('../utils/logger')
 
 const { tokenFromUser, getHash } = require('../utils/pwtoken')
 const { checkUser, checkUserInOwnedGroup } = require('../utils/checkUser')
+
+const pubsub = new PubSub()
 
 module.exports = {
   Query: {
@@ -65,7 +67,7 @@ module.exports = {
       return tokenAndUser
     },
     addUserToGroup: async (root, args, { currentUser }) => {
-      logger.info('Creating a group', args)
+      logger.info(`Adding user ${args.userId} to group ${args.groupId}`)
 
       checkUser(currentUser, 'Adding a user to a group failed!')
 
@@ -75,11 +77,27 @@ module.exports = {
       }
 
       // should return without pw hash
-      const updatedUser = await usersModel.addUserToGroup(currentUser, groupId, userId)
-      return updatedUser
+      const updatedUser = await usersModel.addUserToGroup(userId, groupId)
+
+      logger.info('Updated user', updatedUser)
+      pubsub.publish('USER_ADDED_TO_GROUP', {
+        userAddedToGroup: {
+          userId,
+          joinedGroups: updatedUser.joinedGroups,
+        }
+      })
+      return groupId
     },
   },
   Subscription: {
-    userAdded: () => pubsub.asyncIterator('USER_ADDED')
+    userAddedToGroup: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(['USER_ADDED_TO_GROUP']),
+        (payload, variables) => {
+          console.log('payload', payload)
+          return payload.userAddedToGroup.userId === variables.userId
+        }
+      )
+    }
   }
 }

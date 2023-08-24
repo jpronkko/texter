@@ -11,16 +11,20 @@ const checkUser =  (currentUser, errorMessage) => {
 }
 
 const checkUserInGroup = (user, groupId) => {
-  if (user.joinedGroups.find(group => group.id === groupId) || 
+  if (user.joinedGroups.find(group => group.id === groupId) ||
     user.ownedGroups.find(group => group.id === groupId)) {
     return true
   }
+  logger.error(`User ${user.id} not in group ${groupId}!`)
   return false
 }
 
 const checkUserInOwnedGroup = (user, groupId) => {
-  if (user.ownedGroups.includes(groupId))
+  logger.info('user:', user)
+  if (user.ownedGroups.find(group => group.id === groupId))
     return true
+
+  logger.error(`User ${user.id} does not own group ${groupId}!`)
   return false
 }
 

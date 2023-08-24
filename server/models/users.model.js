@@ -40,9 +40,10 @@ const login = async (username, password) => {
 }
 
 const addUserToGroup = async (userId, groupId) => {
-  const user = await User.findOne({ id: userId })
+  const user = await User.findById(userId)
+  logger.info('user in add to group', userId, user)
   user.joinedGroups = user.joinedGroups.concat(groupId)
-  const updatedUser = await user.save()
+  const updatedUser = (await user.save()).populate('joinedGroups')
   return updatedUser
 }
 

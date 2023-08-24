@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 //const morganBody = require('morgan-body')
 const { expressMiddleware } = require('@apollo/server/express4')
 //const morgan = require('morgan')
-const jwt = require('jsonwebtoken')
+//const jwt = require('jsonwebtoken')
 const config = require('./utils/config')
 const { mongoConnect, mongoDisconnect } = require('./services/mongo')
 const { startApolloServer } = require('./services/apollo')
@@ -38,6 +38,7 @@ const startServer = async () => {
     '/',
     express.json(),
     expressMiddleware(apolloServer, {
+      // eslint-disable-next-line no-unused-vars
       context: async({ req,  }) => {
         const anniId = '64d354d431124339a3f368d7'
         const currentUser = await usersModel.findUserWithId(anniId)

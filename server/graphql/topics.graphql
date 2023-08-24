@@ -1,0 +1,9 @@
+type Topic {
+  id: ID!
+  name: String!
+  messages: [ID]
+}
+
+type Mutation {
+  createTopic(name: String!) : Topic
+}

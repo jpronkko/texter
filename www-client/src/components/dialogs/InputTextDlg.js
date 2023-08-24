@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{ useState, useImperativeHandle, forwardRef } from 'react'
 //import { useSelector } from 'react-redux'
 
 import { useForm } from 'react-hook-form'
@@ -11,17 +11,15 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 //import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
-
-//import useTextInput from '../../hooks/useTextInput'
-
 import FormTextInput from '../forms/FormTextInput'
 
 const schema = yup.object({
   input: yup.string().required(),
 })
 
-const InputTextDlg = ({ title, handleInput, handleClose, isOpen }) => {
-  //const title = useSelector(state => state.input.title)
+const InputTextDlg = forwardRef((props, ref) => {
+  const [visible, setVisible] = useState(false)
+  const { title, handleInput } = props
 
   const { control, reset, handleSubmit } = useForm({
     defaultValues: {
@@ -31,25 +29,30 @@ const InputTextDlg = ({ title, handleInput, handleClose, isOpen }) => {
     mode: 'onChange'
   })
 
-  //const [, clearInput, setTextInput] = useTextInput()
-
-  //const isOpen = title !== ''
-
   const onSubmit = (data) => {
     console.log('Submiting input:', data)
     //setTextInput(data.name)
     handleInput(data.input)
   }
 
-  /*const handleClose = () => {
-    clearInput()
-  }*/
+  const open = () => {
+    setVisible(true)
+  }
+  const close = () => {
+    setVisible(false)
+  }
 
+  useImperativeHandle(ref, () => {
+    return {
+      open,
+      close
+    }
+  })
   return(
     <div>
       <Dialog
-        open={isOpen}
-        onClose={handleClose}
+        open={visible}
+        onClose={close}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -70,12 +73,14 @@ const InputTextDlg = ({ title, handleInput, handleClose, isOpen }) => {
           Submit
           </Button>
 
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={close}>Cancel</Button>
         </DialogActions>
       </Dialog>
     </div>
   )
-}
+})
+
+InputTextDlg.displayName = 'InputDlg'
 /*
 <Paper
         style={{

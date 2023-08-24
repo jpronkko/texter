@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 const logger = require('../utils/logger')
 
 const Group = require('./groups.mongo')
