@@ -4,6 +4,15 @@ type Topic {
   messages: [ID]
 }
 
+type Query {
+  allTopics: [Topic]
+  getMessages(groupId: ID!): [MessageInfo]
+}
+
 type Mutation {
-  createTopic(name: String!) : Topic
+  createTopic(groupId: ID!, name: String!): Topic
+}
+
+type Subscription {
+  topicAdded(groupId: ID!): Invitation
 }

@@ -20,11 +20,17 @@ input InvitationInput {
 }
 
 type Query {
-  getReceivedInvitations(toUserId: ID!): Invitation
+  allInvitations: [Invitation]
+  getReceivedInvitations: Invitation
   getSentInvitations(fromUserId: ID!): Invitation
 }
 
 type Mutation {
   createInvitation(invitation: InvitationInput): Invitation
   changeInvitationStatus(id: ID!, status: InvitationStatus): Invitation
+}
+
+type Subscription {
+  invitationAdded(toUserId: ID!): Invitation
+  invitationStatusChanged(userId: ID!, invitationId: ID!): Invitation
 }

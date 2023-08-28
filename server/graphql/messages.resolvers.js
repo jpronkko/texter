@@ -1,8 +1,9 @@
+const { PubSub, withFilter } = require('graphql-subscriptions')
+const { GraphQLError } = require('graphql')
+
 const messagesModel = require('../models/messages.model')
 const logger = require('../utils/logger')
-const { checkUser, checkUserInGroup } = require('../utils/checkUser')
-const { GraphQLError } = require('graphql')
-const { PubSub, withFilter } = require('graphql-subscriptions')
+const { checkUser, checkUserInTopicGroup } = require('../utils/checkUser')
 
 const pubsub = new PubSub()
 
@@ -18,19 +19,19 @@ module.exports = {
 
       checkUser(currentUser, 'Not authorized!')
 
-      const { messageInput: { groupId, body } } = args
+      const { messageInput: { topicId, body } } = args
 
-      if(!checkUserInGroup(currentUser, groupId)) {
-        throw new GraphQLError('Not authorized! User not in group!')
+      if(!checkUserInTopicGroup(currentUser, topicId)) {
+        throw new GraphQLError('User not in correct group!', { extensions: { code: 'WRONG_GROUP' } })
       }
 
       const message = await messagesModel.createMessage(
-        currentUser, groupId, body
+        currentUser, topicId, body
       )
 
       pubsub.publish('MESSAGE_ADDED', {
         messageAdded: {
-          groupId,
+          topicId,
           message,
         },
       })
@@ -42,7 +43,7 @@ module.exports = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(['MESSAGE_ADDED']),
         (payload, variables) => {
-          console.log('paykload', payload)
+          console.log('msg added subs paload', payload)
           return payload.messageAdded.groupId === variables.groupId
         }
       )

@@ -1,4 +1,5 @@
 const { GraphQLError } = require('graphql')
+const Group = require('../models/groups.mongo')
 const logger = require('../utils/logger')
 
 const checkUser =  (currentUser, errorMessage) => {
@@ -11,15 +12,31 @@ const checkUser =  (currentUser, errorMessage) => {
 }
 
 const checkUserInGroup = (user, groupId) => {
-  if (user.joinedGroups.find(group => group.id === groupId) ||
-    user.ownedGroups.find(group => group.id === groupId)) {
+  console.log('User in group', JSON.stringify(user))
+  const userGroups = user.joinedGroups.concat(user.ownedGroups)
+
+  console.log(groupId)
+  userGroups.forEach(element => {
+    console.log('E', JSON.stringify(element))
+  })
+  if (userGroups.find(group => group.id === groupId)) {
     return true
   }
-  logger.error(`User ${user.id} not in group ${groupId}!`)
+  logger.error(`User ${user.id} not in group ${groupId} !`)
   return false
 }
 
-const checkUserInOwnedGroup = (user, groupId) => {
+const checkUserInTopicGroup = async (user, topicId) => {
+  const group = (await Group.findOne({ topics: topicId })).toJSON()
+  console.log('Group, check', group)
+  if(!group) {
+    throw new Error('No group with such a topic')
+  }
+
+  return checkUserInGroup(user, group.id)
+}
+
+const checkUserOwnsGroup = (user, groupId) => {
   logger.info('user:', user)
   if (user.ownedGroups.find(group => group.id === groupId))
     return true
@@ -31,5 +48,6 @@ const checkUserInOwnedGroup = (user, groupId) => {
 module.exports = {
   checkUser,
   checkUserInGroup,
-  checkUserInOwnedGroup
+  checkUserInTopicGroup,
+  checkUserOwnsGroup
 }

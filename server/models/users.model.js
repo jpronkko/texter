@@ -8,23 +8,30 @@ const findUser = async (username) => {
 }
 
 const findUserWithId = async (userId) => {
-  return User.findOne({ _id: userId }).populate('ownedGroups').populate('joinedGroups')
+  return (await User.findOne({ _id: userId })
+    .populate('ownedGroups')
+    .populate('joinedGroups'))
+    .toJSON()
 }
 
 const getAllUsers = async () => {
-  return await User.find({}, { 'passwordHash': 0, '__v': 0 })
+  return (await User.find({})).toJSON()
 }
 
 const createUser = async (name, username, passwordHash, email) => {
   const user = new User({ name, username, passwordHash, email })
   const result = await user.save()
   logger.info('Trying create user save', result)
-  return result
+  return result.toJSON()
 }
 
 const login = async (username, password) => {
   logger.info('Login with username', username, 'password', password)
-  const user = await User.findOne({ username }).populate('ownedGroups').populate('joinedGroups')
+  const user = (await User
+    .findOne({ username })
+    .populate('ownedGroups')
+    .populate('joinedGroups'))
+    .toJSON()
 
   if(!user) {
     throw new Error('No such user')
@@ -44,12 +51,16 @@ const addUserToGroup = async (userId, groupId) => {
   logger.info('user in add to group', userId, user)
   user.joinedGroups = user.joinedGroups.concat(groupId)
   const updatedUser = (await user.save()).populate('joinedGroups')
-  return updatedUser
+  return (await updatedUser).toJSON()
 }
 
 /* Do we need this: */
 const getUserGroups = async (userId) => {
-  const result = await User.findById(userId).select({ 'joinedGroups': 1, 'ownedGroups': 1 }).populate('joinedGroups').populate('ownedGroups')
+  const result = (await User.findById(userId)
+    .select({ 'joinedGroups': 1, 'ownedGroups': 1 })
+    .populate('joinedGroups')
+    .populate('ownedGroups'))
+    .toJSON()
   console.log('Group infos', result)
   console.log(JSON.stringify(result.ownedGroups))
   return { ownedGroups: result.ownedGroups, joinedGroups: result.joinedGroups }

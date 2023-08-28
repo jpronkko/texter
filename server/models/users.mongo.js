@@ -38,6 +38,17 @@ const schema = new mongoose.Schema({
   ],
 })
 
+schema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+    console.log('return', returnedObject.ownedGroups)
+    //returnedObject.ownedGroups = returnedObject.ownedGroups.map(item => item._id.toString())
+    //returnedObject.joinedGroups = returnedObject.joinedGroups.map(item => item.id.toString())
+  }
+})
+
 mongoose.plugin(uniqueValidator)
 
 module.exports = mongoose.model('User', schema)

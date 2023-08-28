@@ -1,4 +1,5 @@
 const groupsModel = require('../models/groups.model')
+
 const logger = require('../utils/logger')
 const { checkUser, checkUserInGroup } = require('../utils/checkUser')
 const { GraphQLError } = require('graphql')
@@ -8,13 +9,13 @@ module.exports = {
     allGroups: async () => {
       return await groupsModel.getAllGroups()
     },
-    getMessages: async (root, args, { currentUser }) => {
+    getTopics: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Not authorized!')
 
       if(!checkUserInGroup(currentUser, args.groupId)) {
         throw new GraphQLError('Not authorized!')
       }
-      const messages = await groupsModel.getMessages(args.groupId)
+      const messages = await groupsModel.getTopics(args.groupId)
       return messages
     }
   },
@@ -33,6 +34,7 @@ module.exports = {
       return {
         id: newGroup.id,
         name: newGroup.name,
+        ownerId: newGroup.ownerId,
       }
     },
   },

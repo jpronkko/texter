@@ -40,7 +40,7 @@ const startServer = async () => {
     expressMiddleware(apolloServer, {
       // eslint-disable-next-line no-unused-vars
       context: async({ req,  }) => {
-        const anniId = '64d354d431124339a3f368d7'
+        const anniId = '64ec7c31d770cca4eb314561'
         const currentUser = await usersModel.findUserWithId(anniId)
         return { currentUser }
         //
