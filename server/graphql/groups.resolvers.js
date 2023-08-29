@@ -15,8 +15,7 @@ module.exports = {
       if(!checkUserInGroup(currentUser, args.groupId)) {
         throw new GraphQLError('Not authorized!')
       }
-      const messages = await groupsModel.getTopics(args.groupId)
-      return messages
+      return await groupsModel.getTopics(args.groupId)
     }
   },
   Mutation: {

@@ -21,8 +21,8 @@ input InvitationInput {
 
 type Query {
   allInvitations: [Invitation]
-  getReceivedInvitations: Invitation
-  getSentInvitations(fromUserId: ID!): Invitation
+  getReceivedInvitations: [Invitation]
+  getSentInvitations(fromUserId: ID!): [Invitation]
 }
 
 type Mutation {

@@ -3,6 +3,10 @@ const logger = require('../utils/logger')
 const Invitation = require('./invitations.mongo')
 const { addUserToGroup } = require('./users.model')
 
+const getAllInvitations = async () => {
+  return await Invitation.find({})
+}
+
 const getInvitations = async (userId, isFromUser) => {
   logger.info('UserID', userId, isFromUser)
   if (isFromUser)
@@ -12,8 +16,18 @@ const getInvitations = async (userId, isFromUser) => {
 }
 
 const createInvitation = async (fromUser, toUser, groupId) => {
-  const invitation = new Invitation({ fromUser, toUser, groupId, sentTime: Date.now() })
-  return await invitation.save()
+  const invitatiton = Invitation.find({ fromUser, toUser })
+  if (invitatiton) {
+    throw new Error('There is already an invitation!')
+  }
+  const newInvitation = new Invitation({
+    fromUser,
+    toUser,
+    groupId,
+    sentTime: Date.now(),
+    status: 'PENDING',
+  })
+  return await newInvitation.save()
 }
 
 const changeInvitationStatus = async (userId, invitationId, status) => {
@@ -28,6 +42,7 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
 }
 
 module.exports = {
+  getAllInvitations,
   getInvitations,
   createInvitation,
   changeInvitationStatus,

@@ -23,6 +23,15 @@ schema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
+    returnedObject.ownerId = returnedObject.ownerId.toString()
+    returnedObject.topics = returnedObject.topics
+      .map(topic => {
+        return {
+          id: topic._id?.toString(),
+          ownerId: topic.ownerId?.toString(),
+          messages: topic.messages
+        }
+      })
   }
 })
 

@@ -1,7 +1,7 @@
 type Group {
   id: ID!
   name: String!
-  messages: [ID]
+  topics: [ID]
 }
 
 type GroupInfo {
@@ -12,7 +12,7 @@ type GroupInfo {
 
 type Query {
   allGroups: [GroupInfo]
-  getTopics(groupId: ID!): [MessageInfo]
+  getTopics(groupId: ID!): [Topic]
 }
 
 type Mutation {

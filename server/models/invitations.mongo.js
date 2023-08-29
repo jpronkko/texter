@@ -22,4 +22,14 @@ const schema = new mongoose.Schema({
   }
 })
 
+schema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+    returnedObject.fromUser = returnedObject.fromUser.toString()
+    returnedObject.toUser = returnedObject.toUser.toString()
+  }
+})
+
 module.exports = mongoose.model('Invitation', schema)

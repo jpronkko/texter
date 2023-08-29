@@ -43,9 +43,6 @@ schema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
-    console.log('return', returnedObject.ownedGroups)
-    //returnedObject.ownedGroups = returnedObject.ownedGroups.map(item => item._id.toString())
-    //returnedObject.joinedGroups = returnedObject.joinedGroups.map(item => item.id.toString())
   }
 })
 

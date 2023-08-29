@@ -28,7 +28,8 @@ const checkUserInGroup = (user, groupId) => {
 
 const checkUserInTopicGroup = async (user, topicId) => {
   const group = (await Group.findOne({ topics: topicId })).toJSON()
-  console.log('Group, check', group)
+  console.log('------')
+  console.log('Topic group. Group, check', group)
   if(!group) {
     throw new Error('No group with such a topic')
   }

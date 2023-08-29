@@ -18,4 +18,14 @@ const schema = new mongoose.Schema({
   ]
 })
 
+schema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+    returnedObject.ownerId = returnedObject.ownerId.toString()
+    console.log('return msg', returnedObject.messages)
+  }
+})
+
 module.exports = mongoose.model('Topic', schema)

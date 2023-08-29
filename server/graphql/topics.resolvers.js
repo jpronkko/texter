@@ -5,7 +5,7 @@ const { GraphQLError } = require('graphql')
 const topicsModel = require('../models/topics.model')
 const logger = require('../utils/logger')
 
-const { checkUser, checkUserOwnsGroup, checkUserInGroup } = require('../utils/checkUser')
+const { checkUser, checkUserOwnsGroup, checkUserInTopicGroup } = require('../utils/checkUser')
 
 const pubsub = new PubSub()
 
@@ -13,10 +13,11 @@ module.exports = {
   Query: {
     allTopics: async () => await topicsModel.getAllTopics(),
     getMessages: async (root, args, { currentUser }) => {
-      checkUser(currentUser, 'Not authorized!')
+      console.log('Get messages, current user', currentUser)
+      checkUser(currentUser, 'Not authorized 1!')
 
-      if(!checkUserInGroup(currentUser, args.topicId)) {
-        throw new GraphQLError('Not authorized!')
+      if(!checkUserInTopicGroup(currentUser, args.topicId)) {
+        throw new GraphQLError('Not authorized 2!')
       }
       const messages = await topicsModel.getMessages(args.topicId)
       return messages

@@ -31,22 +31,13 @@ const createGroup = async (user, name) => {
   return savedGroup
 }
 
-const getMessages = async (groupId) => {
-  logger.info('Trying to find messages with groupId:', groupId)
-  const group = await Group
-    .findOne({ _id: groupId })
-    .populate(
-      { path: 'messages',
-        model: 'Message',
-        populate: {
-          path: 'fromUser',
-          model: 'User',
-          select: 'name'
-        }
-      }
-    )
-  logger.info('Messages', group.messages)
-  return group.messages
+const getTopics = async (groupId) => {
+  console.log('getTopics groupId', groupId)
+  const topicsRet = await Group.findById(groupId)
+    .select({ 'topics': 1, '_id': 0 })
+    .populate('topics')
+  console.log('getTopics', topicsRet)
+  return topicsRet.topics
 }
 
 module.exports = {
@@ -54,5 +45,5 @@ module.exports = {
   findGroup,
   findGroupWithName,
   createGroup,
-  getMessages,
+  getTopics,
 }

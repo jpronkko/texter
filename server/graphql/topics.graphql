@@ -6,7 +6,7 @@ type Topic {
 
 type Query {
   allTopics: [Topic]
-  getMessages(groupId: ID!): [MessageInfo]
+  getMessages(topicId: ID!): [MessageInfo]
 }
 
 type Mutation {

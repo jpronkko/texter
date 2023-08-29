@@ -15,7 +15,7 @@ const findUserWithId = async (userId) => {
 }
 
 const getAllUsers = async () => {
-  return (await User.find({})).toJSON()
+  return await User.find({})
 }
 
 const createUser = async (name, username, passwordHash, email) => {

@@ -5,21 +5,21 @@ const { GraphQLError } = require('graphql')
 const invitationsModel = require('../models/invitations.model')
 const logger = require('../utils/logger')
 
-const { checkUser, checkUserInOwnedGroup } = require('../utils/checkUser')
+const { checkUser, checkUserOwnsGroup } = require('../utils/checkUser')
 
 const pubsub = new PubSub()
 
 module.exports = {
   Query: {
-    allInvitations: async () => await invitationsModel.getAllUsers(),
+    allInvitations: async () => await invitationsModel.getAllInvitations(),
     getReceivedInvitations: async (root, args, { currentUser }) => {
-      checkUser(currentUser, 'Getting user groups failed!')
+      checkUser(currentUser, 'Getting recv. invitations failed!')
       const invitations = await invitationsModel.getInvitations(currentUser.id, false)
       console.log('Invitations', invitations)
       return invitations
     },
     getSentInvitations: async (root, args, { currentUser }) => {
-      checkUser(currentUser, 'Getting user groups failed!')
+      checkUser(currentUser, 'Getting sent invitations failed!')
       const invitations = await invitationsModel.getInvitations(currentUser.id, true)
       console.log('Invitations', invitations)
       return invitations
@@ -28,14 +28,14 @@ module.exports = {
   Mutation: {
     createInvitation: async (root, args, { currentUser }) => {
       logger.info('UserInput', args)
-      const { input: { groupId, fromUser, toUser } } = args
+      const { invitation: { groupId, fromUser, toUser } } = args
       checkUser(currentUser, 'Creating invitation failed!')
 
       if (currentUser.id !== fromUser) {
         throw new GraphQLError('Maligned input')
       }
 
-      if(!checkUserInOwnedGroup(currentUser, groupId)) {
+      if(!checkUserOwnsGroup(currentUser, groupId)) {
         throw new GraphQLError('No permission to add invitation to a group')
       }
 
@@ -46,6 +46,7 @@ module.exports = {
       }
 
       pubsub.publish('INVITATION_ADDED', { invitationAdded: invitation })
+      return invitation
     },
     changeInvitationStatus: async (root, args, { currentUser }) => {
       logger.info(`Adding user ${args.userId} to group ${args.groupId}`)
