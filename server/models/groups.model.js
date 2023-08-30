@@ -1,6 +1,7 @@
-const logger = require('../utils/logger')
-
 const Group = require('./groups.mongo')
+const User = require('./users.mongo')
+
+const logger = require('../utils/logger')
 
 const getAllGroups = async () => {
   logger.info('Finding all groups')
@@ -25,9 +26,12 @@ const createGroup = async (user, name) => {
 
   const group = new Group({ name, ownerId: user.id })
   const savedGroup = await group.save()
-  user.ownedGroups = user.ownedGroups.concat(savedGroup._id)
-  logger.info('user: ', user.ownedGroups)
-  await user.save()
+
+  const ownedGroups = user
+    .ownedGroups.map(group => group.id)
+    .concat(savedGroup._id)
+
+  await User.updateOne({ id: user.id }, { ownedGroups })
   return savedGroup
 }
 

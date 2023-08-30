@@ -3,6 +3,9 @@ const resetUrl = 'http://localhost:4000/test/reset'
 const createUsersUrl  = 'http://localhost:4000/test/addusers'
 
 const request = require('supertest')
+
+const endpoint = ''
+
 const test_user = {
   name: 'testi_name',
   username: 'testi',
@@ -10,22 +13,50 @@ const test_user = {
   password: 'testpassword',
 }
 
+const commonHeaders = {
+  'Content-Type': 'application/json'
+}
+
+const postToServer = async (url, command, token) => {
+  const authHeader = { 'Authorization': `bearer ${token}` }
+  let headers = token ? { ...commonHeaders, ...authHeader } :
+    commonHeaders
+  console.log('Posting to server with headers:', headers)
+  const response = await request(url)
+    .post(endpoint)
+    .set(headers)
+    .send(command ? command : {})
+  return response
+}
+
+const gqlToServer = async (url, query, token) => {
+  return await postToServer(url, { query }, token)
+}
+
 const resetDatabases = async () => {
   // Empty users from the test db
-  await request(resetUrl).post('/').send({})
+  return await postToServer(resetUrl, endpoint)
 }
 
 const createTestUsers = async () => {
-  const response = await request(createUsersUrl).post('/').send({})
-  return response
+  return await postToServer(createUsersUrl)
 }
 
 const createUser = async (name, username, email, password) => {
-  const mutationString =
-  `mutation: 'mutation CreateUser { createUser(user: { name: ${name}, email: ${email}, username: ${username}, password: ${password} }){ id }}`
-
-  const response = await request(url).post('/').send(mutationString)
-  return response
+  const mutation =
+    `mutation CreateUser { createUser(user: 
+      { name: "${name}", email: "${email}", 
+        username: "${username}", password: "${password}" 
+      }){ 
+        token
+        user {
+          id
+          name
+          username
+        }
+       }}`
+  const result = await gqlToServer(url, mutation)
+  return result.body?.data?.createUser
 }
 
 const createTestUser = async () => {
@@ -37,22 +68,41 @@ const createTestUser = async () => {
   )
 }
 
-const createGroup = async (groupName, userId) => {
-  const mutationString = {
-    mutation: `mutate CreateGroup { createGroup(${groupName}, ${userId}) }`
-  }
-
-  const response = await request(url).post('/').send(mutationString)
-  return response
+const createGroup = async (groupName, token) => {
+  const mutation =
+    `mutation CreateGroup { 
+      createGroup(name: "${groupName}") {
+        id
+        name
+      } }`
+  const result = await gqlToServer(url, mutation, token)
+  console.log(result.body)
+  return result.body?.data?.createGroup
 }
 
 const login = async (username, password) => {
-  const mutationString =
-  'mutation Login { login(credentials: { username: ' +
-      username + ', password: ' + password +'} ) { token }}'
+  const mutation =
+    `mutation Login { login(credentials: { 
+      username: "${username}",
+      password: "${password}" 
+    }) { 
+      token
+      user {
+        id
+        username
+        ownedGroups {
+          id
+          name
+        }
+        joinedGroups {
+          id
+          name
+        }
+      }
+    }}`
 
-  const response = await request(url).post('/').send(mutationString)
-  return response
+  const result = await gqlToServer(url, mutation)
+  return result.body?.data?.login
 }
 
 const loginTestUser = async () => {
@@ -61,6 +111,8 @@ const loginTestUser = async () => {
 
 module.exports = {
   url,
+  postToServer,
+  gqlToServer,
   createTestUser,
   createTestUsers,
   createGroup,

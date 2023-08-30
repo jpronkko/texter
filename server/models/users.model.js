@@ -8,10 +8,14 @@ const findUser = async (username) => {
 }
 
 const findUserWithId = async (userId) => {
-  return (await User.findOne({ _id: userId })
+  const user = await User
+    .findById(userId)
     .populate('ownedGroups')
-    .populate('joinedGroups'))
-    .toJSON()
+    .populate('joinedGroups')
+  if (user) {
+    return user.toJSON()
+  }
+  return undefined
 }
 
 const getAllUsers = async () => {
@@ -21,21 +25,23 @@ const getAllUsers = async () => {
 const createUser = async (name, username, passwordHash, email) => {
   const user = new User({ name, username, passwordHash, email })
   const result = await user.save()
-  logger.info('Trying create user save', result)
+  if(!result) {
+    throw new Error('User save failed!')
+  }
   return result.toJSON()
 }
 
 const login = async (username, password) => {
   logger.info('Login with username', username, 'password', password)
-  const user = (await User
+  const user = await User
     .findOne({ username })
     .populate('ownedGroups')
-    .populate('joinedGroups'))
-    .toJSON()
+    .populate('joinedGroups')
 
   if(!user) {
     throw new Error('No such user')
   }
+
   const passwordCorrect = await pwCompare(password, user.passwordHash)
   logger.info('PW correct', passwordCorrect)
 
@@ -43,27 +49,40 @@ const login = async (username, password) => {
     throw new Error( 'Wrong credentials')
   }
 
-  return { token: tokenFromUser(user), user }
+  return {
+    token: tokenFromUser(user),
+    user: user.toJSON()
+  }
 }
 
 const addUserToGroup = async (userId, groupId) => {
   const user = await User.findById(userId)
-  logger.info('user in add to group', userId, user)
+  if (!user) {
+    throw new Error('No such user!')
+  }
+  logger.info('User in add to group', userId, user)
   user.joinedGroups = user.joinedGroups.concat(groupId)
-  const updatedUser = (await user.save()).populate('joinedGroups')
+  const updatedUser = (await user.save())
+    .populate('joinedGroups')
   return (await updatedUser).toJSON()
 }
 
 /* Do we need this: */
 const getUserGroups = async (userId) => {
-  const result = (await User.findById(userId)
-    .select({ 'joinedGroups': 1, 'ownedGroups': 1 })
+  const user = await User
+    .findById(userId)
     .populate('joinedGroups')
-    .populate('ownedGroups'))
-    .toJSON()
-  console.log('Group infos', result)
-  console.log(JSON.stringify(result.ownedGroups))
-  return { ownedGroups: result.ownedGroups, joinedGroups: result.joinedGroups }
+    .populate('ownedGroups')
+
+  if (!user) {
+    throw new Error('No such user!')
+  }
+  const user2 = user.toJSON()
+
+  return {
+    ownedGroups: user2.ownedGroups,
+    joinedGroups: user2.joinedGroups
+  }
 }
 
 module.exports = {

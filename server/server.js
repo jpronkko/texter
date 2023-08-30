@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 //const morganBody = require('morgan-body')
 const { expressMiddleware } = require('@apollo/server/express4')
 //const morgan = require('morgan')
-//const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 const config = require('./utils/config')
 const { mongoConnect, mongoDisconnect } = require('./services/mongo')
 const { startApolloServer } = require('./services/apollo')
@@ -19,7 +19,7 @@ const startServer = async () => {
   const app = express()
   const httpServer = http.createServer(app)
 
-  await mongoConnect()
+  mongoConnect()
   const apolloServer = await startApolloServer(httpServer)
 
   app.use(cors())
@@ -38,21 +38,21 @@ const startServer = async () => {
     '/',
     express.json(),
     expressMiddleware(apolloServer, {
-      // eslint-disable-next-line no-unused-vars
       context: async({ req,  }) => {
+        /*
         const anniId = '64ec7c31d770cca4eb314561'
         const currentUser = await usersModel.findUserWithId(anniId)
         return { currentUser }
-        //
-        // const auth = req ? req.headers.authorization : null
-        // if (auth && auth.toLocaleLowerCase().startsWith('bearer ')) {
-        //   const decodedToken = jwt.verify(
-        //     auth.substring(7), config.JWT_SECRET
-        //   )
-        //   const currentUser = await usersModel.findUserWithId(decodedToken.id)
-        //   return { currentUser }
-        // }
+        */
 
+        const auth = req ? req.headers.authorization : null
+        if (auth && auth.toLocaleLowerCase().startsWith('bearer ')) {
+          const decodedToken = jwt.verify(
+            auth.substring(7), config.JWT_SECRET
+          )
+          const currentUser = await usersModel.findUserWithId(decodedToken.id)
+          return { currentUser }
+        }
       }
     }),
   )
@@ -68,7 +68,5 @@ const stopServer = async (httpServer, apolloServer) => {
   await httpServer.close()
   await apolloServer.stop()
 }
-
-startServer()
 
 module.exports = { startServer, stopServer }

@@ -1,19 +1,21 @@
-const request = require('supertest')
+//const request = require('supertest')
 const { startServer, stopServer } = require('../server')
 const testUsers = require('../utils/testUsers')
 const {
   url,
+  postToServer,
   createTestUser,
   createTestUsers,
   login,
   loginTestUser,
   resetDatabases,
-  test_user } = require('../utils/testHelpers')
+  test_user
+} = require('../utils/testHelpers')
+//const { createUser } = require('../models/users.model')
 
 const queryAllUsers = {
   query: 'query AllUsers { allUsers { name, username, email }}'
 }
-
 
 describe('user test', () => {
   let httpServer, apolloServer
@@ -31,17 +33,29 @@ describe('user test', () => {
     await resetDatabases()
   })
 
-  it('create user works', async () => {
-    const response = await createTestUser()
-    expect(response.body.errors).toBeUndefined()
-    console.debug(response.body)
+  it('create user works with appropriate input', async () => {
+    const userData = await createTestUser()
+    console.log('User data', userData)
+    expect(userData).toBeDefined()
+    expect(userData.user.username).toEqual(test_user.username)
+    expect(userData.user.name).toEqual(test_user.name)
   })
 
-  it('creation of test users works', async () => {
-    const okresponse = await createTestUsers()
-    expect(okresponse.body.errors).toBeUndefined()
+  /*it('create user with incorrect e-mail does not work', async () => {
+    const response = await createUser(
+      test_user.name,
+      test_user.username,
+      'pop',
+      test_user.password
+    )
+    expect(response.body.errors).toBeUndefined()
+  })*/
 
-    const response = await request(url).post('/').send(queryAllUsers)
+  it('creation of test users works', async () => {
+    const userData = await createTestUsers()
+    expect(userData).toBeDefined()
+
+    const response = await postToServer(url, queryAllUsers)
     expect(response.body.errors).toBeUndefined()
 
     const returnedUsers = response.body.data.allUsers
@@ -50,19 +64,20 @@ describe('user test', () => {
   })
 
   it('login with correct credentials works', async () => {
-    const okresponse = await createTestUser()
-    expect(okresponse.body.errors).toBeUndefined()
+    const userData = await createTestUser()
+    expect(userData).toBeDefined()
 
-    const response = await loginTestUser()
-    expect(response.body.errors).toBeUndefined()
+    const loginResponse = await loginTestUser()
+    expect(loginResponse).toBeDefined()
+    expect(loginResponse.token).toBeDefined()
+    expect(loginResponse.user).toBeDefined()
   })
 
   it('login with incorrect password does not work', async () => {
-    const okresponse = await createTestUser()
-    expect(okresponse.body.errors).toBeUndefined()
+    const userData = await createTestUser()
+    expect(userData).toBeDefined()
 
-    const response = await login(test_user.username, 'kukkuluuruu')
-    console.debug('Responnsnsns', response.errors, response.body.errors)
-    expect(response.body.errors).toBeDefined()
+    const loginData = await login(test_user.username, 'kukkuluuruu')
+    expect(loginData).toBeNull()
   })
 })

@@ -1,42 +1,55 @@
-const { startServer } = require('../server')
+const { startServer, stopServer } = require('../server')
 
 const {
   createTestUser,
   createGroup,
   resetDatabases,
-  test_user,
+  //test_user,
 } = require('../utils/testHelpers')
 
-const Group = require('../models/groups.model')
+const Group = require('../models/groups.mongo')
 
 describe('groups test', () => {
-  let httpServer, apolloServer, userId
+  let httpServer, apolloServer, userData
 
   beforeAll(async () => {
     ({ httpServer, apolloServer } = await startServer())
   })
 
   afterAll(async () => {
-    await httpServer?.close()
-    await apolloServer?.stop()
+    await stopServer(httpServer, apolloServer)
   })
 
   beforeEach(async () => {
     // Empty the test db
     await resetDatabases()
     // Create test users
-    const user = await createTestUser()
-    userId = user.id
+    userData  = await createTestUser()
   })
 
   it('create group with existing userId, non-existing group', async () => {
-    const response = await createGroup('test_group', userId)
-    expect(response.errors).toBeUndefined()
-    console.debug(response.body)
-    const groupId = response.body.id
-    const groupInDb =  await Group.findGroup(groupId)
-    if(!groupInDb)
-      console.debug('Error!')
-    //expect(response.body.data?.allUsers).toContain()
+    const groupData = await createGroup('test_group', userData.token)
+    console.debug('token', userData.token, 'resp:', groupData)
+    expect(groupData).toBeDefined()
+    expect(groupData.name).toEqual('test_group')
+
+    const groupId = groupData.id
+    const groupInDb = await Group.findById(groupId)
+    expect(groupInDb).toBeDefined()
+    console.log(groupInDb)
+  })
+
+  it('create group with existing userId, existing group', async () => {
+    const groupData = await createGroup('test_group', userData.token)
+    expect(groupData).toBeDefined()
+    expect(groupData.name).toEqual('test_group')
+
+    const newGroupData = await createGroup('test_group', userData.token)
+    expect(newGroupData).toBeNull()
+  })
+
+  it('create group with malformed token, not succeeding', async () => {
+    const groupData = await createGroup('test_group', 'puupaa')
+    expect(groupData).toBeUndefined()
   })
 })

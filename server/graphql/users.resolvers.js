@@ -46,7 +46,7 @@ module.exports = {
 
       try {
         const newUser = await usersModel.createUser(
-          name, username, email, passwordHash
+          name, username, passwordHash, email,
         )
         pubsub.publish('USER_ADDED', { userAdded: newUser })
         return { token: tokenFromUser(newUser), user: newUser }

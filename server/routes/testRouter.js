@@ -1,7 +1,10 @@
 const testRouter = require('express').Router()
+
 const User = require('../models/users.mongo')
 const Group = require('../models/groups.mongo')
+const Topic = require('../models/topics.mongo')
 const Message = require('../models/messages.mongo')
+const Invitation = require('../models/messages.mongo')
 
 const { getHash } = require('../utils/pwtoken')
 const testUsers = require('../utils/testUsers')
@@ -17,7 +20,7 @@ testRouter.get('/users', async (request, response) => {
 })
 
 testRouter.post('/addusers', async (request, response) => {
-
+  logger.info('Adding test users...')
   const userPromises = testUsers.map(async user => ({
     name: user.name,
     username: user.username,
@@ -30,16 +33,12 @@ testRouter.post('/addusers', async (request, response) => {
       response.status(500).json(err)
     })
 
+  logger.info('Done adding test users.')
   response.status(204).end()
 })
 
 testRouter.post('/reset', async (request, response) => {
-  await User.deleteMany({})
-    .catch((err) => {
-      logger.error(JSON.stringify(err))
-      response.status(500).json(err)
-    })
-
+  logger.info('Emptying database collections.')
   await User.deleteMany({})
     .catch((err) => {
       logger.error(JSON.stringify(err))
@@ -52,11 +51,24 @@ testRouter.post('/reset', async (request, response) => {
       response.status(500).json(err)
     })
 
+  await Topic.deleteMany({})
+    .catch((err) => {
+      logger.error(JSON.stringify(err))
+      response.status(500).json(err)
+    })
+
   await Message.deleteMany({})
     .catch((err) => {
       logger.error(JSON.stringify(err))
       response.status(500).json(err)
     })
+
+  await Invitation.deleteMany({})
+    .catch((err) => {
+      logger.error(JSON.stringify(err))
+      response.status(500).json(err)
+    })
+
   response.status(204).end()
 })
 
