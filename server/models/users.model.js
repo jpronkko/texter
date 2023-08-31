@@ -22,8 +22,8 @@ const getAllUsers = async () => {
   return await User.find({})
 }
 
-const createUser = async (name, username, passwordHash, email) => {
-  const user = new User({ name, username, passwordHash, email })
+const createUser = async (name, username, email, passwordHash) => {
+  const user = new User({ name, username, email, passwordHash })
   const result = await user.save()
   if(!result) {
     throw new Error('User save failed!')

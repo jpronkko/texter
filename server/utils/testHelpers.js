@@ -6,7 +6,7 @@ const request = require('supertest')
 
 const endpoint = ''
 
-const test_user = {
+const testUser = {
   name: 'testi_name',
   username: 'testi',
   email: 'testi@testi.com',
@@ -45,8 +45,10 @@ const createTestUsers = async () => {
 const createUser = async (name, username, email, password) => {
   const mutation =
     `mutation CreateUser { createUser(user: 
-      { name: "${name}", email: "${email}", 
-        username: "${username}", password: "${password}" 
+      { name: "${name}", 
+        username: "${username}", 
+        email: "${email}", 
+        password: "${password}" 
       }){ 
         token
         user {
@@ -56,15 +58,16 @@ const createUser = async (name, username, email, password) => {
         }
        }}`
   const result = await gqlToServer(url, mutation)
+  console.log('res body', JSON.stringify(result.body))
   return result.body?.data?.createUser
 }
 
 const createTestUser = async () => {
   return await createUser(
-    test_user.name,
-    test_user.username,
-    test_user.email,
-    test_user.password
+    testUser.name,
+    testUser.username,
+    testUser.email,
+    testUser.password
   )
 }
 
@@ -106,18 +109,44 @@ const login = async (username, password) => {
 }
 
 const loginTestUser = async () => {
-  return await login(test_user.username, test_user.password)
+  return await login(testUser.username, testUser.password)
+}
+
+const createInvitation = async (
+  groupId, fromUser, toUser, token
+) => {
+  const mutation =
+    `mutation CreateInvitation { 
+      createInvitation(invitation: {
+        groupId: "${groupId}"
+        fromUser: "${fromUser}"
+        toUser: "${toUser}"
+      }){
+        id
+        groupId
+        fromUser
+        toUser
+        status
+        sentTime
+      } 
+    }`
+
+  const result = await gqlToServer(url, mutation, token)
+  console.log(JSON.stringify(result.body))
+  return result.body?.data?.createInvitation
 }
 
 module.exports = {
   url,
+  testUser,
   postToServer,
   gqlToServer,
+  resetDatabases,
   createTestUser,
   createTestUsers,
+  createUser,
   createGroup,
   login,
   loginTestUser,
-  resetDatabases,
-  test_user,
+  createInvitation,
 }

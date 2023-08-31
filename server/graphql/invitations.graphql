@@ -7,6 +7,7 @@ enum InvitationStatus {
 
 type Invitation {
   id: ID!
+  groupId: ID!
   fromUser: ID!
   toUser: ID!
   status: InvitationStatus

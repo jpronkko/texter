@@ -33,7 +33,6 @@ module.exports = {
   },
   Mutation: {
     createUser: async (root, args) => {
-      logger.info('UserInput', args)
       const { user: { name, username, email, password } } = args
 
       const user = await usersModel.findUser(args.username)
@@ -43,10 +42,9 @@ module.exports = {
       }
 
       const passwordHash = await getHash(password)
-
       try {
         const newUser = await usersModel.createUser(
-          name, username, passwordHash, email,
+          name, username, email, passwordHash,
         )
         pubsub.publish('USER_ADDED', { userAdded: newUser })
         return { token: tokenFromUser(newUser), user: newUser }

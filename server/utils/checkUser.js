@@ -12,13 +12,8 @@ const checkUser =  (currentUser, errorMessage) => {
 }
 
 const checkUserInGroup = (user, groupId) => {
-  console.log('User in group', JSON.stringify(user))
   const userGroups = user.joinedGroups.concat(user.ownedGroups)
 
-  console.log(groupId)
-  userGroups.forEach(element => {
-    console.log('E', JSON.stringify(element))
-  })
   if (userGroups.find(group => group.id === groupId)) {
     return true
   }
@@ -28,8 +23,6 @@ const checkUserInGroup = (user, groupId) => {
 
 const checkUserInTopicGroup = async (user, topicId) => {
   const group = (await Group.findOne({ topics: topicId })).toJSON()
-  console.log('------')
-  console.log('Topic group. Group, check', group)
   if(!group) {
     throw new Error('No group with such a topic')
   }

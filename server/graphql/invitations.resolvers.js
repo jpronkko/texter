@@ -15,13 +15,11 @@ module.exports = {
     getReceivedInvitations: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Getting recv. invitations failed!')
       const invitations = await invitationsModel.getInvitations(currentUser.id, false)
-      console.log('Invitations', invitations)
       return invitations
     },
     getSentInvitations: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Getting sent invitations failed!')
       const invitations = await invitationsModel.getInvitations(currentUser.id, true)
-      console.log('Invitations', invitations)
       return invitations
     },
   },
@@ -39,7 +37,12 @@ module.exports = {
         throw new GraphQLError('No permission to add invitation to a group')
       }
 
-      const invitation = await invitationsModel.createInvitation(fromUser, toUser, groupId)
+      const invitation = await invitationsModel
+        .createInvitation(
+          fromUser,
+          toUser,
+          groupId
+        )
       if(!invitation) {
         logger.error('Create invitation failed!', invitation)
         throw new GraphQLError( 'Username taken', { extensions: { code: 'USERNAME_TAKEN' } })
@@ -49,16 +52,14 @@ module.exports = {
       return invitation
     },
     changeInvitationStatus: async (root, args, { currentUser }) => {
-      logger.info(`Adding user ${args.userId} to group ${args.groupId}`)
+      checkUser(currentUser, 'Change invitation status failed!')
 
-      checkUser(currentUser, 'Adding a user to a group failed!')
-
-      const { invitationId, status } = args
+      const { id, status } = args
       const updatedInvitation =
         await invitationsModel
           .changeInvitationStatus(
             currentUser.id,
-            invitationId,
+            id,
             status
           )
 
@@ -66,7 +67,7 @@ module.exports = {
       pubsub.publish('INVITATION_STATUS_CHANGED', {
         invitationStatusChanged: {
           userId: currentUser.id,
-          invitationId,
+          invitationId: id,
         }
       })
       return updatedInvitation

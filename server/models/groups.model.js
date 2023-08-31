@@ -9,7 +9,7 @@ const getAllGroups = async () => {
 }
 
 const findGroup = async (groupId) => {
-  return await Group.findOne({ _id: groupId })
+  return await Group.findById(groupId)
 }
 
 const findGroupWithName = async (ownerId, groupName) => {
@@ -27,11 +27,11 @@ const createGroup = async (user, name) => {
   const group = new Group({ name, ownerId: user.id })
   const savedGroup = await group.save()
 
-  const ownedGroups = user
-    .ownedGroups.map(group => group.id)
-    .concat(savedGroup._id)
-
-  await User.updateOne({ id: user.id }, { ownedGroups })
+  const userToUpdate = await User.findById(user.id)
+  userToUpdate.ownedGroups = userToUpdate.ownedGroups.concat(savedGroup._id)
+  await userToUpdate.save()
+  /*const savedUser = await User.findById(user.id)
+  console.log('Groups', savedUser.ownedGroups)*/
   return savedGroup
 }
 

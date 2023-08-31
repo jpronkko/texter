@@ -44,7 +44,7 @@ module.exports = {
         () => pubsub.asyncIterator(['MESSAGE_ADDED']),
         (payload, variables) => {
           console.log('msg added subs paload', payload)
-          return payload.messageAdded.groupId === variables.groupId
+          return payload.messageAdded.topicId === variables.topicId
         }
       )
     }

@@ -1,28 +1,35 @@
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
+const validator = require('validator')
 
 const schema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
     minlength: 3,
+    maxlength: 30,
   },
   username: {
     type: String,
     required: true,
     unique: true,
-    minlength: 4
-  },
-  passwordHash: {
-    type: String,
-    required: true,
-    minlength: 3,
+    minlength: 4,
+    maxlength: 30,
   },
   email: {
     type: String,
     required: true,
     unique: true,
     minlength: 4,
+    maxlength: 20,
+    validate: {
+      validator: validator.isEmail
+    }
+  },
+  passwordHash: {
+    type: String,
+    required: true,
+    minlength: 5,
   },
   ownedGroups: [
     {

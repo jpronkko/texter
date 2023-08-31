@@ -3,19 +3,17 @@ const { startServer, stopServer } = require('../server')
 const testUsers = require('../utils/testUsers')
 const {
   url,
-  postToServer,
+  gqlToServer,
+  createUser,
   createTestUser,
   createTestUsers,
   login,
   loginTestUser,
   resetDatabases,
-  test_user
+  testUser
 } = require('../utils/testHelpers')
-//const { createUser } = require('../models/users.model')
 
-const queryAllUsers = {
-  query: 'query AllUsers { allUsers { name, username, email }}'
-}
+const allUsers = 'query AllUsers { allUsers { name, username, email }}'
 
 describe('user test', () => {
   let httpServer, apolloServer
@@ -35,37 +33,58 @@ describe('user test', () => {
 
   it('create user works with appropriate input', async () => {
     const userData = await createTestUser()
-    console.log('User data', userData)
+
     expect(userData).toBeDefined()
-    expect(userData.user.username).toEqual(test_user.username)
-    expect(userData.user.name).toEqual(test_user.name)
+    expect(userData.user.username).toEqual(testUser.username)
+    expect(userData.user.name).toEqual(testUser.name)
   })
 
-  /*it('create user with incorrect e-mail does not work', async () => {
+  it('create user with duplicate username does not work', async () => {
+    await createTestUser()
+
     const response = await createUser(
-      test_user.name,
-      test_user.username,
-      'pop',
-      test_user.password
+      testUser.name + '2',
+      testUser.username ,
+      '2' + testUser.email,
+      testUser.password
     )
-    expect(response.body.errors).toBeUndefined()
-  })*/
+    expect(response).toBeNull()
+  })
 
-  it('creation of test users works', async () => {
-    const userData = await createTestUsers()
-    expect(userData).toBeDefined()
+  it('create user with duplicate e-mail does not work', async () => {
+    await createTestUser()
 
-    const response = await postToServer(url, queryAllUsers)
-    expect(response.body.errors).toBeUndefined()
+    const response = await createUser(
+      testUser.name + '2',
+      testUser.username + '2',
+      testUser.email,
+      testUser.password
+    )
+    expect(response).toBeNull()
+  })
 
+  it('create user with incorrect e-mail does not work', async () => {
+    const response = await createUser(
+      testUser.name,
+      testUser.username,
+      'popppooo',
+      testUser.password
+    )
+    expect(response).toBeNull()
+  })
+
+  it('creation of multiple test users works', async () => {
+    await createTestUsers()
+
+    const response = await gqlToServer(url, allUsers)
     const returnedUsers = response.body.data.allUsers
     const expectedUsers = testUsers.map(u => ({ username: u.username, name: u.name, email: u.email }))
+
     expect(expectedUsers).toEqual(expect.arrayContaining(returnedUsers))
   })
 
   it('login with correct credentials works', async () => {
-    const userData = await createTestUser()
-    expect(userData).toBeDefined()
+    await createTestUser()
 
     const loginResponse = await loginTestUser()
     expect(loginResponse).toBeDefined()
@@ -74,10 +93,17 @@ describe('user test', () => {
   })
 
   it('login with incorrect password does not work', async () => {
-    const userData = await createTestUser()
-    expect(userData).toBeDefined()
+    await createTestUser()
 
-    const loginData = await login(test_user.username, 'kukkuluuruu')
+    const loginData = await login(testUser.username, 'kukkuluuruu')
+    expect(loginData).toBeNull()
+  })
+
+  it('login with non existent account does not work', async () => {
+    const loginData = await login(
+      testUser.username,
+      testUser.password
+    )
     expect(loginData).toBeNull()
   })
 })
