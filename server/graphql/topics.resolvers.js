@@ -16,8 +16,12 @@ module.exports = {
       console.log('Get messages, current user', currentUser)
       checkUser(currentUser, 'Not authorized 1!')
 
-      if(!checkUserInTopicGroup(currentUser, args.topicId)) {
-        throw new GraphQLError('Not authorized 2!')
+      try {
+        if(!checkUserInTopicGroup(currentUser, args.topicId)) {
+          throw new GraphQLError('Not authorized 2!')
+        }
+      } catch(error) {
+        throw new GraphQLError('Check your topic id!')
       }
       const messages = await topicsModel.getMessages(args.topicId)
       return messages

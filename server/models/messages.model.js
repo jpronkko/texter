@@ -2,26 +2,26 @@ const logger = require('../utils/logger')
 
 const Message = require('./messages.mongo')
 
-const { findGroup } = require('./groups.model')
+const { findTopic } = require('./topics.model')
 
 const getAllMessages = async () => {
   return await Message.find({})
 }
 
-const createMessage = async (user, groupId, body) => {
-  const group = await findGroup(groupId)
-  if(!group) {
-    throw new Error(`No such group found! ${groupId}`)
+const createMessage = async (user, topicId, body) => {
+  const topic = await findTopic(topicId)
+  if(!topic) {
+    throw new Error(`No such group found! ${topicId}`)
   }
 
-  logger.info('Create message', groupId, user.id, group, body)
+  logger.info('Create message', topicId, user.id, topic, body)
 
   const message = new Message({ fromUser: user.id, body, sentTime: Date.now() })
   const result = await message.save()
   logger.info('Trying create message save', result)
 
-  group.messages = group.messages.concat(message._id)
-  await group.save()
+  topic.messages = topic.messages.concat(message._id)
+  await topic.save()
   return result
 }
 

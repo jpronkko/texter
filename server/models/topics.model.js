@@ -8,6 +8,11 @@ const getAllTopics = async () => {
   return topics
 }
 
+const findTopic = async (id) => {
+  const topic = await Topic.findById(id)
+  return topic
+}
+
 const getMessages = async (topicId) => {
   logger.info('Trying to find messages with topicId:', topicId)
   const topic = await Topic
@@ -48,6 +53,7 @@ const createTopic = async (groupId, name) => {
 
 module.exports = {
   getAllTopics,
+  findTopic,
   getMessages,
   createTopic,
 }

@@ -13,6 +13,13 @@ const testUser = {
   password: 'testpassword',
 }
 
+const testUser2 = {
+  name: 'testi_name',
+  username: 'testi',
+  email: 'testi@testi.com',
+  password: 'testpassword',
+}
+
 const commonHeaders = {
   'Content-Type': 'application/json'
 }
@@ -136,9 +143,60 @@ const createInvitation = async (
   return result.body?.data?.createInvitation
 }
 
+const createTopic = async (groupId, name, token) => {
+  const mutation =
+  `mutation CreateTopic { 
+    createTopic(
+      groupId: "${groupId}"
+      name: "${name}"
+    ){
+      id
+      name
+    } 
+  }`
+
+  const result = await gqlToServer(url, mutation, token)
+  console.log(JSON.stringify(result.body))
+  return result.body?.data?.createTopic
+}
+
+const getMessages = async (topicId, token) => {
+  const query =
+  `query GetMessages {
+    getMessages(topicId: ${topicId}) {
+      id
+      body
+    }
+  }`
+
+  const result = await gqlToServer(url, query, token)
+  console.log(JSON.stringify(result.body))
+  return result.body?.data?.createInvitation
+}
+
+const createMessage = async (topicId, body, token) => {
+  const mutation =
+  `mutation CreateMessage { 
+    createMessage(messageInput: {
+      topicId: "${topicId}"
+      body: "${body}"
+    }){
+      id
+      fromUser
+      body
+    } 
+  }`
+
+  const result = await gqlToServer(url, mutation, token)
+  console.log(JSON.stringify(result.body))
+  return result.body?.data?.createMessage
+}
+
+
 module.exports = {
   url,
   testUser,
+  testUser2,
   postToServer,
   gqlToServer,
   resetDatabases,
@@ -149,4 +207,7 @@ module.exports = {
   login,
   loginTestUser,
   createInvitation,
+  createTopic,
+  getMessages,
+  createMessage
 }

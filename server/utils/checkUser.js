@@ -22,12 +22,14 @@ const checkUserInGroup = (user, groupId) => {
 }
 
 const checkUserInTopicGroup = async (user, topicId) => {
-  const group = (await Group.findOne({ topics: topicId })).toJSON()
-  if(!group) {
-    throw new Error('No group with such a topic')
+  try {
+    const group = await Group.findOne({ topics: topicId }).toJSON()
+    return checkUserInGroup(user, group.id)
+  //if(!group) {
+  //  throw new Error('No group with such a topic')
+  } catch(error) {
+    return null
   }
-
-  return checkUserInGroup(user, group.id)
 }
 
 const checkUserOwnsGroup = (user, groupId) => {

@@ -23,7 +23,7 @@ input MessageInput {
 }
 
 type MessageOut {
-  groupId: ID!
+  topicId: ID!
   message: Message!
 }
 

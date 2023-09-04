@@ -21,21 +21,24 @@ module.exports = {
 
       const { messageInput: { topicId, body } } = args
 
-      if(!checkUserInTopicGroup(currentUser, topicId)) {
-        throw new GraphQLError('User not in correct group!', { extensions: { code: 'WRONG_GROUP' } })
+      try {
+        if(!checkUserInTopicGroup(currentUser, topicId)) {
+          throw new GraphQLError('User not in correct group!', { extensions: { code: 'WRONG_GROUP' } })
+        }
+        const message = await messagesModel.createMessage(
+          currentUser, topicId, body
+        )
+        pubsub.publish('MESSAGE_ADDED', {
+          messageAdded: {
+            topicId,
+            message,
+          },
+        })
+        return message
+      } catch(error) {
+        //throw new GraphQLError('Topic id error!')
+        console.log(error)
       }
-
-      const message = await messagesModel.createMessage(
-        currentUser, topicId, body
-      )
-
-      pubsub.publish('MESSAGE_ADDED', {
-        messageAdded: {
-          topicId,
-          message,
-        },
-      })
-      return message
     }
   },
   Subscription: {
