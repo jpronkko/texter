@@ -30,7 +30,7 @@ const useLogInOut = () => {
     const loginData = loginResult.data.login
 
     logger.info('Login data', loginData)
-    localStorage.setItem('texter', loginData)
+    localStorage.setItem('texter-token', loginData)
     dispatch(logIn(loginData))
     return loginData
   }

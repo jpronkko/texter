@@ -6,10 +6,6 @@ const schema = new mongoose.Schema({
     required: true,
     minlength: 3,
   },
-  ownerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  },
   messages: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -23,8 +19,6 @@ schema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
-    returnedObject.ownerId = returnedObject.ownerId.toString()
-    console.log('return msg', returnedObject.messages)
   }
 })
 

@@ -4,14 +4,15 @@ import userReducer from './userSlice'
 import inputReducer from './inputSlice'
 import errorReducer from './errorSlice'
 import confirmReducer from './confirmSlice'
-import groupReducer from './groupSlice'
+import selectionReducer from './selectionSlice'
+
 
 const reducer = {
   user: userReducer,
   input: inputReducer,
   error: errorReducer,
   confirm: confirmReducer,
-  group: groupReducer
+  selection: selectionReducer
 }
 
 export default configureStore({

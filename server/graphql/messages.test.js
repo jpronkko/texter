@@ -1,8 +1,6 @@
 const { startServer, stopServer } = require('../server')
 const { getMessages } = require('../models/topics.model')
 const {
-  url,
-  gqlToServer,
   createTestUser,
   createGroup,
   resetDatabases,
@@ -11,7 +9,7 @@ const {
 } = require('../utils/testHelpers')
 
 const testTopicName = 'testii'
-const testMessage = 'It is a small step for a man, a giant leap for mankind'
+const testMessage = 'That is one small step for a man, one giant leap for mankind.'
 
 describe('messages test', () => {
   let httpServer, apolloServer, userData, groupData, topicData
@@ -48,6 +46,7 @@ describe('messages test', () => {
     const messages = await getMessages(topicData.id)
     console.log('mesgs', messages)
     const messageInDb = messages[0]
+    console.log('mesg0', JSON.stringify(messageInDb.fromUser))
     expect(messageInDb.id).toEqual(message.id)
     expect(messageInDb.fromUser.id).toEqual(userData.user.id)
     expect(messageInDb.body).toEqual(testMessage)
@@ -63,9 +62,9 @@ describe('messages test', () => {
     expect(message).toBeUndefined()
   })
 
-  it('Creating message with non existing topic does not work', async () => {
+  it('Creating message with non existing topic id does not work', async () => {
     const message = await createMessage(
-      'dsadasf334',
+      '123456789012345678901234',
       testMessage,
       userData.token
     )

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { logOut } from './userSlice'
-import { clearGroup } from './groupSlice'
+import { clearGroup } from './selectionSlice'
 
 export const messageSlice = createSlice({
   name: 'messages',

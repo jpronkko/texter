@@ -1,11 +1,21 @@
+enum Role {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+type JoinedGroup {
+  group: Group!
+  role: Role!
+}
+
 type User {
   id: ID!
   name: String!
   username: String!
   email: String!
   passwordHash: String!
-  ownedGroups: [GroupInfo]
-  joinedGroups: [GroupInfo]
+  groups: [JoinedGroup]
 }
 
 type UserInfo {
@@ -32,16 +42,11 @@ type LoginData {
   user: User!
 }
 
-type GroupInfos {
-  joinedGroups: [GroupInfo]
-  ownedGroups: [GroupInfo]
-}
-
 type Query {
   me: User
   allUsers: [UserInfo]
   findUser(username: String!): UserInfo
-  getUserGroupInfo: GroupInfos
+  getUserJoinedGroups: [JoinedGroup]
   findUserById(id: ID!): User
 }
 
@@ -49,11 +54,12 @@ type Mutation {
   createUser(user: UserInput): LoginData
   login(credentials: UserLoginInput): LoginData
   addUserToGroup(groupId: ID!, userId: ID!): ID
+  updateUserRole(userId: ID!, groupId: ID!, role: Role!): User
 }
 
 type AddedGroups {
   userId: ID!
-  joinedGroups: [GroupInfo]
+  joinedGroups: [JoinedGroup]
 }
 
 type Subscription {

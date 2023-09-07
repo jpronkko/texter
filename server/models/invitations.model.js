@@ -4,15 +4,31 @@ const Invitation = require('./invitations.mongo')
 const { addUserToGroup } = require('./users.model')
 
 const getAllInvitations = async () => {
-  return await Invitation.find({})
+  const invitations = await Invitation.find({})
+  return invitations.toJSON()
+}
+
+const findInvitationById = async (id) => {
+  const invitation = await Invitation.findById(id)
+  return invitation.toJSON()
 }
 
 const getInvitations = async (userId, isFromUser) => {
   logger.info('UserID', userId, isFromUser)
-  if (isFromUser)
-    return await Invitation.find({ fromUser: userId })
+  if (isFromUser) {
+    const invitation = await Invitation.find({ fromUser: userId })
+    if(!invitation) {
+      throw new Error(`Invitations from user ${userId} not found!`)
+    }
+    console.log('Vituke', invitation, typeof(invitation))
+    return invitation.map(item => item.toJSON())
+  }
 
-  return await Invitation.find({ toUser: userId })
+  const invitation = await Invitation.find({ toUser: userId })
+  if(!invitation) {
+    throw new Error(`Invitations to user ${userId} not found!`)
+  }
+  return invitation.map(item => item.toJSON())
 }
 
 const createInvitation = async (fromUser, toUser, groupId) => {
@@ -28,7 +44,7 @@ const createInvitation = async (fromUser, toUser, groupId) => {
     status: 'PENDING',
     sentTime: Date.now(),
   })
-  return await newInvitation.save()
+  return (await newInvitation.save()).toJSON()
 }
 
 const changeInvitationStatus = async (userId, invitationId, status) => {
@@ -40,15 +56,19 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
     return
 
   if (status === 'ACCEPTED') {
-    await addUserToGroup(invitation.toUser, invitation.groupId)
+    const groupId = await addUserToGroup(invitation.toUser, invitation.groupId)
+    if(!groupId)
+      return null
+    invitation.status = status
+    return (await (invitation.save())).toJSON()
   }
-  invitation.status = status
-  return await invitation.save()
+  return null
 }
 
 module.exports = {
   getAllInvitations,
   getInvitations,
+  findInvitationById,
   createInvitation,
   changeInvitationStatus,
 }

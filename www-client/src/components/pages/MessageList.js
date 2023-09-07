@@ -10,7 +10,7 @@ import { GET_MESSAGES } from '../../graphql/queries'
 import { Button, Divider, List } from '@mui/material'
 import MessageListItem from '../MessageListItem'
 import CreateMessageForm from '../forms/CreateMessageForm'
-import { addMessage, setMessages } from '../../app/groupSlice'
+import { addMessage, setMessages } from '../../app/selectionSlice'
 
 import logger from '../../utils/logger'
 import useCreateMessage from '../../hooks/useCreateMessage'

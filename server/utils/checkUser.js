@@ -33,8 +33,8 @@ const checkUserInTopicGroup = async (user, topicId) => {
 }
 
 const checkUserOwnsGroup = (user, groupId) => {
-  logger.info('user:', user)
-  if (user.ownedGroups.find(group => group.id === groupId))
+  const joinedGroup = user.groups.find(item => item.groupId === groupId)
+  if (joinedGroup && joinedGroup.role === 'OWNER')
     return true
 
   logger.error(`User ${user.id} does not own group ${groupId}!`)

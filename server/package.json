@@ -22,7 +22,7 @@
     "start": "NODE_ENV=production node index.js",
     "dev": "NODE_ENV=development nodemon index.js",
     "test": "NODE_ENV=test jest --verbose --runInBand --detectOpenHandles",
-    "test2" : "NODE_ENV=test jest 'graphql/messages.test.js' --verbose --runInBand --detectOpenHandles"
+    "test2" : "NODE_ENV=test jest 'graphql/invitations.test.js' --verbose --runInBand --detectOpenHandles"
   },
   "name": "server",
   "version": "1.0.0",

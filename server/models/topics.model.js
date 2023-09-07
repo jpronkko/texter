@@ -5,12 +5,16 @@ const logger = require('../utils/logger')
 const getAllTopics = async () => {
   const topics = await Topic
     .find({})
-  return topics
+  return topics.map(topic => topic.toJSON())
 }
 
 const findTopic = async (id) => {
   const topic = await Topic.findById(id)
-  return topic
+  if (!topic) {
+    logger.error(`Topic with id ${id} not found!`)
+    return null
+  }
+  return topic.toJSON()
 }
 
 const getMessages = async (topicId) => {
@@ -27,8 +31,11 @@ const getMessages = async (topicId) => {
         }
       }
     )
-  logger.info('Messages', topic.messages)
-  return topic.messages
+  if(topic) {
+    logger.info('Messages', topic.messages)
+    return topic.messages.map(message => message.toJSON())
+  }
+  return null
 }
 
 const createTopic = async (groupId, name) => {
@@ -44,12 +51,13 @@ const createTopic = async (groupId, name) => {
 
   const topic = new Topic({ groupId, name })
   const savedTopic = await topic.save()
-
+  if(!savedTopic) {
+    throw new Error('Topic save failed!')
+  }
   group.topics = group.topics.concat(topic.id)
   await group.save()
-  return savedTopic
+  return savedTopic.toJSON()
 }
-
 
 module.exports = {
   getAllTopics,

@@ -4,22 +4,28 @@ const User = require('./users.mongo')
 const { pwCompare, tokenFromUser } = require('../utils/pwtoken')
 
 const findUser = async (username) => {
-  return await User.findOne({ username })
+  logger.info(`Username ${username}`)
+  const user = await User.findOne({ username }).populate('groups')
+  if (user)
+    return user.toJSON()
+
+  logger.error(`No such user found, username ${username}`)
+  return null
 }
 
 const findUserWithId = async (userId) => {
   const user = await User
     .findById(userId)
-    .populate('ownedGroups')
-    .populate('joinedGroups')
+    .populate('groups')
   if (user) {
     return user.toJSON()
   }
-  return undefined
+  return null
 }
 
 const getAllUsers = async () => {
-  return await User.find({})
+  const allUsers = await User.find({})
+  return allUsers.map(user => user.toJSON())
 }
 
 const createUser = async (name, username, email, passwordHash) => {
@@ -35,8 +41,7 @@ const login = async (username, password) => {
   logger.info('Login with username', username, 'password', password)
   const user = await User
     .findOne({ username })
-    .populate('ownedGroups')
-    .populate('joinedGroups')
+    .populate('groups')
 
   if(!user) {
     throw new Error('No such user')
@@ -55,33 +60,55 @@ const login = async (username, password) => {
   }
 }
 
-const addUserToGroup = async (userId, groupId) => {
+const addUserToGroup = async (userId, groupId, role) => {
   const user = await User.findById(userId)
   if (!user) {
     throw new Error('No such user!')
   }
   logger.info('User in add to group', userId, user)
-  user.joinedGroups = user.joinedGroups.concat(groupId)
-  const updatedUser = (await user.save())
-    .populate('joinedGroups')
-  return (await updatedUser).toJSON()
+  user.groups = user.groups.concat({
+    groupId,
+    role
+  })
+  const updatedUser = await user.save()
+  if (!updatedUser) {
+    throw new Error('Saving user failed!')
+  }
+  console.log('updt user', updatedUser)
+  return updatedUser.toJSON()
+}
+
+const updateRoleInGroup = async (userId, groupId, role) => {
+  console.log('WTFHZSHSHXH\nVitto!1', userId, groupId)
+  const user = await User.findById(userId)
+  if (!user) {
+    throw new Error('No such user!')
+  }
+
+  console.log('WTFHZSHSHXH\nVitto!2')
+  user.groups = user.groups.map(
+    item => item.groupId.toString() === groupId ? { ...item, role } : item
+  )
+
+  console.log('WTFHZSHSHXH\nVitto!3', user.groups)
+  const savedUser = await user.save()
+  //const pobject = await savedUser.populate([{ path: 'groups.groupId' }])
+  //console.log('savedUser', JSON.stringify(pobject.groups))
+  return savedUser.toJSON()
 }
 
 /* Do we need this: */
-const getUserGroups = async (userId) => {
+const getUserJoinedGroups = async (userId) => {
   const user = await User
     .findById(userId)
-    .populate('joinedGroups')
-    .populate('ownedGroups')
+    .populate('groups')
 
   if (!user) {
     throw new Error('No such user!')
   }
-  const user2 = user.toJSON()
 
   return {
-    ownedGroups: user2.ownedGroups,
-    joinedGroups: user2.joinedGroups
+    groups: user.groups,
   }
 }
 
@@ -92,5 +119,6 @@ module.exports = {
   createUser,
   login,
   addUserToGroup,
-  getUserGroups,
+  updateRoleInGroup,
+  getUserJoinedGroups,
 }

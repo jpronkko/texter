@@ -14,10 +14,10 @@ const testUser = {
 }
 
 const testUser2 = {
-  name: 'testi_name',
-  username: 'testi',
-  email: 'testi@testi.com',
-  password: 'testpassword',
+  name: 'testi2_name',
+  username: 'testi2',
+  email: 'testi2@testi.com',
+  password: 'testpassword2',
 }
 
 const commonHeaders = {
@@ -100,13 +100,12 @@ const login = async (username, password) => {
       user {
         id
         username
-        ownedGroups {
-          id
-          name
-        }
-        joinedGroups {
-          id
-          name
+        groups {
+          group {
+            id
+            name
+          }
+          role
         }
       }
     }}`

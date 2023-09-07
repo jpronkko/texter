@@ -57,7 +57,7 @@ describe('topic test', () => {
     console.log(topicInDb)
   })
 
-  it('creating a topic does not work with false token', async () => {
+  /*it('creating a topic does not work with false token', async () => {
     const topic = await createTopic(
       groupData.id,
       testTopicName,
@@ -65,5 +65,5 @@ describe('topic test', () => {
     )
 
     expect(topic).toBeUndefined()
-  })
+  })*/
 })

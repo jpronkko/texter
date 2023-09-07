@@ -6,7 +6,7 @@ const usersModel = require('../models/users.model')
 const logger = require('../utils/logger')
 
 const { tokenFromUser, getHash } = require('../utils/pwtoken')
-const { checkUser, checkUserInOwnedGroup } = require('../utils/checkUser')
+const { checkUser, checkUserOwnsGroup } = require('../utils/checkUser')
 
 const pubsub = new PubSub()
 
@@ -19,7 +19,7 @@ module.exports = {
     allUsers: async () => await usersModel.getAllUsers(),
     findUser: async (root, args) =>
       await usersModel.findUser(args.username),
-    getUserGroupInfo: async (root, args, { currentUser }) => {
+    getUserJoinedGroups: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Getting user groups failed!')
       const groupInfo = await usersModel.getUserGroups(currentUser.id)
       console.log('Group Info', groupInfo)
@@ -35,7 +35,7 @@ module.exports = {
     createUser: async (root, args) => {
       const { user: { name, username, email, password } } = args
 
-      const user = await usersModel.findUser(args.username)
+      const user = await usersModel.findUser(username)
       if(user) {
         logger.error('Username taken', user)
         throw new GraphQLError( 'Username taken', { extensions: { code: 'USERNAME_TAKEN' } })
@@ -70,7 +70,7 @@ module.exports = {
       checkUser(currentUser, 'Adding a user to a group failed!')
 
       const { groupId, userId } = args
-      if(!checkUserInOwnedGroup(currentUser, groupId)) {
+      if(!checkUserOwnsGroup(currentUser, groupId)) {
         throw new GraphQLError('No permission to add user to a group')
       }
 
@@ -86,6 +86,18 @@ module.exports = {
       })
       return groupId
     },
+    updateUserRole: async (root, args, { currentUser }) => {
+      checkUser(currentUser, 'Updating user role failed!')
+
+      const { userId, groupId, role } = args
+      if(!checkUserOwnsGroup(currentUser, groupId)) {
+        throw new GraphQLError('No permission to change user role in group')
+      }
+
+      const updatedUser = await usersModel.updateRoleInGroup(userId, groupId, role)
+      return updatedUser
+
+    }
   },
   Subscription: {
     userAddedToGroup: {

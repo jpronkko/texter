@@ -21,7 +21,7 @@ schema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
-    returnedObject.fromUser = returnedObject.fromUser.toString()
+    //returnedObject.fromUser = returnedObject.fromUser.toString()
   }
 })
 module.exports = mongoose.model('Message', schema)

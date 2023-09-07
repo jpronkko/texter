@@ -20,7 +20,7 @@ import useCreateGroup from '../hooks/useCreateGroup'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { AddBox } from '@mui/icons-material'
-import { setGroup } from '../app/groupSlice'
+import { setGroup } from '../app/selectionSlice'
 import InputTextDlg from './dialogs/InputTextDlg'
 
 const drawerWidth = 240
