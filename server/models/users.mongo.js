@@ -1,9 +1,10 @@
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 const validator = require('validator')
+const Group = require('./groups.mongo')
 
-const joinedGroupSchema = new mongoose.Schema({
-  groupId: {
+const JoinedGroup = mongoose.Schema({
+  group: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Group',
     required: true,
@@ -44,9 +45,14 @@ const schema = new mongoose.Schema({
     required: true,
     minlength: 5,
   },
-  groups: [ joinedGroupSchema ],
+  groups: [ JoinedGroup ],
 })
 
+/*
+{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'JoinedGroup'
+    }*/
 schema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
@@ -54,7 +60,12 @@ schema.set('toJSON', {
     delete returnedObject.__v
     if (returnedObject.groups) {
       returnedObject.groups = returnedObject.groups
-        .map(item => { return { id: item._id, groupId: item.groupId.toString(), role: item.role }})
+        .map(item => {
+          return {
+            id: item._id.toString(),
+            group: item.group,
+            role: item.role }
+        })
     }
   }
 })

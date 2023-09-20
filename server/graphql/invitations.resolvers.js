@@ -25,7 +25,6 @@ module.exports = {
   },
   Mutation: {
     createInvitation: async (root, args, { currentUser }) => {
-      logger.info('UserInput', args)
       const { invitation: { groupId, fromUser, toUser } } = args
       checkUser(currentUser, 'Creating invitation failed!')
 
@@ -33,23 +32,26 @@ module.exports = {
         throw new GraphQLError('Maligned input')
       }
 
-      if(!checkUserOwnsGroup(currentUser, groupId)) {
-        throw new GraphQLError('No permission to add invitation to a group')
-      }
+      try {
+        if(!checkUserOwnsGroup(currentUser, groupId)) {
+          throw new GraphQLError('No permission to add invitation to a group')
+        }
 
-      const invitation = await invitationsModel
-        .createInvitation(
-          fromUser,
-          toUser,
-          groupId
-        )
-      if(!invitation) {
-        logger.error('Create invitation failed!', invitation)
-        throw new GraphQLError( 'Username taken', { extensions: { code: 'USERNAME_TAKEN' } })
+        const invitation = await invitationsModel
+          .createInvitation(
+            fromUser,
+            toUser,
+            groupId
+          )
+        if(!invitation) {
+          logger.error('Create invitation failed!', invitation)
+          throw new GraphQLError( 'Username taken', { extensions: { code: 'USERNAME_TAKEN' } })
+        }
+        pubsub.publish('INVITATION_ADDED', { invitationAdded: invitation })
+        return invitation
+      } catch(error) {
+        throw new GraphQLError(`Create invitation failed: ${error.message}`)
       }
-
-      pubsub.publish('INVITATION_ADDED', { invitationAdded: invitation })
-      return invitation
     },
     changeInvitationStatus: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Change invitation status failed!')
@@ -63,7 +65,6 @@ module.exports = {
             status
           )
 
-      logger.info('Updated user', updatedInvitation)
       pubsub.publish('INVITATION_STATUS_CHANGED', {
         invitationStatusChanged: {
           userId: currentUser.id,

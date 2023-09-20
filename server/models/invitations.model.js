@@ -3,6 +3,7 @@ const logger = require('../utils/logger')
 const Invitation = require('./invitations.mongo')
 const { addUserToGroup } = require('./users.model')
 
+
 const getAllInvitations = async () => {
   const invitations = await Invitation.find({})
   return invitations.toJSON()
@@ -14,13 +15,11 @@ const findInvitationById = async (id) => {
 }
 
 const getInvitations = async (userId, isFromUser) => {
-  logger.info('UserID', userId, isFromUser)
   if (isFromUser) {
     const invitation = await Invitation.find({ fromUser: userId })
     if(!invitation) {
       throw new Error(`Invitations from user ${userId} not found!`)
     }
-    console.log('Vituke', invitation, typeof(invitation))
     return invitation.map(item => item.toJSON())
   }
 
@@ -52,17 +51,29 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
   if (!invitation) {
     throw new Error('Invitation not found!')
   }
-  if (invitation.status === status)
+
+  const invitation2 = invitation.toJSON()
+
+  if (invitation2.status === status) {
+    logger.info(`Changing invitation status, but it as already ${status}.`)
     return
+  }
 
   if (status === 'ACCEPTED') {
-    const groupId = await addUserToGroup(invitation.toUser, invitation.groupId)
-    if(!groupId)
+    if (invitation2.toUser !== userId) {
+      logger.error('Not authorizded to accept invitation!', invitation.toUser, userId)
+      throw new Error('Not authorized to accept invitation!')
+    }
+
+    const groupId = await addUserToGroup(invitation2.toUser, invitation2.groupId, 'MEMBER')
+    if(!groupId) {
+      logger.error('No user group found!')
       return null
-    invitation.status = status
-    return (await (invitation.save())).toJSON()
+    }
   }
-  return null
+
+  invitation.status = status
+  return (await (invitation.save())).toJSON()
 }
 
 module.exports = {

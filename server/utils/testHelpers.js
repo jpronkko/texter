@@ -28,7 +28,7 @@ const postToServer = async (url, command, token) => {
   const authHeader = { 'Authorization': `bearer ${token}` }
   let headers = token ? { ...commonHeaders, ...authHeader } :
     commonHeaders
-  console.log('Posting to server with headers:', headers)
+
   const response = await request(url)
     .post(endpoint)
     .set(headers)
@@ -65,7 +65,6 @@ const createUser = async (name, username, email, password) => {
         }
        }}`
   const result = await gqlToServer(url, mutation)
-  console.log('res body', JSON.stringify(result.body))
   return result.body?.data?.createUser
 }
 
@@ -86,7 +85,6 @@ const createGroup = async (groupName, token) => {
         name
       } }`
   const result = await gqlToServer(url, mutation, token)
-  console.log(result.body)
   return result.body?.data?.createGroup
 }
 
@@ -138,7 +136,6 @@ const createInvitation = async (
     }`
 
   const result = await gqlToServer(url, mutation, token)
-  console.log(JSON.stringify(result.body))
   return result.body?.data?.createInvitation
 }
 
@@ -155,7 +152,6 @@ const createTopic = async (groupId, name, token) => {
   }`
 
   const result = await gqlToServer(url, mutation, token)
-  console.log(JSON.stringify(result.body))
   return result.body?.data?.createTopic
 }
 
@@ -169,7 +165,6 @@ const getMessages = async (topicId, token) => {
   }`
 
   const result = await gqlToServer(url, query, token)
-  console.log(JSON.stringify(result.body))
   return result.body?.data?.createInvitation
 }
 
@@ -187,7 +182,6 @@ const createMessage = async (topicId, body, token) => {
   }`
 
   const result = await gqlToServer(url, mutation, token)
-  console.log(JSON.stringify(result.body))
   return result.body?.data?.createMessage
 }
 

@@ -15,13 +15,12 @@ module.exports = {
       if(!checkUserInGroup(currentUser, args.groupId)) {
         throw new GraphQLError('Not authorized!')
       }
+
       return await groupsModel.getTopics(args.groupId)
     }
   },
   Mutation: {
     createGroup: async (root, args, { currentUser }) => {
-      logger.info('Creating a group', args)
-
       checkUser(currentUser, 'Creating a group failed!')
 
       const { name } = args
@@ -30,6 +29,7 @@ module.exports = {
         currentUser,
         name
       )
+      console.log('newgroup', newGroup)
       return {
         id: newGroup.id,
         name: newGroup.name,

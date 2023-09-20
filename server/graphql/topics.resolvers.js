@@ -29,7 +29,6 @@ module.exports = {
   },
   Mutation: {
     createTopic: async (root, args, { currentUser }) => {
-      logger.info('Topic args', args)
       const { groupId, name } = args
       checkUser(currentUser, 'Creating a topic failed!')
 

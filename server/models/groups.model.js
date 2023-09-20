@@ -1,10 +1,8 @@
 const Group = require('./groups.mongo')
 const User = require('./users.mongo')
 
-const logger = require('../utils/logger')
 
 const getAllGroups = async () => {
-  logger.info('Finding all groups')
   const groups = await Group.find({})
   if(groups)
     return groups.map(group => group.toJSON())
@@ -27,9 +25,7 @@ const findGroupWithName = async (ownerId, groupName) => {
 }
 
 const createGroup = async (user, name) => {
-  logger.info('createGroup: ', user.id, name)
   const existingGroup = await findGroupWithName(user.id, name)
-  logger.info('Create group existing group', existingGroup)
   if(existingGroup) {
     throw new Error(`User already has group with name ${name}.`)
   }
@@ -39,26 +35,30 @@ const createGroup = async (user, name) => {
   if(!savedGroup) {
     throw new Error('Group save failed!')
   }
-  console.log('savedGroup', savedGroup)
+
+  console.log('huhulu!')
   const userToUpdate = await User.findById(user.id)
+  console.log(userToUpdate)
   userToUpdate.groups = userToUpdate.groups.concat({
-    groupId: savedGroup._id,
+    group: savedGroup._id,
     role: 'OWNER'
   })
-  await userToUpdate.save()
-  /*const savedUser = await User.findById(user.id)
-  console.log('Groups', savedUser.ownedGroups)*/
+  console.log('huhulu2!')
+  try {
+    await userToUpdate.save()
+    console.log('huhulu3!')
+  } catch(error) {
+    console.error(error)
+  }
   return savedGroup.toJSON()
 }
 
 const getTopics = async (groupId) => {
-  console.log('getTopics groupId', groupId)
   const topicsData = await Group.findById(groupId)
     .select({ 'topics': 1, '_id': 0 })
     .populate('topics')
   if (topicsData) {
-    console.log('getTopics', topicsData)
-    return topicsData.map(topic => topic.toJSON())
+    return topicsData.topics.map(topic => topic.toJSON())
   }
   return null
 }

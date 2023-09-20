@@ -15,8 +15,6 @@ module.exports = {
   },
   Mutation: {
     createMessage: async (root, args, { currentUser }) => {
-      logger.info('Create messages', args)
-
       checkUser(currentUser, 'Not authorized!')
 
       const { messageInput: { topicId, body } } = args
@@ -36,8 +34,7 @@ module.exports = {
         })
         return message
       } catch(error) {
-        //throw new GraphQLError('Topic id error!')
-        console.log(error)
+        throw new GraphQLError('Topic id error!')
       }
     }
   },

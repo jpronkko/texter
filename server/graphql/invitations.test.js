@@ -39,7 +39,7 @@ describe('invitations test', () => {
     groupData = await createGroup('test_group', userData1.token)
   })
 
-  /*it('create invitation with existing userId, existing group', async () => {
+  it('create invitation with existing userId, existing group', async () => {
     const invitation = await createInvitation(
       groupData.id,
       userData1.user.id,
@@ -54,8 +54,6 @@ describe('invitations test', () => {
     expect(invitation.status).toEqual('PENDING')
 
     const invitationInDb = await findInvitationById(invitation.id)
-    console.log('inv in db', invitationInDb)
-    console.log('group data', groupData)
     expect(invitationInDb.groupId).toEqual(groupData.id)
     expect(invitationInDb.fromUser).toEqual(userData1.user.id)
     expect(invitationInDb.toUser).toEqual(userData2.user.id)
@@ -78,7 +76,7 @@ describe('invitations test', () => {
     )
     expect(invitation2).toBeNull()
   })
-  */
+
   it('getSentInvitations returns sent invitation for a user', async () => {
     await createInvitation(
       groupData.id,
@@ -100,8 +98,6 @@ describe('invitations test', () => {
       }`
 
     const result = await gqlToServer(url, query, userData1.token)
-    console.log('RESULT body', result.body)
-
     const invitation = result.body?.data?.getSentInvitations[0]
 
     expect(invitation).toBeDefined()
@@ -111,7 +107,7 @@ describe('invitations test', () => {
     expect(invitation.status).toEqual('PENDING')
   })
 
-  /*it('getReceivedInvitations returns sent invitation to a user', async () => {
+  it('getReceivedInvitations returns sent invitation to a user', async () => {
     await createInvitation(
       groupData.id,
       userData1.user.id,
@@ -176,5 +172,5 @@ describe('invitations test', () => {
     const recvInvitation = result.body?.data?.getReceivedInvitations[0]
     expect(recvInvitation).toBeDefined()
     expect(recvInvitation.status).toEqual('ACCEPTED')
-  })*/
+  })
 })

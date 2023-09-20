@@ -44,9 +44,8 @@ describe('messages test', () => {
     expect(message.body).toEqual(testMessage)
 
     const messages = await getMessages(topicData.id)
-    console.log('mesgs', messages)
     const messageInDb = messages[0]
-    console.log('mesg0', JSON.stringify(messageInDb.fromUser))
+
     expect(messageInDb.id).toEqual(message.id)
     expect(messageInDb.fromUser.id).toEqual(userData.user.id)
     expect(messageInDb.body).toEqual(testMessage)

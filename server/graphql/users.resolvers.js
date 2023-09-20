@@ -65,8 +65,6 @@ module.exports = {
       return tokenAndUser
     },
     addUserToGroup: async (root, args, { currentUser }) => {
-      logger.info(`Adding user ${args.userId} to group ${args.groupId}`)
-
       checkUser(currentUser, 'Adding a user to a group failed!')
 
       const { groupId, userId } = args
@@ -77,11 +75,10 @@ module.exports = {
       // should return without pw hash
       const updatedUser = await usersModel.addUserToGroup(userId, groupId)
 
-      logger.info('Updated user', updatedUser)
       pubsub.publish('USER_ADDED_TO_GROUP', {
         userAddedToGroup: {
           userId,
-          joinedGroups: updatedUser.joinedGroups,
+          joinedGroups: updatedUser.groups,
         }
       })
       return groupId
@@ -91,7 +88,7 @@ module.exports = {
 
       const { userId, groupId, role } = args
       if(!checkUserOwnsGroup(currentUser, groupId)) {
-        throw new GraphQLError('No permission to change user role in group')
+        throw new GraphQLError('No permission to change user role in group!')
       }
 
       const updatedUser = await usersModel.updateRoleInGroup(userId, groupId, role)

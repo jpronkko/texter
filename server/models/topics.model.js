@@ -22,7 +22,8 @@ const getMessages = async (topicId) => {
   const topic = await Topic
     .findOne({ _id: topicId })
     .populate(
-      { path: 'messages',
+      {
+        path: 'messages',
         model: 'Message',
         populate: {
           path: 'fromUser',

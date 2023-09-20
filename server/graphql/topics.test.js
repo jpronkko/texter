@@ -51,11 +51,21 @@ describe('topic test', () => {
       }`
 
     const result = await gqlToServer(url, query, userData.token)
-    console.log(result.body)
     const topicInDb = result.body?.data?.allTopics[0]
     expect(topicInDb).toBeDefined()
-    console.log(topicInDb)
+
+    const query2 =
+      `query GetTopics {
+        getTopics(groupId: "${groupData.id}") {
+          id,
+          name
+        }
+      }`
+    const result2 = await gqlToServer(url, query2, userData.token)
+    const topicInDb2 = result2.body.data.getTopics[0]
+    expect(topicInDb2.name).toEqual(testTopicName)
   })
+
 
   /*it('creating a topic does not work with false token', async () => {
     const topic = await createTopic(

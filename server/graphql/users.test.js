@@ -118,6 +118,7 @@ describe('user test', () => {
   })
 
   it('user group role change works with correct parameters', async () => {
+    console.log('fuu 1')
     const userData1 = await createTestUser()
     const userData2 = await createUser(
       testUser2.name,
@@ -126,10 +127,13 @@ describe('user test', () => {
       testUser2.password
     )
 
+    console.log('fuu 2')
     const groupData = await createGroup('testGroup', userData1.token)
     expect(groupData).toBeDefined()
 
+    console.log('fuu3')
     await addUserToGroup(userData2.user.id, groupData.id, 'MEMBER')
+    console.log('fuu4')
     const query =
     `mutation UpdateUserRole {
        updateUserRole(userId: "${userData2.user.id}" groupId: "${groupData.id}" role: ADMIN) {
@@ -142,6 +146,8 @@ describe('user test', () => {
 
     const result = await gqlToServer(url, query, userData1.token)
     const updatedUser = result.body.data.updateUserRole
+    console.log('fuu5', result.body)
+
     expect(updatedUser.id).toEqual(userData2.user.id)
     expect(updatedUser.groups[0].role).toEqual('ADMIN')
 
@@ -149,3 +155,8 @@ describe('user test', () => {
     expect(userInDb.groups[0].role).toEqual('ADMIN')
   })
 })
+
+/* 
+groups {
+          role
+         }*/
