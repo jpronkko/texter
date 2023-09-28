@@ -91,9 +91,12 @@ module.exports = {
         throw new GraphQLError('No permission to change user role in group!')
       }
 
-      const updatedUser = await usersModel.updateRoleInGroup(userId, groupId, role)
-      return updatedUser
-
+      try {
+        const updatedUser = await usersModel.updateRoleInGroup(userId, groupId, role)
+        return updatedUser
+      } catch(error) {
+        throw new GraphQLError('User update did not work', error.message)
+      }
     }
   },
   Subscription: {

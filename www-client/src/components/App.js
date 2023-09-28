@@ -12,7 +12,6 @@ import { Toolbar } from '@mui/material'
 import MainPage from './pages/MainPage'
 import UserList from './pages/UserList'
 import ErrorMessage from './ErrorMessage'
-import ConfirmMessage from './ConfirmMessage'
 
 import CreateUser from './pages/CreateUser'
 import Login from './pages/Login'
@@ -27,8 +26,6 @@ const App = () => {
 
   console.log('User now', user)
 
-  // const userLoggedIn = () => user.username !== ''
-
   const handleCreateUser = async (data) => {
     logger.info('Create user input data:', data)
   }
@@ -40,7 +37,6 @@ const App = () => {
   return (
     <div>
       <Router>
-        <ConfirmMessage />
         <ErrorMessage />
         <TopBar/>
         <Toolbar />

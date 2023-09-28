@@ -13,24 +13,26 @@ const useLogInOut = () => {
     {
       onError: (error) => {
         const err = error.toString()
-        console.log('error', error)
+        console.log('Login error', error)
         if(err.includes('Wrong credentials')) {
           throw new Error('Could not login, check your username and password! ')
         } else {
-          throw new Error('Unknown error, check your network connection and try again.')
+          throw new Error(`Unknown error ${err}`)
         }
       }
     }
   )
 
   const login = async (username, password) => {
+    logger.info('Login')
     const loginResult = await loginMutation({ variables:
       { credentials: { username, password } } })
 
     const loginData = loginResult.data.login
 
     logger.info('Login data', loginData)
-    localStorage.setItem('texter-token', loginData)
+    logger.info('Setting token', loginData.token)
+    localStorage.setItem('texter-token', loginData.token)
     dispatch(logIn(loginData))
     return loginData
   }

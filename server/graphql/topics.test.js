@@ -62,6 +62,7 @@ describe('topic test', () => {
         }
       }`
     const result2 = await gqlToServer(url, query2, userData.token)
+    console.log(result2.body)
     const topicInDb2 = result2.body.data.getTopics[0]
     expect(topicInDb2.name).toEqual(testTopicName)
   })

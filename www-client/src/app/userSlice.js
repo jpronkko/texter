@@ -4,15 +4,14 @@ const emptyUser = {
   id: '',
   name: '',
   username: '',
-  ownedGroups: [],
-  joinedGroups: [],
+  groups: [],
 }
 
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
     token: null,
-    userData: emptyUser
+    userData: emptyUser,
   },
   reducers: {
     logIn: (state, action) => {
@@ -23,22 +22,18 @@ export const userSlice = createSlice({
         username: user.username,
         name: user.name,
         email: user.email,
-        ownedGroups: user.ownedGroups ? user.ownedGroups : [],
-        joinedGroups: user.joinedGroups ? user.joinedGroups: [],
+        groups: user.groups ? user.groups : [],
       }
     },
-    logOut: state => {
+    logOut: (state) => {
       state.token = null
       state.userData = emptyUser
     },
-    addOwnedGroup: (state, action) => {
-      state.userData.ownedGroups.push(action.payload)
-    },
     addJoinedGroup: (state, action) => {
-      state.userData.joinedGroups.push(action.payload)
-    }
-  }
+      state.userData.groups.push(action.payload)
+    },
+  },
 })
 
-export const { logIn, logOut, addOwnedGroup, addJoinedGroup } = userSlice.actions
+export const { logIn, logOut, addJoinedGroup } = userSlice.actions
 export default userSlice.reducer

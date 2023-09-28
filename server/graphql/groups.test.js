@@ -15,7 +15,7 @@ describe('groups test', () => {
   let httpServer, apolloServer, userData1
 
   beforeAll(async () => {
-    ({ httpServer, apolloServer } = await startServer())
+    ;({ httpServer, apolloServer } = await startServer())
   })
 
   afterAll(async () => {
@@ -43,8 +43,8 @@ describe('groups test', () => {
       expect.arrayContaining([
         expect.objectContaining({
           group: expect.objectContaining({ id: groupId }),
-          role: 'OWNER'
-        })
+          role: 'OWNER',
+        }),
       ])
     )
   })
@@ -60,6 +60,6 @@ describe('groups test', () => {
 
   it('create group with malformed token, not succeeding', async () => {
     const groupData = await createGroup(testGroupName, 'puupaa')
-    expect(groupData).toBeUndefined()
+    expect(groupData).toBeNull()
   })
 })

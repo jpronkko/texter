@@ -9,13 +9,14 @@ const {
 } = require('../utils/testHelpers')
 
 const testTopicName = 'testii'
-const testMessage = 'That is one small step for a man, one giant leap for mankind.'
+const testMessage =
+  'That is one small step for a man, one giant leap for mankind.'
 
 describe('messages test', () => {
   let httpServer, apolloServer, userData, groupData, topicData
 
   beforeAll(async () => {
-    ({ httpServer, apolloServer } = await startServer())
+    ;({ httpServer, apolloServer } = await startServer())
   })
 
   afterAll(async () => {
@@ -26,7 +27,7 @@ describe('messages test', () => {
     // Empty the test db
     await resetDatabases()
     // Create test user for all the tests
-    userData  = await createTestUser()
+    userData = await createTestUser()
 
     groupData = await createGroup('test_group', userData.token)
     topicData = await createTopic(groupData.id, testTopicName, userData.token)
@@ -52,13 +53,9 @@ describe('messages test', () => {
   })
 
   it('Creating message with garbage token does not work', async () => {
-    const message = await createMessage(
-      topicData.id,
-      testMessage,
-      'lfjfkjj'
-    )
+    const message = await createMessage(topicData.id, testMessage, 'lfjfkjj')
 
-    expect(message).toBeUndefined()
+    expect(message).toBeNull()
   })
 
   it('Creating message with non existing topic id does not work', async () => {

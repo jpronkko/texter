@@ -27,7 +27,7 @@ export const selectionSlice = createSlice({
     clearTopic: (state) => {
       state.topicId = ''
       state.topicName = ''
-    }
+    },
   },
   extraReducers(builder) {
     builder.addCase(logOut, (state) => {
@@ -36,8 +36,9 @@ export const selectionSlice = createSlice({
       state.topicId = ''
       state.topicName = ''
     })
-  }
+  },
 })
 
-export const { setGroup, addMessage, setMessages } = selectionSlice.actions
+export const { setGroup, setTopic, addMessage, setMessages } =
+  selectionSlice.actions
 export default selectionSlice.reducer

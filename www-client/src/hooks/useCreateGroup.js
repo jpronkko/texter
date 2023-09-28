@@ -16,7 +16,7 @@ const useCreateGroup = () => {
     logger.info('create group object:', name)
     const createResult = await mutation({ variables: { name } }) //var_object)
     logger.info('Create group result:', createResult)
-    return createResult.data.createGroup
+    return createResult.data?.createGroup
   }
 
   return [createGroup, result]

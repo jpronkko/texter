@@ -18,8 +18,8 @@ const schema = yup.object({
 })
 
 const InputTextDlg = forwardRef((props, ref) => {
+  const { title, label, handleInput } = props
   const [visible, setVisible] = useState(false)
-  const { title, handleInput } = props
 
   const { control, reset, handleSubmit } = useForm({
     defaultValues: {
@@ -64,7 +64,7 @@ const InputTextDlg = forwardRef((props, ref) => {
             id='input'
             name='input'
             control={control}
-            label='Input'
+            label={label}
           />
           <Button sx={{ marginLeft: '5px' }} onClick={() => reset()} variant={'outlined'}>x</Button>
         </DialogContent>
@@ -81,38 +81,5 @@ const InputTextDlg = forwardRef((props, ref) => {
 })
 
 InputTextDlg.displayName = 'InputDlg'
-/*
-<Paper
-        style={{
-          display: 'grid',
-          gridRowGap: '20px',
-          padding: '20px',
-          margin: '10px 200px',
-        }}
-      >
-        <Typography variant="h4">{title}</Typography>
-        <Typography>{message}</Typography>
-        <FormTextInput
-          id='name'
-          name='name'
-          control={control}
-          label='Name'
-        />
-        <Button id='create-button' onClick={handleSubmit(onSubmit)} variant={'contained'}>
-          Submit
-        </Button>
-        <Button onClick={() => reset()} variant={'outlined'}>
-          Reset
-        </Button>
-      </Paper>
-<Button onClick={handleOk} autoFocus>OK</Button>
-          <Button onClick={handleClose}>Cancel</Button>
-*/
-/*
-          <DialogContentText id="alert-dialog-description">
 
-
-          </DialogContentText>
-
-*/
 export default InputTextDlg

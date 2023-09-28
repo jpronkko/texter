@@ -26,7 +26,6 @@ const findUserWithId = async (userId) => {
     )
 
   if (user) {
-    console.log('jsoned userxx', user.toJSON())
     return user.toJSON()
   }
   return null
@@ -83,25 +82,27 @@ const login = async (username, password) => {
 }
 
 const addUserToGroup = async (userId, groupId, role) => {
-  console.log('3.5')
   const user = await User.findById(userId)
   if (!user) {
     throw new Error('No such user!')
   }
 
-  console.log('3.6')
   user.groups = user.groups.concat({
     group: groupId,
     role
   })
 
-  console.log('fd', user)
-  const updatedUser = await user.save()
-  if (!updatedUser) {
-    logger.error('User save failed in addUserToGroup')
-    throw new Error('Saving user failed!')
+  // TODO!
+  try {
+    const updatedUser = await user.save()
+    if (!updatedUser) {
+      logger.error('User save failed in addUserToGroup')
+      throw new Error('Saving user failed!')
+    }
+    return updatedUser.toJSON()
+  } catch(error) {
+    throw new Error('Saving user failed2!')
   }
-  return updatedUser.toJSON()
 }
 
 const updateRoleInGroup = async (userId, groupId, role) => {

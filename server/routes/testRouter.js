@@ -41,36 +41,6 @@ testRouter.post('/addusers', async (request, response) => {
 testRouter.post('/reset', async (request, response) => {
   logger.info('Emptying database collections.')
   await mongoClearDb()
-  /*await User.deleteMany({})
-    .catch((err) => {
-      logger.error(JSON.stringify(err))
-      response.status(500).json(err)
-    })
-
-  await Group.deleteMany({})
-    .catch((err) => {
-      logger.error(JSON.stringify(err))
-      response.status(500).json(err)
-    })
-
-  await Topic.deleteMany({})
-    .catch((err) => {
-      logger.error(JSON.stringify(err))
-      response.status(500).json(err)
-    })
-
-  await Message.deleteMany({})
-    .catch((err) => {
-      logger.error(JSON.stringify(err))
-      response.status(500).json(err)
-    })
-
-  await Invitation.deleteMany({})
-    .catch((err) => {
-      logger.error(JSON.stringify(err))
-      response.status(500).json(err)
-    })*/
-
   response.status(204).end()
 })
 

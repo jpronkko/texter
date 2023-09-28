@@ -12,29 +12,29 @@ module.exports = {
     getTopics: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Not authorized!')
 
-      if(!checkUserInGroup(currentUser, args.groupId)) {
-        throw new GraphQLError('Not authorized!')
+      if (!checkUserInGroup(currentUser, args.groupId)) {
+        throw new GraphQLError('Not authorized for group!')
       }
 
       return await groupsModel.getTopics(args.groupId)
-    }
+    },
   },
   Mutation: {
     createGroup: async (root, args, { currentUser }) => {
+      logger.info('Creating group', args.name)
       checkUser(currentUser, 'Creating a group failed!')
 
       const { name } = args
 
-      const newGroup = await groupsModel.createGroup(
-        currentUser,
-        name
-      )
-      console.log('newgroup', newGroup)
-      return {
-        id: newGroup.id,
-        name: newGroup.name,
-        ownerId: newGroup.ownerId,
-      }
+      const newGroup = await groupsModel.createGroup(currentUser, name)
+
+      return newGroup
+
+      // return {
+      //   id: newGroup.id,
+      //   name: newGroup.name,
+      //   ownerId: newGroup.ownerId,
+      // }
     },
   },
 }

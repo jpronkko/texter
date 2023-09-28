@@ -47,11 +47,17 @@ const startServer = async () => {
 
         const auth = req ? req.headers.authorization : null
         if (auth && auth.toLocaleLowerCase().startsWith('bearer ')) {
-          const decodedToken = jwt.verify(
-            auth.substring(7), config.JWT_SECRET
-          )
-          const currentUser = await usersModel.findUserWithId(decodedToken.id)
-          return { currentUser }
+          try {
+            const decodedToken = jwt.verify(
+              auth.substring(7), config.JWT_SECRET
+            )
+            console.log('decooded', decodedToken)
+            const currentUser = await usersModel.findUserWithId(decodedToken.id)
+            return { currentUser }
+          } catch (error) {
+            logger.error('Token decode failed', error)
+          }
+          return null
         }
       }
     }),

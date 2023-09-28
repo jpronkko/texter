@@ -7,7 +7,8 @@ export const errorSlice = createSlice({
   },
   reducers: {
     setError: (state, action) => {
-      state.message = action.payload.message
+      console.log('Action payload', action.payload)
+      state.message = action.payload
     },
     clearError: state => {
       state.message = ''

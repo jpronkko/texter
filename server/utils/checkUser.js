@@ -14,7 +14,7 @@ const checkUser =  (currentUser, errorMessage) => {
 const checkUserInGroup = (user, groupId) => {
   const userGroups = user.groups
 
-  if (userGroups.find(item => item.group === groupId)) {
+  if (userGroups.find(item => item.group.id === groupId)) {
     return true
   }
   logger.error(`User ${user.id} not in group ${groupId} !`)

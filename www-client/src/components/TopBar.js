@@ -1,6 +1,6 @@
 // Original: https://mui.com/material-ui/react-app-bar/, starting mods from there.
 
-import React from 'react'
+import React, { useRef } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -15,22 +15,22 @@ import AdbIcon from '@mui/icons-material/Adb'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, /*useDispatch*/ } from 'react-redux'
 import useLogInOut from '../hooks/useLogInOut'
-import useConfirmMessage from '../hooks/useConfirmMessage'
 import UserMenu from './UserMenu'
-
+import ConfirmMessage from './dialogs/ConfirmMessage'
 
 const TopBar = () => {
+  const confirmDlgRef = useRef()
+
   const navigate = useNavigate()
   const [, logout] = useLogInOut()
-  const [showMessage] = useConfirmMessage()
 
   const user = useSelector(state => state.user.userData)
-  const group = useSelector(state => state.group)
+  const groupName = useSelector(state => state.selection.groupName)
 
   const userLoggedIn = () => user.username !== ''
 
   const showLogout = () => {
-    showMessage('Logout','Are you sure you want to logout?', logout)
+    confirmDlgRef.current.open()
   }
 
   const userMenuItems = [
@@ -55,6 +55,7 @@ const TopBar = () => {
 
   return (
     <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <ConfirmMessage ref={confirmDlgRef} title='Are you sure you want to logout?' onOk={() => logout()}  />
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -73,7 +74,7 @@ const TopBar = () => {
               textDecoration: 'none',
             }}
           >
-          TEXTER - user: {user.username} group: {group.name}
+          TEXTER - user: {user.username} group: {groupName}
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages().map((page) => (
@@ -96,72 +97,3 @@ const TopBar = () => {
   )
 }
 export default TopBar
-
-// //const [anchorElNav, setAnchorElNav] = useState(null)
-/*const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget)
-  }
-  */
-/*const userMenu = () => {
-    return (
-      userLoggedIn &&
-      <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="menu-appbar"
-          aria-haspopup="true"
-          onClick={handleOpenNavMenu}
-          color="inherit"
-        >
-          <MenuIcon />
-        </IconButton>
-        <Menu
-          id="menu-appbar"
-          anchorEl={anchorElNav}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-          open={Boolean(anchorElNav)}
-          onClose={handleCloseNavMenu}
-          sx={{
-            display: { xs: 'block', md: 'none' },
-          }}
-        >
-          {pages().map((page) => (
-            <MenuItem key={page.name} onClick={() => handleCloseNavMenu(page.path)}>
-              <Typography textAlign="center">{page.name}</Typography>
-            </MenuItem>
-          ))}
-        </Menu>
-      </Box>
-    )
-  }*/
-
-/*
- <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            TEXTERbbb
-          </Typography>
-          */

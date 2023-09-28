@@ -3,16 +3,15 @@ import { gql } from '@apollo/client'
 export const GET_MY_INFO = gql`
 query GetMyInfo {
   me {
+    id
     name
     username
     email
-    ownedGroups {
-      id
+    groups {
+      group {
+        id
       name
-    }
-    joinedGroups {
-      id
-      name
+      }
     }
   }
 }
@@ -46,13 +45,10 @@ query GetAllMessages {
 }
 `
 
-export const GET_MESSAGES = gql`
-query GetMessages($groupId: ID!) {
-  getMessages(groupId: $groupId) {
-    id
-    body
-    sentTime
-    fromUser {
+export const GET_USER_JOINED_GROUPS = gql`
+query GetUserJoinedGroups {
+  getUserJoinedGroups {
+    group {
       id
       name
     }
@@ -60,11 +56,25 @@ query GetMessages($groupId: ID!) {
 }
 `
 
-export const GET_USERS_GROUPS = gql`
-query GetUserGroupInfo {
-  getUserGroupInfo {
+export const GET_TOPICS = gql`
+query GetTopics($groupId: ID!) {
+  getTopics(groupId: $groupId) {
     id
     name
+  }
+}`
+
+
+export const GET_MESSAGES = gql`
+query GetMessages($topicId: ID!) {
+  getMessages(topicId: $topicId) {
+    id
+    body
+    sentTime
+    fromUser {
+      id
+      name
+    }
   }
 }
 `

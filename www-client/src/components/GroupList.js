@@ -1,4 +1,4 @@
-import React, { useEffect, useRef }/*{ useState }*/ from 'react'
+import React, { /*useEffect,*/ useRef /*{ useState }*/ } from 'react'
 
 import {
   Button,
@@ -7,93 +7,131 @@ import {
   Toolbar,
   Typography,
   //TreeItem,
-//  TreeView,
+  //  TreeView,
   //Typography
 } from '@mui/material'
 
-import { TreeItem, TreeView } from '@mui/x-tree-view'
+/*import { TreeItem, TreeView } from '@mui/x-tree-view'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-
-import { addOwnedGroup } from '../app/userSlice'
+*/
+import { addJoinedGroup } from '../app/userSlice'
 import useCreateGroup from '../hooks/useCreateGroup'
+import useCreateTopic from '../hooks/useCreateTopic'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { AddBox } from '@mui/icons-material'
-import { setGroup } from '../app/selectionSlice'
+import { setGroup /*setTopic */ } from '../app/selectionSlice'
 import InputTextDlg from './dialogs/InputTextDlg'
+import Topics from './Topics'
+import Accordion from './Accordion'
+import AccordionSummary from './AccordionSummary'
 
-const drawerWidth = 240
+const drawerWidth = 300
 
 const GroupList = () => {
-  const inputDlgRef = useRef()
-  const user = useSelector(state => state.user.userData)
+  const user = useSelector((state) => state.user.userData)
+  const groupId = useSelector((state) => state.selection.groupId)
+
   const dispatch = useDispatch()
-  const [createGroup, ] = useCreateGroup()
+  const topicDlgRef = useRef()
+  const groupDlgRef = useRef()
 
-  useEffect(() => {
-    const groups = user.ownedGroups.length >= 1 ? user.ownedGroups : user.joinedGroups
+  const [createGroup] = useCreateGroup()
+  const [createTopic] = useCreateTopic()
+  const [expanded, setExpanded] = React.useState('panel1')
 
-    if (groups.length >= 1)
-      dispatch(setGroup(groups[0]))
-
-  }, [])
-
-  const handleSelectGroup = async (group) => {
-    dispatch(setGroup(group))
+  const handleChange = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false)
   }
+
+  const handleSelectGroup = async (groupId) => {
+    dispatch(setGroup(groupId))
+  }
+
+  console.log('user groups', user.groups)
 
   const handleCreateGroup = async (name) => {
-    console.log('Create griysdssdds', name)
-    const group = await createGroup(name)
-    dispatch(addOwnedGroup(group))
-    inputDlgRef.current.close()
+    const groupData = await createGroup(name)
+    console.log(groupData)
+    if (groupData) {
+      dispatch(
+        addJoinedGroup({
+          role: 'OWNER',
+          group: { id: groupData.id, name: groupData.name },
+        })
+      )
+    }
+    groupDlgRef.current.close()
   }
 
-  /*  const handleCreateChannel = () => {
-    //showCreateGroup('Create Channel')
-  }*/
+  const handleCreateTopic = async (name) => {
+    const topic = await createTopic(groupId, name)
+    console.log('Handle Create Topic', topic)
+    topicDlgRef.current.close()
+  }
 
-  console.log(user)
-  const groups = user.ownedGroups.map((group) => (
-    <TreeItem
-      key={group.Id}
-      nodeId={group.Id}
-      label={'# ' + group.name}
-      onClick={() => handleSelectGroup(group)}
-    />
+  const renderedGroups = user.groups.map((item) => (
+    <Accordion
+      key={item.group.id}
+      expanded={expanded === item.group.name}
+      onChange={handleChange(item.group.name)}
+    >
+      <AccordionSummary key={item.group.id}>
+        <Button
+          variant="text"
+          onClick={() => handleSelectGroup(item.group.id)}
+        >
+          <Typography>{item.group.name}</Typography>
+        </Button>
+      </AccordionSummary>
+      <Topics
+        groupId={item.group.id}
+        handleCreateTopic={() => topicDlgRef.current.open()}
+      />
+    </Accordion>
   ))
 
   return (
     <div>
-      <InputTextDlg ref={inputDlgRef} title='CreateGroup' handleInput={handleCreateGroup}  />
+      <InputTextDlg
+        ref={groupDlgRef}
+        title="Create Group"
+        label="Name"
+        handleInput={handleCreateGroup}
+      />
+
+      <InputTextDlg
+        ref={topicDlgRef}
+        title="Create Topic"
+        label="Name"
+        handleInput={handleCreateTopic}
+      />
+
       <Drawer
         sx={{
           width: drawerWidth,
           flexShrink: 0,
-          ['& .MuiDrawer-paper']: { width: drawerWidth, boxSizing: 'border-box' },
+          ['& .MuiDrawer-paper']: {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+          },
         }}
         variant="permanent"
         anchor="left"
       >
         <Toolbar />
-        <TreeView
-          aria-label="User Groups"
-          defaultCollapseIcon={<ExpandMoreIcon />}
-          defaultExpandIcon={<ChevronRightIcon />}
-          sx={{ m: 2 }}
-        >
-          <TreeItem key={'1'} nodeId='1' label="User Groups">
-            {groups}
-          </TreeItem>
-        </TreeView>
-
-        <Button variant="text" startIcon={<AddBox />}
+        <Typography>Huppa Luppa</Typography>
+        <Divider />
+        {renderedGroups}
+        <Button
+          variant="text"
+          startIcon={<AddBox />}
           style={{ justifyContent: 'flex-start' }}
-          onClick={() => inputDlgRef.current.open()}>
+          onClick={() => groupDlgRef.current.open()}
+        >
           <Typography>Add group</Typography>
         </Button>
-        <Divider />
         <Divider />
       </Drawer>
     </div>
@@ -101,19 +139,3 @@ const GroupList = () => {
 }
 
 export default GroupList
-
-/*
-   <TreeView
-          aria-label="Channels"
-          defaultCollapseIcon={<ExpandMoreIcon />}
-          defaultExpandIcon={<ChevronRightIcon />}
-          sx={{ m: 2 }}
-        >
-          <TreeItem nodeId='0' label="Channels">
-            {groups}
-          </TreeItem>
-        </TreeView>
-        <Button variant="text" startIcon={<AddBox />} style={{ justifyContent: 'flex-start' }} onClick={handleCreateChannel}>
-          <Typography>New channel</Typography>
-        </Button>
-      */

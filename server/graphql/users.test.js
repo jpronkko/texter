@@ -15,7 +15,11 @@ const {
   testUser2,
 } = require('../utils/testHelpers')
 
-const { findUser, addUserToGroup, findUserWithId } = require('../models/users.model')
+const {
+  findUser,
+  addUserToGroup,
+  findUserWithId,
+} = require('../models/users.model')
 
 const allUsers = 'query AllUsers { allUsers { name, username, email }}'
 
@@ -23,7 +27,7 @@ describe('user test', () => {
   let httpServer, apolloServer
 
   beforeAll(async () => {
-    ({ httpServer, apolloServer } = await startServer())
+    ;({ httpServer, apolloServer } = await startServer())
   })
 
   afterAll(async () => {
@@ -54,7 +58,7 @@ describe('user test', () => {
 
     const response = await createUser(
       testUser.name + '2',
-      testUser.username ,
+      testUser.username,
       '2' + testUser.email,
       testUser.password
     )
@@ -88,7 +92,11 @@ describe('user test', () => {
 
     const response = await gqlToServer(url, allUsers)
     const returnedUsers = response.body.data.allUsers
-    const expectedUsers = testUsers.map(u => ({ username: u.username, name: u.name, email: u.email }))
+    const expectedUsers = testUsers.map((u) => ({
+      username: u.username,
+      name: u.name,
+      email: u.email,
+    }))
 
     expect(expectedUsers).toEqual(expect.arrayContaining(returnedUsers))
   })
@@ -100,6 +108,10 @@ describe('user test', () => {
     expect(loginResponse).toBeDefined()
     expect(loginResponse.token).toBeDefined()
     expect(loginResponse.user.username).toEqual(testUser.username)
+    expect(loginResponse.user.email).toEqual(testUser.email)
+    expect(loginResponse.user.name).toEqual(testUser.name)
+    expect(loginResponse.user.groups).toHaveLength(0)
+    expect(loginResponse.user.password).not.toBeDefined()
   })
 
   it('login with incorrect password does not work', async () => {
@@ -110,15 +122,24 @@ describe('user test', () => {
   })
 
   it('login with non existent account does not work', async () => {
-    const loginData = await login(
-      testUser.username,
-      testUser.password
-    )
+    const loginData = await login(testUser.username, testUser.password)
     expect(loginData).toBeNull()
   })
 
+  it('login gives correct group data', async () => {
+    const userData1 = await createTestUser()
+    const groupData = await createGroup('testGroup', userData1.token)
+    console.log('group data', groupData)
+    const loginResponse = await loginTestUser()
+    expect(loginResponse).toBeDefined()
+
+    const loginGroupData = loginResponse.user.groups[0]
+    expect(loginGroupData.role).toEqual('OWNER')
+    expect(loginGroupData.group.id).toEqual(groupData.id)
+    expect(loginGroupData.group.name).toEqual(groupData.name)
+  })
+
   it('user group role change works with correct parameters', async () => {
-    console.log('fuu 1')
     const userData1 = await createTestUser()
     const userData2 = await createUser(
       testUser2.name,
@@ -127,15 +148,11 @@ describe('user test', () => {
       testUser2.password
     )
 
-    console.log('fuu 2')
     const groupData = await createGroup('testGroup', userData1.token)
     expect(groupData).toBeDefined()
 
-    console.log('fuu3')
     await addUserToGroup(userData2.user.id, groupData.id, 'MEMBER')
-    console.log('fuu4')
-    const query =
-    `mutation UpdateUserRole {
+    const query = `mutation UpdateUserRole {
        updateUserRole(userId: "${userData2.user.id}" groupId: "${groupData.id}" role: ADMIN) {
          id
          groups {
@@ -146,7 +163,6 @@ describe('user test', () => {
 
     const result = await gqlToServer(url, query, userData1.token)
     const updatedUser = result.body.data.updateUserRole
-    console.log('fuu5', result.body)
 
     expect(updatedUser.id).toEqual(userData2.user.id)
     expect(updatedUser.groups[0].role).toEqual('ADMIN')
@@ -154,9 +170,31 @@ describe('user test', () => {
     const userInDb = await findUserWithId(userData2.user.id)
     expect(userInDb.groups[0].role).toEqual('ADMIN')
   })
-})
 
-/* 
-groups {
+  it('user group role change does not work with incorrect role', async () => {
+    const userData1 = await createTestUser()
+    const userData2 = await createUser(
+      testUser2.name,
+      testUser2.username,
+      testUser2.email,
+      testUser2.password
+    )
+
+    const groupData = await createGroup('testGroup', userData1.token)
+    expect(groupData).toBeDefined()
+
+    await addUserToGroup(userData2.user.id, groupData.id, 'MEMBER')
+    const query = `mutation UpdateUserRole {
+       updateUserRole(userId: "${userData2.user.id}" groupId: "${groupData.id}" role: KEMBER) {
+         id
+         groups {
           role
-         }*/
+         }
+       }
+     }`
+
+    const result = await gqlToServer(url, query, userData1.token)
+    console.log(result.body)
+    expect(result.body.errors).toBeDefined()
+  })
+})

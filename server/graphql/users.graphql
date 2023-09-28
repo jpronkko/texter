@@ -5,7 +5,7 @@ enum Role {
 }
 
 type JoinedGroup {
-  group: Group!
+  group: GroupInfo!
   role: Role!
 }
 
@@ -22,7 +22,8 @@ type UserInfo {
   id: ID!
   name: String!
   username: String!
-  email: String!  
+  email: String!
+  groups: [JoinedGroup]
 }
 
 input UserInput {
@@ -43,11 +44,11 @@ type LoginData {
 }
 
 type Query {
-  me: User
+  me: UserInfo
   allUsers: [UserInfo]
   findUser(username: String!): UserInfo
   getUserJoinedGroups: [JoinedGroup]
-  findUserById(id: ID!): User
+  findUserById(id: ID!): UserInfo
 }
 
 type Mutation {

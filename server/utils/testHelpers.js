@@ -1,6 +1,6 @@
 const url = 'http://localhost:4000'
 const resetUrl = 'http://localhost:4000/test/reset'
-const createUsersUrl  = 'http://localhost:4000/test/addusers'
+const createUsersUrl = 'http://localhost:4000/test/addusers'
 
 const request = require('supertest')
 
@@ -21,13 +21,12 @@ const testUser2 = {
 }
 
 const commonHeaders = {
-  'Content-Type': 'application/json'
+  'Content-Type': 'application/json',
 }
 
 const postToServer = async (url, command, token) => {
-  const authHeader = { 'Authorization': `bearer ${token}` }
-  let headers = token ? { ...commonHeaders, ...authHeader } :
-    commonHeaders
+  const authHeader = { Authorization: `bearer ${token}` }
+  let headers = token ? { ...commonHeaders, ...authHeader } : commonHeaders
 
   const response = await request(url)
     .post(endpoint)
@@ -50,8 +49,7 @@ const createTestUsers = async () => {
 }
 
 const createUser = async (name, username, email, password) => {
-  const mutation =
-    `mutation CreateUser { createUser(user: 
+  const mutation = `mutation CreateUser { createUser(user: 
       { name: "${name}", 
         username: "${username}", 
         email: "${email}", 
@@ -78,19 +76,19 @@ const createTestUser = async () => {
 }
 
 const createGroup = async (groupName, token) => {
-  const mutation =
-    `mutation CreateGroup { 
-      createGroup(name: "${groupName}") {
-        id
-        name
-      } }`
+  const mutation = `mutation CreateGroup { 
+    createGroup(name: "${groupName}") {
+      id
+      name
+    } 
+  }`
   const result = await gqlToServer(url, mutation, token)
+  console.log(result.body)
   return result.body?.data?.createGroup
 }
 
 const login = async (username, password) => {
-  const mutation =
-    `mutation Login { login(credentials: { 
+  const mutation = `mutation Login { login(credentials: { 
       username: "${username}",
       password: "${password}" 
     }) { 
@@ -98,6 +96,8 @@ const login = async (username, password) => {
       user {
         id
         username
+        name
+        email
         groups {
           group {
             id
@@ -116,11 +116,8 @@ const loginTestUser = async () => {
   return await login(testUser.username, testUser.password)
 }
 
-const createInvitation = async (
-  groupId, fromUser, toUser, token
-) => {
-  const mutation =
-    `mutation CreateInvitation { 
+const createInvitation = async (groupId, fromUser, toUser, token) => {
+  const mutation = `mutation CreateInvitation { 
       createInvitation(invitation: {
         groupId: "${groupId}"
         fromUser: "${fromUser}"
@@ -140,8 +137,7 @@ const createInvitation = async (
 }
 
 const createTopic = async (groupId, name, token) => {
-  const mutation =
-  `mutation CreateTopic { 
+  const mutation = `mutation CreateTopic { 
     createTopic(
       groupId: "${groupId}"
       name: "${name}"
@@ -156,8 +152,7 @@ const createTopic = async (groupId, name, token) => {
 }
 
 const getMessages = async (topicId, token) => {
-  const query =
-  `query GetMessages {
+  const query = `query GetMessages {
     getMessages(topicId: ${topicId}) {
       id
       body
@@ -169,8 +164,7 @@ const getMessages = async (topicId, token) => {
 }
 
 const createMessage = async (topicId, body, token) => {
-  const mutation =
-  `mutation CreateMessage { 
+  const mutation = `mutation CreateMessage { 
     createMessage(messageInput: {
       topicId: "${topicId}"
       body: "${body}"
@@ -184,7 +178,6 @@ const createMessage = async (topicId, body, token) => {
   const result = await gqlToServer(url, mutation, token)
   return result.body?.data?.createMessage
 }
-
 
 module.exports = {
   url,
@@ -202,5 +195,5 @@ module.exports = {
   createInvitation,
   createTopic,
   getMessages,
-  createMessage
+  createMessage,
 }

@@ -6,8 +6,7 @@ const useCreateUser = () => {
   const [mutation, result] = useMutation( CREATE_USER )
 
   const createUser = async (user) => {
-    const var_object = {  }
-    logger.info('create mut object', var_object)
+    logger.info('create user params', user)
     const createResult = await mutation({
       variables: { user: {
         name: user.name,

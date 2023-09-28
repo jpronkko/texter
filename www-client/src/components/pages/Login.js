@@ -25,7 +25,7 @@ const Login = () => {
       logger.info('Login result:', user)
       navigate('/')
     } catch(error) {
-      showError(error)
+      showError(error.toString())
     }
   }
 
@@ -34,7 +34,7 @@ const Login = () => {
       await login('anni', 'klonksahtava')
       navigate('/')
     } catch(error) {
-      showError(error)
+      showError(error.toString())
     }
   }
   return (
