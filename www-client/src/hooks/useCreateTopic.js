@@ -9,14 +9,37 @@ import useError from './useErrorMessage'
 const useCreateTopic = () => {
   const [showError] = useError()
   const [mutation, result] = useMutation(CREATE_TOPIC, {
-    refetchQueries: [{ query: GET_TOPICS }],
     onError: (error) => {
       showError(error.toString())
     },
+    update: (store, response) => {
+      const newTopic = response.data.createTopic
+      const topicsInStore = store.readQuery({
+        query: GET_TOPICS,
+        variables: { groupId: newTopic.groupId },
+      })
+      store.writeQuery({
+        query: GET_TOPICS,
+        variables: { groupId: newTopic.groupId },
+        data: {
+          ...topicsInStore,
+          getTopics: [...topicsInStore.getTopics, response.data.createTopic],
+        },
+      })
+    },
+    //refetchQueries: [{ query: GET_TOPICS }],
+    /*update: (cache, response) => {
+      cache.updateQuery({ query: GET_TOPICS }, ({ getTopics }) => {
+        //console.log('updating', response)
+        return {
+          getTopics: getTopics.concat(response.data.createTopic),
+        }
+      })
+    },*/
   })
 
   const createTopic = async (groupId, name) => {
-    logger.info('create topic:', name)
+    logger.info('createTopic:', groupId, name)
     const createResult = await mutation({ variables: { groupId, name } })
     logger.info('Create topic result:', createResult)
     return createResult.data?.createTopic

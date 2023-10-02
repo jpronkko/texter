@@ -37,8 +37,12 @@ export const CREATE_MESSAGE = gql`
   mutation createMessage($messageInput: MessageInput) {
     createMessage(messageInput: $messageInput) {
       id
-      fromUser
+      body
       sentTime
+      fromUser {
+        id
+        name
+      }
     }
   }
 `

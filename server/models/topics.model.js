@@ -3,9 +3,8 @@ const Group = require('./groups.mongo')
 const logger = require('../utils/logger')
 
 const getAllTopics = async () => {
-  const topics = await Topic
-    .find({})
-  return topics.map(topic => topic.toJSON())
+  const topics = await Topic.find({})
+  return topics.map((topic) => topic.toJSON())
 }
 
 const findTopic = async (id) => {
@@ -19,44 +18,45 @@ const findTopic = async (id) => {
 
 const getMessages = async (topicId) => {
   logger.info('Trying to find messages with topicId:', topicId)
-  const topic = await Topic
-    .findOne({ _id: topicId })
-    .populate(
-      {
-        path: 'messages',
-        model: 'Message',
-        populate: {
-          path: 'fromUser',
-          model: 'User',
-          select: 'name'
-        }
-      }
-    )
-  if(topic) {
+  const topic = await Topic.findById(topicId).populate({
+    path: 'messages',
+    model: 'Message',
+    populate: {
+      path: 'fromUser',
+      model: 'User',
+      select: '_id name',
+    },
+  })
+  if (topic) {
     logger.info('Messages', topic.messages)
-    return topic.messages.map(message => message.toJSON())
+    return topic.messages.map((message) => message.toJSON())
   }
+  const topics = await Topic.find({})
+  console.log(topics.map((topic) => topic.toJSON()))
   return null
 }
 
 const createTopic = async (groupId, name) => {
+  logger.info(`Creating topic with groupId ${groupId} name: ${name}`)
+
   const existingTopic = await Topic.findOne({ groupId, name })
   if (existingTopic) {
     throw Error('Topic name taken')
   }
 
   const group = await Group.findById(groupId)
-  if(!group) {
+  if (!group) {
     throw new Error('No such group found!')
   }
 
   const topic = new Topic({ groupId, name })
   const savedTopic = await topic.save()
-  if(!savedTopic) {
+  if (!savedTopic) {
     throw new Error('Topic save failed!')
   }
   group.topics = group.topics.concat(topic.id)
   await group.save()
+  logger.info('Saved topic', savedTopic)
   return savedTopic.toJSON()
 }
 

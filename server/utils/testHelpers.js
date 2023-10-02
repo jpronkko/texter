@@ -56,13 +56,14 @@ const createUser = async (name, username, email, password) => {
         password: "${password}" 
       }){ 
         token
-        user {
-          id
-          name
-          username
+        userId
+        username
+        email
+        name
         }
-       }}`
+       }`
   const result = await gqlToServer(url, mutation)
+  console.log(result.body)
   return result.body?.data?.createUser
 }
 
@@ -76,6 +77,7 @@ const createTestUser = async () => {
 }
 
 const createGroup = async (groupName, token) => {
+  console.log('Create group', groupName, 'token', token)
   const mutation = `mutation CreateGroup { 
     createGroup(name: "${groupName}") {
       id
@@ -83,7 +85,9 @@ const createGroup = async (groupName, token) => {
     } 
   }`
   const result = await gqlToServer(url, mutation, token)
-  console.log(result.body)
+  console.log('result from create group: ', result.body)
+  console.log('GroupName', groupName)
+
   return result.body?.data?.createGroup
 }
 
@@ -93,22 +97,15 @@ const login = async (username, password) => {
       password: "${password}" 
     }) { 
       token
-      user {
-        id
-        username
-        name
-        email
-        groups {
-          group {
-            id
-            name
-          }
-          role
-        }
-      }
-    }}`
+      userId
+      username
+      name
+      email
+    }
+  }`
 
   const result = await gqlToServer(url, mutation)
+  console.log(result.body)
   return result.body?.data?.login
 }
 
@@ -143,6 +140,7 @@ const createTopic = async (groupId, name, token) => {
       name: "${name}"
     ){
       id
+      groupId
       name
     } 
   }`
@@ -155,6 +153,7 @@ const getMessages = async (topicId, token) => {
   const query = `query GetMessages {
     getMessages(topicId: ${topicId}) {
       id
+      topicId
       body
     }
   }`
@@ -170,12 +169,17 @@ const createMessage = async (topicId, body, token) => {
       body: "${body}"
     }){
       id
-      fromUser
+      topicId
+      fromUser {
+        id
+        name
+      }
       body
     } 
   }`
 
   const result = await gqlToServer(url, mutation, token)
+  console.log(result.body)
   return result.body?.data?.createMessage
 }
 

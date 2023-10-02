@@ -1,5 +1,6 @@
 type Message {
   id: ID!
+  topicId: ID!
   fromUser: ID!
   body: String!
   sentTime: String!
@@ -12,6 +13,7 @@ type MessageUserInfo {
 
 type MessageInfo {
   id: ID!
+  topicId: ID!
   fromUser: MessageUserInfo!
   body: String!
   sentTime: String!
@@ -32,7 +34,7 @@ type Query {
 }
 
 type Mutation {
-  createMessage(messageInput: MessageInput): Message
+  createMessage(messageInput: MessageInput): MessageInfo
 }
 
 type Subscription {

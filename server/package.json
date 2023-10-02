@@ -21,11 +21,13 @@
   "scripts": {
     "start": "NODE_ENV=production node index.js",
     "dev": "NODE_ENV=development nodemon index.js",
+    "test_mode": "NODE_ENV=test nodemon index.js",
     "test": "NODE_ENV=test jest --verbose --runInBand --detectOpenHandles",
-    "test_topic" : "NODE_ENV=test jest 'graphql/topics.test.js' --verbose --runInBand --detectOpenHandles",
-    "test_user" : "NODE_ENV=test jest 'graphql/users.test.js' --verbose --runInBand --detectOpenHandles",
-    "test_group" : "NODE_ENV=test jest 'graphql/groups.test.js' --verbose --runInBand --detectOpenHandles",
-    "test_inv" : "NODE_ENV=test jest 'graphql/invitations.test.js' --verbose --runInBand --detectOpenHandles"
+    "test_topic": "NODE_ENV=test jest 'graphql/topics.test.js' --verbose --runInBand --detectOpenHandles",
+    "test_user": "NODE_ENV=test jest 'graphql/users.test.js' --verbose --runInBand --detectOpenHandles",
+    "test_group": "NODE_ENV=test jest 'graphql/groups.test.js' --verbose --runInBand --detectOpenHandles",
+    "test_inv": "NODE_ENV=test jest 'graphql/invitations.test.js' --verbose --runInBand --detectOpenHandles",
+    "test_messages": "NODE_ENV=test jest 'graphql/messages.test.js' --verbose --runInBand --detectOpenHandles"
   },
   "name": "server",
   "version": "1.0.0",

@@ -1,4 +1,3 @@
-
 const express = require('express')
 const cors = require('cors')
 const http = require('http')
@@ -28,7 +27,10 @@ const startServer = async () => {
   //morganBody(app)
   app.use('/health', healthCheckRouter)
 
-  if(process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
+  if (
+    process.env.NODE_ENV === 'test' ||
+    process.env.NODE_ENV === 'development'
+  ) {
     logger.info('Adding test routes.')
     const testRouter = require('./routes/testRouter')
     app.use('/test', testRouter)
@@ -38,7 +40,7 @@ const startServer = async () => {
     '/',
     express.json(),
     expressMiddleware(apolloServer, {
-      context: async({ req,  }) => {
+      context: async ({ req }) => {
         /*
         const anniId = '64ec7c31d770cca4eb314561'
         const currentUser = await usersModel.findUserWithId(anniId)
@@ -46,21 +48,26 @@ const startServer = async () => {
         */
 
         const auth = req ? req.headers.authorization : null
+        console.log('Auth header', req.headers.authorization)
         if (auth && auth.toLocaleLowerCase().startsWith('bearer ')) {
           try {
             const decodedToken = jwt.verify(
-              auth.substring(7), config.JWT_SECRET
+              auth.substring(7),
+              config.JWT_SECRET
             )
-            console.log('decooded', decodedToken)
-            const currentUser = await usersModel.findUserWithId(decodedToken.id)
+
+            console.log('Decoced token:', decodedToken)
+            const currentUser = await usersModel.findUserWithId(
+              decodedToken.userId
+            )
             return { currentUser }
           } catch (error) {
             logger.error('Token decode failed', error)
           }
           return null
         }
-      }
-    }),
+      },
+    })
   )
 
   httpServer.listen(config.PORT, () =>

@@ -1,28 +1,26 @@
 module.exports = {
-  'env': {
-    'commonjs': true,
-    'node': true,
-    'browser': true,
-    'es6': true,
-    'jest/globals': true
+  env: {
+    commonjs: true,
+    node: true,
+    browser: true,
+    es6: true,
+    'jest/globals': true,
   },
-  'extends': [
+  extends: [
     'eslint:recommended',
     'plugin:react/recommended',
-    'plugin:cypress/recommended'
+    'plugin:cypress/recommended',
   ],
-  'parserOptions': {
-    'ecmaFeatures': {
-      'jsx': true
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
     },
-    'ecmaVersion': 2018,
-    'sourceType': 'module'
+    ecmaVersion: 2018,
+    sourceType: 'module',
   },
-  'plugins': [
-    'react', 'jest', 'cypress'
-  ],
-  'rules': {
-    'indent': [
+  plugins: ['react', 'jest', 'cypress'],
+  rules: {
+    /*'indent': [
       'error',
       2
     ],
@@ -37,21 +35,17 @@ module.exports = {
     'semi': [
       'error',
       'never'
-    ],
-    'eqeqeq': 'error',
+    ],*/
+    eqeqeq: 'error',
     'no-trailing-spaces': 'error',
-    'object-curly-spacing': [
-      'error', 'always'
-    ],
-    'arrow-spacing': [
-      'error', { 'before': true, 'after': true }
-    ],
-  //  'no-console': 'error',
-    'react/prop-types': 0
+    'object-curly-spacing': ['error', 'always'],
+    'arrow-spacing': ['error', { before: true, after: true }],
+    //  'no-console': 'error',
+    'react/prop-types': 0,
   },
-  'settings': {
-    'react': {
-      'version': 'detect'
-    }
-  }
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
 }

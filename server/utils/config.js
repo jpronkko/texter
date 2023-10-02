@@ -4,6 +4,8 @@ const JWT_SECRET = process.env.SECRET
 const PORT = process.env.PORT
 
 let MONGODB_URI = process.env.DEV_MONGODB_URI
+console.log(`ENV is ${process.env.NODE_ENV}`)
+
 if (process.env.NODE_ENV === 'test') {
   MONGODB_URI = process.env.TEST_MONGODB_URI
 } else if (process.env.NODE_ENV === 'production') {
@@ -13,5 +15,5 @@ if (process.env.NODE_ENV === 'test') {
 module.exports = {
   MONGODB_URI,
   PORT,
-  JWT_SECRET
+  JWT_SECRET,
 }

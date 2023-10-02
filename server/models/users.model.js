@@ -4,26 +4,24 @@ const User = require('./users.mongo')
 const { pwCompare, tokenFromUser } = require('../utils/pwtoken')
 
 const findUser = async (username) => {
-  const user = await User.findOne({ username }).populate('groups')
-  if (user)
-    return user.toJSON()
+  //const user = await User.findOne({ username }).populate('groups')
+  const user = await User.findOne({ username })
+  if (user) return user.toJSON()
 
   return null
 }
 
 const findUserWithId = async (userId) => {
-  const user = await User
-    .findById(userId)
-    .populate(
-      {
-        path: 'groups',
-        model: 'JoinedGroup',
-        populate: {
-          path: 'group',
-          model: 'Group'
-        }
-      }
-    )
+  console.log('finding user with id', userId)
+  const user = await User.findById(userId)
+  // const user = await User.findById(userId).populate({
+  //   path: 'groups',
+  //   model: 'JoinedGroup',
+  //   populate: {
+  //     path: 'group',
+  //     model: 'Group',
+  //   },
+  // })
 
   if (user) {
     return user.toJSON()
@@ -33,23 +31,27 @@ const findUserWithId = async (userId) => {
 
 const getAllUsers = async () => {
   const allUsers = await User.find({})
-  return allUsers.map(user => user.toJSON())
+  return allUsers.map((user) => user.toJSON())
 }
 
 const createUser = async (name, username, email, passwordHash) => {
   const user = new User({ name, username, email, passwordHash })
-  const result = await user.save()
-  if(!result) {
+  const savedUser = (await user.save()).toJSON()
+  if (!savedUser) {
     throw new Error('User save failed!')
   }
-  return result.toJSON()
+  return {
+    userId: savedUser.id,
+    username: savedUser.username,
+    email: savedUser.email,
+    name: savedUser.name,
+  }
 }
 
 const login = async (username, password) => {
   logger.info('Login with username', username, 'password', password)
-  const user = await User
-    .findOne({ username })
-    .populate(
+  const user = await User.findOne({ username })
+  /* .populate(
       {
         path: 'groups',
         model: 'JoinedGroup',
@@ -58,26 +60,28 @@ const login = async (username, password) => {
           model: 'Group'
         }
       }
-    )
+    )*/
 
-  if(!user) {
+  if (!user) {
     throw new Error('No such user')
   }
 
   console.log('User', user, 'groups')
-  console.log('groups', user.groups[0], typeof user.groups[0])
-  console.log('jsoned', JSON.stringify(user.toJSON().groups[0]))
 
   const passwordCorrect = await pwCompare(password, user.passwordHash)
-  logger.info('PW correct', passwordCorrect)
+  logger.info('Login password correct', passwordCorrect)
 
   if (!passwordCorrect) {
-    throw new Error( 'Wrong credentials')
+    throw new Error('Wrong credentials')
   }
 
+  const userJSON = user.toJSON()
   return {
-    token: tokenFromUser(user),
-    user: user.toJSON()
+    token: tokenFromUser(userJSON),
+    userId: userJSON.id,
+    username: userJSON.username,
+    email: userJSON.email,
+    name: userJSON.name,
   }
 }
 
@@ -89,7 +93,7 @@ const addUserToGroup = async (userId, groupId, role) => {
 
   user.groups = user.groups.concat({
     group: groupId,
-    role
+    role,
   })
 
   // TODO!
@@ -100,32 +104,29 @@ const addUserToGroup = async (userId, groupId, role) => {
       throw new Error('Saving user failed!')
     }
     return updatedUser.toJSON()
-  } catch(error) {
+  } catch (error) {
     throw new Error('Saving user failed2!')
   }
 }
 
 const updateRoleInGroup = async (userId, groupId, role) => {
   console.log('updating user role', userId, groupId, role)
-  const user = await User.findById(userId)
-    .populate(
-      {
-        path: 'groups',
-        model: 'JoinedGroup',
-        populate: {
-          path: 'group',
-          model: 'Group'
-        }
-      }
-    )
+  const user = await User.findById(userId).populate({
+    path: 'groups',
+    model: 'JoinedGroup',
+    populate: {
+      path: 'group',
+      model: 'Group',
+    },
+  })
 
   if (!user) {
     logger.error(`No such user found: ${userId}`)
     throw new Error('No such user!')
   }
 
-  user.groups = user.groups.map(
-    item => item.group.id === groupId ? { ...item, role } : item
+  user.groups = user.groups.map((item) =>
+    item.group.id === groupId ? { ...item, role } : item
   )
 
   const savedUser = await user.save()
@@ -134,17 +135,20 @@ const updateRoleInGroup = async (userId, groupId, role) => {
 
 /* Do we need this: */
 const getUserJoinedGroups = async (userId) => {
-  const user = await User
-    .findById(userId)
-    .populate('groups')
+  const user = await User.findById(userId).populate({
+    path: 'groups',
+    model: 'JoinedGroup',
+    populate: {
+      path: 'group',
+      model: 'Group',
+    },
+  })
 
   if (!user) {
     throw new Error('No such user!')
   }
 
-  return {
-    groups: user.groups,
-  }
+  return user.toJSON().groups
 }
 
 module.exports = {

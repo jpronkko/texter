@@ -4,41 +4,41 @@ import { logOut } from './userSlice'
 export const selectionSlice = createSlice({
   name: 'selection',
   initialState: {
-    groupId: '',
-    groupName: '',
-    topicId: '',
-    topicName: '',
+    group: { id: '', name: '' },
+    topic: { id: '', name: '' },
   },
   reducers: {
     setGroup: (state, action) => {
       console.log('Group set group action payload:', action.payload)
-      state.groupId = action.payload.id
-      state.groupName = action.payload.name
+      state.group = { id: action.payload.id, name: action.payload.name }
+      state.topic = { id: '', name: '' }
     },
     clearGroup: (state) => {
-      state.groupId = ''
-      state.groupName = ''
+      state.group = { id: '', name: '' }
+      state.topic = { id: '', name: '' }
     },
     setTopic: (state, action) => {
       console.log('Group set group action payload:', action.payload)
-      state.topicId = action.payload.id
-      state.topicName = action.payload.name
+      state.topic = { id: action.payload.id, name: action.payload.name }
     },
     clearTopic: (state) => {
-      state.topicId = ''
-      state.topicName = ''
+      state.topic = { id: '', name: '' }
     },
   },
   extraReducers(builder) {
     builder.addCase(logOut, (state) => {
-      state.groupId = ''
-      state.groupName = ''
-      state.topicId = ''
-      state.topicName = ''
+      state.group = { id: '', name: '' }
+      state.topic = { id: '', name: '' }
     })
   },
 })
 
-export const { setGroup, setTopic, addMessage, setMessages } =
-  selectionSlice.actions
+export const {
+  clearGroup,
+  setGroup,
+  clearTopic,
+  setTopic,
+  addMessage,
+  setMessages,
+} = selectionSlice.actions
 export default selectionSlice.reducer

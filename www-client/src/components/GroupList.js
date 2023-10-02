@@ -1,27 +1,15 @@
 import React, { /*useEffect,*/ useRef /*{ useState }*/ } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
-import {
-  Button,
-  Divider,
-  Drawer,
-  Toolbar,
-  Typography,
-  //TreeItem,
-  //  TreeView,
-  //Typography
-} from '@mui/material'
+import { Button, Divider, Drawer, Toolbar, Typography } from '@mui/material'
 
-/*import { TreeItem, TreeView } from '@mui/x-tree-view'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-*/
+import { AddBox } from '@mui/icons-material'
+
 import { addJoinedGroup } from '../app/userSlice'
 import useCreateGroup from '../hooks/useCreateGroup'
 import useCreateTopic from '../hooks/useCreateTopic'
+import { clearGroup, setGroup } from '../app/selectionSlice'
 
-import { useDispatch, useSelector } from 'react-redux'
-import { AddBox } from '@mui/icons-material'
-import { setGroup /*setTopic */ } from '../app/selectionSlice'
 import InputTextDlg from './dialogs/InputTextDlg'
 import Topics from './Topics'
 import Accordion from './Accordion'
@@ -31,7 +19,7 @@ const drawerWidth = 300
 
 const GroupList = () => {
   const user = useSelector((state) => state.user.userData)
-  const groupId = useSelector((state) => state.selection.groupId)
+  const group = useSelector((state) => state.selection.group)
 
   const dispatch = useDispatch()
   const topicDlgRef = useRef()
@@ -39,14 +27,18 @@ const GroupList = () => {
 
   const [createGroup] = useCreateGroup()
   const [createTopic] = useCreateTopic()
-  const [expanded, setExpanded] = React.useState('panel1')
+  /*const [expanded, setExpanded] = React.useState('panel1')
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false)
-  }
+    handleSelectGroup(newExpanded ? panel : '')
+  }*/
 
-  const handleSelectGroup = async (groupId) => {
-    dispatch(setGroup(groupId))
+  const handleSelectGroup = async (newGroup) => {
+    if (newGroup.id === group?.id) return
+    console.log('Selecting group:', newGroup)
+    if (newGroup) dispatch(setGroup(newGroup))
+    else dispatch(clearGroup(newGroup))
   }
 
   console.log('user groups', user.groups)
@@ -66,7 +58,7 @@ const GroupList = () => {
   }
 
   const handleCreateTopic = async (name) => {
-    const topic = await createTopic(groupId, name)
+    const topic = await createTopic(group.id, name)
     console.log('Handle Create Topic', topic)
     topicDlgRef.current.close()
   }
@@ -74,21 +66,31 @@ const GroupList = () => {
   const renderedGroups = user.groups.map((item) => (
     <Accordion
       key={item.group.id}
-      expanded={expanded === item.group.name}
-      onChange={handleChange(item.group.name)}
+      //expanded={expanded === item.group}
+      expanded={group?.id === item.group.id}
+      //onChange={handleChange(item.group)}
+      onChange={() => handleSelectGroup(item.group)}
     >
       <AccordionSummary key={item.group.id}>
         <Button
           variant="text"
-          onClick={() => handleSelectGroup(item.group.id)}
+          //onClick={() => handleSelectGroup(item.group)}
+          onClick={() => console.log('group foffa!')}
         >
           <Typography>{item.group.name}</Typography>
         </Button>
       </AccordionSummary>
       <Topics
-        groupId={item.group.id}
+        group={item.group}
         handleCreateTopic={() => topicDlgRef.current.open()}
+        selectGroupOfTopic={handleSelectGroup}
       />
+      <Button
+        variant="text"
+        startIcon={<AddBox />}
+      >
+        <Typography variant="subtitle2">Add Members</Typography>
+      </Button>
     </Accordion>
   ))
 

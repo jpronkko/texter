@@ -7,7 +7,7 @@ import { /*useDispatch,*/ useSelector } from 'react-redux'
 import { MESSAGE_ADDED } from '../../graphql/subscriptions'
 import useMessages from '../../hooks/useGetMessages'
 
-import { Button, Divider, List } from '@mui/material'
+import { Button, Divider, List, Typography } from '@mui/material'
 import MessageListItem from '../MessageListItem'
 import CreateMessageForm from '../forms/CreateMessageForm'
 
@@ -15,58 +15,35 @@ import logger from '../../utils/logger'
 import useCreateMessage from '../../hooks/useCreateMessage'
 
 const MessageList = () => {
-  const groupId = useSelector(state => state.selection.groupId)
-  const topicId = useSelector(state => state.selection.topicId)
+  const group = useSelector((state) => state.selection.group)
+  const topic = useSelector((state) => state.selection.topic)
 
   useSubscription(MESSAGE_ADDED, {
-    variables: { groupId: groupId },
+    variables: { groupId: group.id },
     onData: ({ data }) => {
       logger.info('Subsribe add msg', data)
-    }
+    },
   })
 
   // const [getMessages, messagesResult] = useQuery(GET_MESSAGES)
 
-  const { messages, loading, error,  } = useMessages(topicId)
+  const { messages, loading, error } = useMessages(topic.id)
   const [createMessage, result] = useCreateMessage()
   //const dispatch = useDispatch()
 
-  /*useEffect(() => {
-    if (groupId) {
-      getMessages({ variables: { groupId: groupId } })
-    }
-  }, [groupId])*/
+  console.log(
+    `message list: group ${JSON.stringify(group.id)}, topic ${JSON.stringify(
+      topic.id
+    )}`,
+    messages
+  )
 
-  /*useEffect(() => {
-    console.log('New messageResult')
-    if (messagesResult && messagesResult.data) {
-      const messages = messagesResult.data.getMessages
-      if(messages) {
-        dispatch(setMessages(messages.map(msg => {
-          const { id, body, sentTime } = msg
-          return { id, body, sentTime, fromUser: { id: msg.fromUser.id, name: msg.fromUser.name } }
-        })))
-      }
-    }
-  }, [messagesResult])*/
-
-  console.log(`group ${JSON.stringify(groupId)}, topic ${JSON.stringify(topicId)}`,
-    messages)
-
-  if(loading) {
-    return (
-      <div>
-        Loading ...
-      </div>
-    )
+  if (loading) {
+    return <div>Loading ...</div>
   }
 
-  if(error) {
-    return (
-      <div>
-        Error Retrieving messages: {JSON.stringify(error)}
-      </div>
-    )
+  if (error) {
+    return <div>Error Retrieving messages: {JSON.stringify(error)}</div>
   }
 
   const handleClick = () => {
@@ -77,24 +54,32 @@ const MessageList = () => {
 
   const handleCreate = async (data) => {
     console.log(data, result)
-    const message = await createMessage(groupId, data)
+    const message = await createMessage(topic.id, data)
     console.log('Message created', message)
     //dispatch(addMessage(message))
   }
   // data.getMessages.map((message) =>
-  const renderMessages = messages ? messages.map((message) =>
-    <MessageListItem
-      key={message.id}
-      sender={message.fromUser}
-      sentTime={message.sentTime}
-      body={message.body}/>) : []
+  const renderMessages = messages
+    ? messages.map((message) => (
+        <MessageListItem
+          key={message.id}
+          sender={message.fromUser}
+          sentTime={message.sentTime}
+          body={message.body}
+        />
+      ))
+    : []
 
   return (
     <div>
-      <List>
-        {renderMessages ? renderMessages :'No messages'}
-      </List>
-      <Button variant="contained" onClick={handleClick}>Test refetch</Button>
+      <Typography>Message List</Typography>
+      <List>{renderMessages ? renderMessages : 'No messages'}</List>
+      <Button
+        variant="contained"
+        onClick={handleClick}
+      >
+        Test refetch
+      </Button>
       <Divider />
       <CreateMessageForm handleCreate={handleCreate} />
     </div>

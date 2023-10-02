@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 const validator = require('validator')
-const Group = require('./groups.mongo')
 
 const JoinedGroup = mongoose.Schema({
   group: {
@@ -13,7 +12,7 @@ const JoinedGroup = mongoose.Schema({
     type: String,
     enum: ['OWNER', 'ADMIN', 'MEMBER'],
     required: true,
-  }
+  },
 })
 
 const schema = new mongoose.Schema({
@@ -37,22 +36,17 @@ const schema = new mongoose.Schema({
     minlength: 4,
     maxlength: 20,
     validate: {
-      validator: validator.isEmail
-    }
+      validator: validator.isEmail,
+    },
   },
   passwordHash: {
     type: String,
     required: true,
     minlength: 5,
   },
-  groups: [ JoinedGroup ],
+  groups: [JoinedGroup],
 })
 
-/*
-{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'JoinedGroup'
-    }*/
 schema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
@@ -61,15 +55,15 @@ schema.set('toJSON', {
     delete returnedObject.passwordHash
 
     if (returnedObject.groups) {
-      returnedObject.groups = returnedObject.groups
-        .map(item => {
-          return {
-            id: item._id.toString(),
-            group: item.group,
-            role: item.role }
-        })
+      returnedObject.groups = returnedObject.groups.map((item) => {
+        return {
+          id: item._id.toString(),
+          group: item.group,
+          role: item.role,
+        }
+      })
     }
-  }
+  },
 })
 
 mongoose.plugin(uniqueValidator)

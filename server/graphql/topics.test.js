@@ -9,14 +9,13 @@ const {
   createTopic,
 } = require('../utils/testHelpers')
 
-
 const testTopicName = 'testi'
 
 describe('topic test', () => {
   let httpServer, apolloServer, userData, groupData
 
   beforeAll(async () => {
-    ({ httpServer, apolloServer } = await startServer())
+    ;({ httpServer, apolloServer } = await startServer())
   })
 
   afterAll(async () => {
@@ -27,23 +26,18 @@ describe('topic test', () => {
     // Empty the test db
     await resetDatabases()
     // Create test user for all the tests
-    userData  = await createTestUser()
+    userData = await createTestUser()
 
     groupData = await createGroup('test_group', userData.token)
   })
 
   it('creating a topic works with appropriate token', async () => {
-    const topic = await createTopic(
-      groupData.id,
-      testTopicName,
-      userData.token
-    )
+    const topic = await createTopic(groupData.id, testTopicName, userData.token)
 
-    expect(topic).toBeDefined()
+    expect(topic.groupId).toEqual(groupData.id)
     expect(topic.name).toEqual(testTopicName)
 
-    const query =
-      `query AllTopics {
+    const query = `query AllTopics {
         allTopics {
           id
           name
@@ -54,8 +48,7 @@ describe('topic test', () => {
     const topicInDb = result.body?.data?.allTopics[0]
     expect(topicInDb).toBeDefined()
 
-    const query2 =
-      `query GetTopics {
+    const query2 = `query GetTopics {
         getTopics(groupId: "${groupData.id}") {
           id,
           name
@@ -66,7 +59,6 @@ describe('topic test', () => {
     const topicInDb2 = result2.body.data.getTopics[0]
     expect(topicInDb2.name).toEqual(testTopicName)
   })
-
 
   /*it('creating a topic does not work with false token', async () => {
     const topic = await createTopic(

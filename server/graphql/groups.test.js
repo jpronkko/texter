@@ -12,7 +12,7 @@ const { findUserWithId } = require('../models/users.model')
 const testGroupName = 'testGroup'
 
 describe('groups test', () => {
-  let httpServer, apolloServer, userData1
+  let httpServer, apolloServer, userData
 
   beforeAll(async () => {
     ;({ httpServer, apolloServer } = await startServer())
@@ -26,11 +26,12 @@ describe('groups test', () => {
     // Empty the test db
     await resetDatabases()
     // Create test user for all the tests
-    userData1 = await createTestUser()
+    userData = await createTestUser()
   })
 
   it('create group with existing userId, non-existing group', async () => {
-    const groupData = await createGroup(testGroupName, userData1.token)
+    console.log('UserData from create user', userData)
+    const groupData = await createGroup(testGroupName, userData.token)
     expect(groupData).toBeDefined()
     expect(groupData.name).toEqual(testGroupName)
 
@@ -38,7 +39,7 @@ describe('groups test', () => {
     const groupInDb = await findGroup(groupId)
     expect(groupInDb).toBeDefined()
 
-    const savedUser = await findUserWithId(userData1.user.id)
+    const savedUser = await findUserWithId(userData.user.id)
     expect(savedUser.groups).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -50,11 +51,11 @@ describe('groups test', () => {
   })
 
   it('create group with existing userId, existing group', async () => {
-    const groupData = await createGroup(testGroupName, userData1.token)
+    const groupData = await createGroup(testGroupName, userData.token)
     expect(groupData).toBeDefined()
     expect(groupData.name).toEqual(testGroupName)
 
-    const newGroupData = await createGroup(testGroupName, userData1.token)
+    const newGroupData = await createGroup(testGroupName, userData.token)
     expect(newGroupData).toBeNull()
   })
 

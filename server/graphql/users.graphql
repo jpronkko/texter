@@ -40,7 +40,10 @@ input UserLoginInput {
 
 type LoginData {
   token: String!
-  user: User!
+  userId: ID!
+  username: String!
+  email: String!
+  name: String!
 }
 
 type Query {

@@ -8,24 +8,42 @@ const getAllMessages = async () => {
 }
 
 const createMessage = async (user, topicId, body) => {
+  logger.info(
+    `Create message, user: ${JSON.stringify(
+      user
+    )}, topic: ${topicId}, body: ${body}`
+  )
+
   const topic = await Topic.findById(topicId)
-  if(!topic) {
+  if (!topic) {
+    logger.error('No such topic found:', topicId)
     throw new Error(`No such topic found! ${topicId}`)
   }
 
-  logger.info('Create message', topicId, user.id, topic, body)
-
-  const message = new Message({ fromUser: user.id, body, sentTime: Date.now() })
+  const message = new Message({
+    topicId,
+    fromUser: user.id,
+    body,
+    sentTime: Date.now(),
+  })
   const savedMessage = await message.save()
+  const populatedMessage = await message.populate({
+    path: 'fromUser',
+    select: '_id name',
+  })
   logger.info('Trying create message save', savedMessage)
 
   topic.messages = topic.messages.concat(message._id)
   await topic.save()
-  console.log(`saved message: ${savedMessage}`)
-  return savedMessage.toJSON()
+  logger.info(
+    `Saved message: ${populatedMessage} toJSON: ${JSON.stringify(
+      populatedMessage.toJSON()
+    )}`
+  )
+  return populatedMessage.toJSON()
 }
 
 module.exports = {
   getAllMessages,
-  createMessage
+  createMessage,
 }

@@ -13,7 +13,7 @@ import Button from '@mui/material/Button'
 import AdbIcon from '@mui/icons-material/Adb'
 
 import { useNavigate } from 'react-router-dom'
-import { useSelector, /*useDispatch*/ } from 'react-redux'
+import { useSelector /*useDispatch*/ } from 'react-redux'
 import useLogInOut from '../hooks/useLogInOut'
 import UserMenu from './UserMenu'
 import ConfirmMessage from './dialogs/ConfirmMessage'
@@ -24,8 +24,9 @@ const TopBar = () => {
   const navigate = useNavigate()
   const [, logout] = useLogInOut()
 
-  const user = useSelector(state => state.user.userData)
-  const groupName = useSelector(state => state.selection.groupName)
+  const user = useSelector((state) => state.user.userData)
+  const group = useSelector((state) => state.selection.group)
+  const topic = useSelector((state) => state.selection.topic)
 
   const userLoggedIn = () => user.username !== ''
 
@@ -35,7 +36,7 @@ const TopBar = () => {
 
   const userMenuItems = [
     { name: 'Profile', callback: () => navigate('/profile') },
-    { name: 'Logout', callback: showLogout }
+    { name: 'Logout', callback: showLogout },
   ]
 
   const loggedInPages = []
@@ -50,12 +51,20 @@ const TopBar = () => {
   //   { name: 'Create Account', path: '/create_account' },
   // ]
 
-
-  const pages = () => { return userLoggedIn() ? loggedInPages : loggedOutPages }
+  const pages = () => {
+    return userLoggedIn() ? loggedInPages : loggedOutPages
+  }
 
   return (
-    <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-      <ConfirmMessage ref={confirmDlgRef} title='Are you sure you want to logout?' onOk={() => logout()}  />
+    <AppBar
+      position="fixed"
+      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+    >
+      <ConfirmMessage
+        ref={confirmDlgRef}
+        title="Are you sure you want to logout?"
+        onOk={() => logout()}
+      />
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -74,7 +83,8 @@ const TopBar = () => {
               textDecoration: 'none',
             }}
           >
-          TEXTER - user: {user.username} group: {groupName}
+            TEXTER - user: {user.username} group: {group?.name} topic:{' '}
+            {topic?.name}
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages().map((page) => (
@@ -89,7 +99,7 @@ const TopBar = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            {userLoggedIn() && <UserMenu itemList={userMenuItems}/>}
+            {userLoggedIn() && <UserMenu itemList={userMenuItems} />}
           </Box>
         </Toolbar>
       </Container>

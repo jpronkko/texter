@@ -1,5 +1,6 @@
 type Topic {
   id: ID!
+  groupId: ID!
   name: String!
   messages: [ID]
 }

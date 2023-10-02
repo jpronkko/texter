@@ -15,16 +15,24 @@ module.exports = {
   },
   Mutation: {
     createMessage: async (root, args, { currentUser }) => {
+      console.log('resolver createMessage args', args)
       checkUser(currentUser, 'Not authorized!')
 
-      const { messageInput: { topicId, body } } = args
+      const {
+        messageInput: { topicId, body },
+      } = args
 
       try {
-        if(!checkUserInTopicGroup(currentUser, topicId)) {
-          throw new GraphQLError('User not in correct group!', { extensions: { code: 'WRONG_GROUP' } })
+        if (!checkUserInTopicGroup(currentUser, topicId)) {
+          logger.error('User not in correct group', currentUser, topicId)
+          throw new GraphQLError('User not in correct group!', {
+            extensions: { code: 'WRONG_GROUP' },
+          })
         }
         const message = await messagesModel.createMessage(
-          currentUser, topicId, body
+          currentUser,
+          topicId,
+          body
         )
         pubsub.publish('MESSAGE_ADDED', {
           messageAdded: {
@@ -33,10 +41,11 @@ module.exports = {
           },
         })
         return message
-      } catch(error) {
+      } catch (error) {
+        logger.error('Error:', error)
         throw new GraphQLError('Topic id error!')
       }
-    }
+    },
   },
   Subscription: {
     messageAdded: {
@@ -46,8 +55,7 @@ module.exports = {
           console.log('msg added subs paload', payload)
           return payload.messageAdded.topicId === variables.topicId
         }
-      )
-    }
-  }
-
+      ),
+    },
+  },
 }

@@ -3,7 +3,10 @@ const config = require('../utils/config')
 const bcrypt = require('bcrypt')
 
 const tokenFromUser = (user) => {
-  return(jwt.sign( { username: user.username, id: user.id }, config.JWT_SECRET)
+  console.log('token form user', user)
+  return jwt.sign(
+    { username: user.username, userId: user.id },
+    config.JWT_SECRET
   )
 }
 
