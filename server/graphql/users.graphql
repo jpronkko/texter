@@ -57,8 +57,8 @@ type Query {
 type Mutation {
   createUser(user: UserInput): LoginData
   login(credentials: UserLoginInput): LoginData
-  addUserToGroup(groupId: ID!, userId: ID!): ID
-  updateUserRole(userId: ID!, groupId: ID!, role: Role!): User
+  addUserToGroup(groupId: ID!, userId: ID!): [JoinedGroup]
+  updateUserRole(userId: ID!, groupId: ID!, role: Role!): [JoinedGroup]
 }
 
 type AddedGroups {

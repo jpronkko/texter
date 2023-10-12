@@ -22,13 +22,28 @@ const useCreateGroup = () => {
     onError: (error) => {
       showError(error.toString())
     },
-    update: (cache, response) => {
+    /*update: (cache, response) => {
       cache.updateQuery({ query: GET_MY_INFO }, ({ me }) => {
         return {
           me: me.groups.concat(response.data.addGroup),
         }
       })
-    },
+    },*/
+    update: (store, response) => {
+      const newGroup = response.data.createTopic
+      const topicsInStore = store.readQuery({
+        query: GET_TOPICS,
+        variables: { groupId: newGroup.groupId },
+      })
+      store.writeQuery({
+        query: GET_TOPICS,
+        variables: { groupId: newGroup.groupId },
+        data: {
+          ...topicsInStore,
+          getTopics: [...topicsInStore.getTopics, response.data.createTopic],
+        },
+      })
+    }
   })
 
   const createGroup = async (name) => {

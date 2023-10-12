@@ -13,7 +13,7 @@ const checkUser = (currentUser, errorMessage) => {
 
 const checkUserInGroup = (user, groupId) => {
   const userGroups = user.groups
-
+  console.error(user, groupId)
   if (userGroups.find((item) => item.group.id === groupId)) {
     return true
   }
@@ -33,6 +33,9 @@ const checkUserInTopicGroup = async (user, topicId) => {
 }
 
 const checkUserOwnsGroup = (user, groupId) => {
+  console.log('!!!!!!!!!!!!!!!!!!!!')
+  console.log('user', JSON.stringify(user), 'group id', groupId)
+  //const joinedGroup = User.findById(user.id).
   const joinedGroup = user.groups.find((item) => item.group.id === groupId)
   if (joinedGroup && joinedGroup.role === 'OWNER') return true
 

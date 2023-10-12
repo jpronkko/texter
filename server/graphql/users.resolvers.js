@@ -55,13 +55,15 @@ module.exports = {
         console.log('newuser', newUser)
         pubsub.publish('USER_ADDED', { userAdded: newUser })
 
-        return {
+        const tokenAndUser = await usersModel.login(username, password)
+        return tokenAndUser
+        /*return {
           token: tokenFromUser(newUser),
           userId: newUser.userId,
           username: newUser.username,
           email: newUser.email,
           name: newUser.name,
-        }
+        }*/
       } catch (error) {
         throw new GraphQLError('Creating user failed', {
           extensions: {
@@ -89,15 +91,15 @@ module.exports = {
       }
 
       // should return without pw hash
-      const updatedUser = await usersModel.addUserToGroup(userId, groupId)
-
+      const groups = await usersModel.addUserToGroup(userId, groupId)
+      console.log('addusertog', groups)
       pubsub.publish('USER_ADDED_TO_GROUP', {
         userAddedToGroup: {
           userId,
-          joinedGroups: updatedUser.groups,
+          joinedGroups: groups,
         },
       })
-      return groupId
+      return groups
     },
     updateUserRole: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Updating user role failed!')
@@ -108,12 +110,8 @@ module.exports = {
       }
 
       try {
-        const updatedUser = await usersModel.updateRoleInGroup(
-          userId,
-          groupId,
-          role
-        )
-        return updatedUser
+        const groups = await usersModel.updateRoleInGroup(userId, groupId, role)
+        return groups
       } catch (error) {
         throw new GraphQLError('User update did not work', error.message)
       }

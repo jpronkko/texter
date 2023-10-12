@@ -56,9 +56,19 @@ schema.set('toJSON', {
 
     if (returnedObject.groups) {
       returnedObject.groups = returnedObject.groups.map((item) => {
+        /*const groupItem = item.group.name
+          ? {
+              id: item.group._id.toString(),
+              name: item.group.name,
+            }
+          : item.group
+            */
+        console.log('groupItem', JSON.stringify(item.group), typeof item.group)
+        console.error('string:', item.group.toString())
+        const groupItem = item.group.toString()
         return {
           id: item._id.toString(),
-          group: item.group,
+          group: groupItem,
           role: item.role,
         }
       })
