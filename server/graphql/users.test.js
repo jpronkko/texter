@@ -8,6 +8,8 @@ const {
   createTestUser,
   createGroup,
   createTestUsers,
+  addUserToGroup,
+  getUser,
   login,
   loginTestUser,
   resetDatabases,
@@ -17,7 +19,7 @@ const {
 
 const {
   findUser,
-  addUserToGroup,
+  //addUserToGroup,
   findUserWithId,
 } = require('../models/users.model')
 
@@ -156,6 +158,34 @@ describe('user test', () => {
     expect(joinedData.group.name).toEqual(groupData.name)
   })
 
+  it('add user to a group works', async () => {
+    /*const userData1 =*/ await createTestUser()
+    const userData2 = await createUser(
+      testUser2.name,
+      testUser2.username,
+      testUser2.email,
+      testUser2.password
+    )
+
+    console.log('userdata2', userData2)
+    const loginData = await loginTestUser()
+    const groupData = await createGroup('testGroup', loginData.token)
+    const userGroupRole = await addUserToGroup(
+      userData2.userId,
+      groupData.id,
+      loginData.token,
+      'MEMBER'
+    )
+    console.log('Response', userGroupRole)
+    expect(userGroupRole.user).toEqual(userData2.userId)
+    expect(userGroupRole.group).toEqual(groupData.id)
+    expect(userGroupRole.role).toEqual('MEMBER')
+    const user = await getUser(testUser2.username)
+    console.log('User', user)
+    expect(user.groups[0].group.id).toEqual(groupData.id)
+    expect(user.groups[0].role).toEqual('MEMBER')
+  })
+
   it('user group role change works with correct parameters', async () => {
     const userData1 = await createTestUser()
     const userData2 = await createUser(
@@ -174,27 +204,33 @@ describe('user test', () => {
     expect(groupData).toBeDefined()
 
     console.log('---- add user to group ---')
-    const group = await addUserToGroup(userData2.userId, groupData.id, 'MEMBER')
+    const group = await addUserToGroup(
+      userData2.userId,
+      groupData.id,
+      userData1.token,
+      'MEMBER'
+    )
     console.log('---- ! add user to group ---', group)
 
-    console.log('---sdsddslkdsldslkkdslkscdlsdkls--')
     const query = `mutation UpdateUserRole {
        updateUserRole(userId: "${userData2.userId}" groupId: "${groupData.id}" role: ADMIN) {
-         group {
-          id
-          name
-         }
-         role
+          user
+          group
+          role
        }
      }`
 
     const result = await gqlToServer(url, query, userData1.token)
-    const groups = result.body
-    console.log('---- groups after update role ----', groups)
+    const userGroupRole = result.body.data.updateUserRole
+    console.log('---- user group role ----', userGroupRole)
 
-    expect(groups[0].role).toEqual('ADMIN')
+    expect(userGroupRole.user).toEqual(userData2.userId)
+    expect(userGroupRole.group).toEqual(groupData.id)
+    expect(userGroupRole.role).toEqual('ADMIN')
 
-    const userInDb = await findUserWithId(userData2.user.id)
+    const userInDb = await findUserWithId(userData2.userId)
+    console.log('user in db', userInDb)
+    expect(userInDb.groups[0].group).toEqual(groupData.id)
     expect(userInDb.groups[0].role).toEqual('ADMIN')
   })
 
@@ -210,13 +246,17 @@ describe('user test', () => {
     const groupData = await createGroup('testGroup', userData1.token)
     expect(groupData).toBeDefined()
 
-    await addUserToGroup(userData2.user.id, groupData.id, 'MEMBER')
+    await addUserToGroup(
+      userData2.userId,
+      groupData.id,
+      userData1.token,
+      'MEMBER'
+    )
     const query = `mutation UpdateUserRole {
-       updateUserRole(userId: "${userData2.user.id}" groupId: "${groupData.id}" role: KEMBER) {
-         id
-         groups {
+       updateUserRole(userId: "${userData2.userId}" groupId: "${groupData.id}" role: KEMBER) {
+          user
+          group
           role
-         }
        }
      }`
 

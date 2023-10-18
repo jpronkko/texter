@@ -17,7 +17,7 @@ describe('invitations test', () => {
   let httpServer, apolloServer, userData1, userData2, groupData
 
   beforeAll(async () => {
-    ({ httpServer, apolloServer } = await startServer())
+    ;({ httpServer, apolloServer } = await startServer())
   })
 
   afterAll(async () => {
@@ -28,7 +28,7 @@ describe('invitations test', () => {
     // Empty the test db
     await resetDatabases()
     // Create test user for all the tests
-    userData1  = await createTestUser()
+    userData1 = await createTestUser()
 
     userData2 = await createUser(
       testUser.name + '2',
@@ -42,36 +42,36 @@ describe('invitations test', () => {
   it('create invitation with existing userId, existing group', async () => {
     const invitation = await createInvitation(
       groupData.id,
-      userData1.user.id,
-      userData2.user.id,
+      userData1.userId,
+      userData2.userId,
       userData1.token
     )
 
     expect(invitation).toBeDefined()
     expect(invitation.groupId).toEqual(groupData.id)
-    expect(invitation.fromUser).toEqual(userData1.user.id)
-    expect(invitation.toUser).toEqual(userData2.user.id)
+    expect(invitation.fromUser).toEqual(userData1.userId)
+    expect(invitation.toUser).toEqual(userData2.userId)
     expect(invitation.status).toEqual('PENDING')
 
     const invitationInDb = await findInvitationById(invitation.id)
     expect(invitationInDb.groupId).toEqual(groupData.id)
-    expect(invitationInDb.fromUser).toEqual(userData1.user.id)
-    expect(invitationInDb.toUser).toEqual(userData2.user.id)
+    expect(invitationInDb.fromUser).toEqual(userData1.userId)
+    expect(invitationInDb.toUser).toEqual(userData2.userId)
     expect(invitationInDb.status).toEqual('PENDING')
   })
 
   it('create duplicate invitation, not works', async () => {
     await createInvitation(
       groupData.id,
-      userData1.user.id,
-      userData2.user.id,
+      userData1.userId,
+      userData2.userId,
       userData1.token
     )
 
     const invitation2 = await createInvitation(
       groupData.id,
-      userData1.user.id,
-      userData2.user.id,
+      userData1.userId,
+      userData2.userId,
       userData1.token
     )
     expect(invitation2).toBeNull()
@@ -80,14 +80,13 @@ describe('invitations test', () => {
   it('getSentInvitations returns sent invitation for a user', async () => {
     await createInvitation(
       groupData.id,
-      userData1.user.id,
-      userData2.user.id,
+      userData1.userId,
+      userData2.userId,
       userData1.token
     )
 
-    const query =
-     `query SentInvitations {
-        getSentInvitations(fromUserId: "${userData1.user.id}"){
+    const query = `query SentInvitations {
+        getSentInvitations(fromUserId: "${userData1.userId}"){
           id
           groupId
           fromUser
@@ -102,21 +101,20 @@ describe('invitations test', () => {
 
     expect(invitation).toBeDefined()
     expect(invitation.groupId).toEqual(groupData.id)
-    expect(invitation.fromUser).toEqual(userData1.user.id)
-    expect(invitation.toUser).toEqual(userData2.user.id)
+    expect(invitation.fromUser).toEqual(userData1.userId)
+    expect(invitation.toUser).toEqual(userData2.userId)
     expect(invitation.status).toEqual('PENDING')
   })
 
   it('getReceivedInvitations returns sent invitation to a user', async () => {
     await createInvitation(
       groupData.id,
-      userData1.user.id,
-      userData2.user.id,
+      userData1.userId,
+      userData2.userId,
       userData1.token
     )
 
-    const query =
-     `query ReceivedInvitations {
+    const query = `query ReceivedInvitations {
         getReceivedInvitations {
           id
           groupId
@@ -132,22 +130,21 @@ describe('invitations test', () => {
     const invitation = result.body?.data?.getReceivedInvitations[0]
     expect(invitation).toBeDefined()
     expect(invitation.groupId).toEqual(groupData.id)
-    expect(invitation.fromUser).toEqual(userData1.user.id)
-    expect(invitation.toUser).toEqual(userData2.user.id)
+    expect(invitation.fromUser).toEqual(userData1.userId)
+    expect(invitation.toUser).toEqual(userData2.userId)
     expect(invitation.status).toEqual('PENDING')
   })
 
   it('invitation status can be changed correctly', async () => {
     const invitation = await createInvitation(
       groupData.id,
-      userData1.user.id,
-      userData2.user.id,
+      userData1.userId,
+      userData2.userId,
       userData1.token
     )
     expect(invitation.status).toEqual('PENDING')
 
-    const query =
-     `mutation ChangeInvitationStatus {
+    const query = `mutation ChangeInvitationStatus {
         changeInvitationStatus(id: "${invitation.id}" status: ACCEPTED ) {
           id
           groupId
@@ -160,8 +157,7 @@ describe('invitations test', () => {
 
     await gqlToServer(url, query, userData2.token)
 
-    const query2 =
-     `query ReceivedInvitations {
+    const query2 = `query ReceivedInvitations {
         getReceivedInvitations {
           status
         }

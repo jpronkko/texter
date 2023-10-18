@@ -3,10 +3,11 @@ const logger = require('../utils/logger')
 const Invitation = require('./invitations.mongo')
 const { addUserToGroup } = require('./users.model')
 
-
 const getAllInvitations = async () => {
   const invitations = await Invitation.find({})
-  return invitations.toJSON()
+  console.log('all invitations', invitations)
+  if (invitations.length > 0) return invitations.toJSON()
+  return []
 }
 
 const findInvitationById = async (id) => {
@@ -17,17 +18,17 @@ const findInvitationById = async (id) => {
 const getInvitations = async (userId, isFromUser) => {
   if (isFromUser) {
     const invitation = await Invitation.find({ fromUser: userId })
-    if(!invitation) {
+    if (!invitation) {
       throw new Error(`Invitations from user ${userId} not found!`)
     }
-    return invitation.map(item => item.toJSON())
+    return invitation.map((item) => item.toJSON())
   }
 
-  const invitation = await Invitation.find({ toUser: userId })
-  if(!invitation) {
+  const invitations = await Invitation.find({ toUser: userId })
+  if (!invitations) {
     throw new Error(`Invitations to user ${userId} not found!`)
   }
-  return invitation.map(item => item.toJSON())
+  return invitations.map((item) => item.toJSON())
 }
 
 const createInvitation = async (fromUser, toUser, groupId) => {
@@ -61,19 +62,27 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
 
   if (status === 'ACCEPTED') {
     if (invitation2.toUser !== userId) {
-      logger.error('Not authorizded to accept invitation!', invitation.toUser, userId)
+      logger.error(
+        'Not authorizded to accept invitation!',
+        invitation.toUser,
+        userId
+      )
       throw new Error('Not authorized to accept invitation!')
     }
 
-    const groupId = await addUserToGroup(invitation2.toUser, invitation2.groupId, 'MEMBER')
-    if(!groupId) {
+    const groupId = await addUserToGroup(
+      invitation2.toUser,
+      invitation2.groupId,
+      'MEMBER'
+    )
+    if (!groupId) {
       logger.error('No user group found!')
       return null
     }
   }
 
   invitation.status = status
-  return (await (invitation.save())).toJSON()
+  return (await invitation.save()).toJSON()
 }
 
 module.exports = {

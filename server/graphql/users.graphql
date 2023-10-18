@@ -4,6 +4,12 @@ enum Role {
   MEMBER
 }
 
+type UserGroupRole {
+  user: ID!
+  group: ID!
+  role: Role!
+}
+
 type JoinedGroup {
   group: GroupInfo!
   role: Role!
@@ -57,8 +63,8 @@ type Query {
 type Mutation {
   createUser(user: UserInput): LoginData
   login(credentials: UserLoginInput): LoginData
-  addUserToGroup(groupId: ID!, userId: ID!): [JoinedGroup]
-  updateUserRole(userId: ID!, groupId: ID!, role: Role!): [JoinedGroup]
+  addUserToGroup(groupId: ID!, userId: ID!): UserGroupRole
+  updateUserRole(userId: ID!, groupId: ID!, role: Role!): UserGroupRole
 }
 
 type AddedGroups {
@@ -67,5 +73,5 @@ type AddedGroups {
 }
 
 type Subscription {
-  userAddedToGroup(userId: ID!): AddedGroups
+  userAddedToGroup(userId: ID): UserGroupRole
 }

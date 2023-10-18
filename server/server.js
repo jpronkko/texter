@@ -48,21 +48,21 @@ const startServer = async () => {
         */
 
         const auth = req ? req.headers.authorization : null
-        console.log('Auth header', req.headers.authorization)
         if (auth && auth.toLocaleLowerCase().startsWith('bearer ')) {
+          //console.log('middleware: Auth header', auth)
           try {
             const decodedToken = jwt.verify(
               auth.substring(7),
               config.JWT_SECRET
             )
 
-            console.log('Decoced token:', decodedToken)
+            //console.log('Decoced token:', decodedToken)
             const currentUser = await usersModel.findUserWithId(
               decodedToken.userId
             )
             return { currentUser }
           } catch (error) {
-            logger.error('Token decode failed', error)
+            logger.error('Middleware: Token decode failed', error)
           }
           return null
         }

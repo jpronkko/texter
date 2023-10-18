@@ -86,20 +86,29 @@ module.exports = {
       checkUser(currentUser, 'Adding a user to a group failed!')
 
       const { groupId, userId } = args
+      console.log('Add user to group', userId, groupId, currentUser.id)
+
       if (!checkUserOwnsGroup(currentUser, groupId)) {
         throw new GraphQLError('No permission to add user to a group')
       }
-
+      if (currentUser.id === userId) {
+        throw new GraphQLError('Trying to add oneself to a group')
+      }
       // should return without pw hash
-      const groups = await usersModel.addUserToGroup(userId, groupId)
-      console.log('addusertog', groups)
+      const userGroupRole = await usersModel.addUserToGroup(
+        userId,
+        groupId,
+        'MEMBER'
+      )
+      console.log('addusertog', userGroupRole)
+
       pubsub.publish('USER_ADDED_TO_GROUP', {
         userAddedToGroup: {
           userId,
-          joinedGroups: groups,
+          userGroupRole,
         },
       })
-      return groups
+      return userGroupRole
     },
     updateUserRole: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Updating user role failed!')
@@ -110,8 +119,12 @@ module.exports = {
       }
 
       try {
-        const groups = await usersModel.updateRoleInGroup(userId, groupId, role)
-        return groups
+        const userGroupRole = await usersModel.updateRoleInGroup(
+          userId,
+          groupId,
+          role
+        )
+        return userGroupRole
       } catch (error) {
         throw new GraphQLError('User update did not work', error.message)
       }

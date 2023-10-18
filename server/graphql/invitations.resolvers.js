@@ -14,18 +14,26 @@ module.exports = {
     allInvitations: async () => await invitationsModel.getAllInvitations(),
     getReceivedInvitations: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Getting recv. invitations failed!')
-      const invitations = await invitationsModel.getInvitations(currentUser.id, false)
+      const invitations = await invitationsModel.getInvitations(
+        currentUser.id,
+        false
+      )
       return invitations
     },
     getSentInvitations: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Getting sent invitations failed!')
-      const invitations = await invitationsModel.getInvitations(currentUser.id, true)
+      const invitations = await invitationsModel.getInvitations(
+        currentUser.id,
+        true
+      )
       return invitations
     },
   },
   Mutation: {
     createInvitation: async (root, args, { currentUser }) => {
-      const { invitation: { groupId, fromUser, toUser } } = args
+      const {
+        invitation: { groupId, fromUser, toUser },
+      } = args
       checkUser(currentUser, 'Creating invitation failed!')
 
       if (currentUser.id !== fromUser) {
@@ -33,23 +41,24 @@ module.exports = {
       }
 
       try {
-        if(!checkUserOwnsGroup(currentUser, groupId)) {
+        if (!checkUserOwnsGroup(currentUser, groupId)) {
           throw new GraphQLError('No permission to add invitation to a group')
         }
 
-        const invitation = await invitationsModel
-          .createInvitation(
-            fromUser,
-            toUser,
-            groupId
-          )
-        if(!invitation) {
+        const invitation = await invitationsModel.createInvitation(
+          fromUser,
+          toUser,
+          groupId
+        )
+        if (!invitation) {
           logger.error('Create invitation failed!', invitation)
-          throw new GraphQLError( 'Username taken', { extensions: { code: 'USERNAME_TAKEN' } })
+          throw new GraphQLError('Username taken', {
+            extensions: { code: 'USERNAME_TAKEN' },
+          })
         }
         pubsub.publish('INVITATION_ADDED', { invitationAdded: invitation })
         return invitation
-      } catch(error) {
+      } catch (error) {
         throw new GraphQLError(`Create invitation failed: ${error.message}`)
       }
     },
@@ -57,19 +66,17 @@ module.exports = {
       checkUser(currentUser, 'Change invitation status failed!')
 
       const { id, status } = args
-      const updatedInvitation =
-        await invitationsModel
-          .changeInvitationStatus(
-            currentUser.id,
-            id,
-            status
-          )
+      const updatedInvitation = await invitationsModel.changeInvitationStatus(
+        currentUser.id,
+        id,
+        status
+      )
 
       pubsub.publish('INVITATION_STATUS_CHANGED', {
         invitationStatusChanged: {
           userId: currentUser.id,
           invitationId: id,
-        }
+        },
       })
       return updatedInvitation
     },
@@ -82,7 +89,7 @@ module.exports = {
           console.log('payload', payload)
           return payload.invitationAdded.userId === variables.userId
         }
-      )
+      ),
     },
     invitationStatusChanged: {
       subscribe: withFilter(
@@ -91,7 +98,7 @@ module.exports = {
           console.log('payload', payload)
           return payload.invitationStatusChanged.userId === variables.userId
         }
-      )
-    }
-  }
+      ),
+    },
+  },
 }

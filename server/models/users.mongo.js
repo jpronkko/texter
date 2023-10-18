@@ -63,8 +63,8 @@ schema.set('toJSON', {
             }
           : item.group
             */
-        console.log('groupItem', JSON.stringify(item.group), typeof item.group)
-        console.error('string:', item.group.toString())
+        //console.log('groupItem', JSON.stringify(item.group), typeof item.group)
+        //console.error('string:', item.group.toString())
         const groupItem = item.group.toString()
         return {
           id: item._id.toString(),

@@ -39,11 +39,11 @@ describe('groups test', () => {
     const groupInDb = await findGroup(groupId)
     expect(groupInDb).toBeDefined()
 
-    const savedUser = await findUserWithId(userData.user.id)
+    const savedUser = await findUserWithId(userData.userId)
     expect(savedUser.groups).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          group: expect.objectContaining({ id: groupId }),
+          group: groupId, //expect.objectContaining({ id: groupId }),
           role: 'OWNER',
         }),
       ])

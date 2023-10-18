@@ -41,14 +41,14 @@ describe('messages test', () => {
     )
 
     expect(message.topicId).toEqual(topicData.id)
-    expect(message.fromUser.id).toEqual(userData.user.id)
+    expect(message.fromUser.id).toEqual(userData.userId)
     expect(message.body).toEqual(testMessage)
 
     const messages = await getMessages(topicData.id)
     const messageInDb = messages[0]
 
     expect(messageInDb.id).toEqual(message.id)
-    expect(messageInDb.fromUser.id).toEqual(userData.user.id)
+    expect(messageInDb.fromUser.id).toEqual(userData.userId)
     expect(messageInDb.body).toEqual(testMessage)
   })
 

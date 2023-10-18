@@ -13,11 +13,11 @@ const checkUser = (currentUser, errorMessage) => {
 
 const checkUserInGroup = (user, groupId) => {
   const userGroups = user.groups
-  console.error(user, groupId)
-  if (userGroups.find((item) => item.group.id === groupId)) {
+  if (userGroups.find((item) => item.group === groupId)) {
     return true
   }
-  logger.error(`User ${user.id} not in group ${groupId} !`)
+  logger.error(`User ${user} not in group ${groupId}!`)
+  logger.error(userGroups)
   return false
 }
 
@@ -33,13 +33,17 @@ const checkUserInTopicGroup = async (user, topicId) => {
 }
 
 const checkUserOwnsGroup = (user, groupId) => {
-  console.log('!!!!!!!!!!!!!!!!!!!!')
-  console.log('user', JSON.stringify(user), 'group id', groupId)
+  console.log(
+    'check user owns group',
+    JSON.stringify(user),
+    'group id',
+    groupId
+  )
   //const joinedGroup = User.findById(user.id).
-  const joinedGroup = user.groups.find((item) => item.group.id === groupId)
+  const joinedGroup = user.groups.find((item) => item.group === groupId)
   if (joinedGroup && joinedGroup.role === 'OWNER') return true
 
-  logger.error(`User ${user.id} does not own group ${groupId}!`, joinedGroup)
+  logger.error(`User ${user} does not own group ${groupId}!`, joinedGroup)
   return false
 }
 
