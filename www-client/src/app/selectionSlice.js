@@ -1,34 +1,44 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { logOut } from './userSlice'
 
+const emptyGroup = { id: '', name: '' }
+const emptyTopic = { id: '', name: '', groupId: '' }
+
 export const selectionSlice = createSlice({
   name: 'selection',
   initialState: {
-    group: { id: '', name: '' },
-    topic: { id: '', name: '' },
+    group: emptyGroup,
+    topic: emptyTopic,
   },
   reducers: {
     setGroup: (state, action) => {
-      console.log('Group set group action payload:', action.payload)
-      state.group = { id: action.payload.id, name: action.payload.name }
-      state.topic = { id: '', name: '' }
+      console.log('Set group action payload:', action.payload)
+      state.group = {
+        id: action.payload.id,
+        name: action.payload.name,
+      }
+      state.topic = emptyTopic
     },
     clearGroup: (state) => {
-      state.group = { id: '', name: '' }
-      state.topic = { id: '', name: '' }
+      state.group = emptyGroup
+      state.topic = emptyTopic
     },
     setTopic: (state, action) => {
-      console.log('Group set group action payload:', action.payload)
-      state.topic = { id: action.payload.id, name: action.payload.name }
+      console.log('Set topic  action payload:', action.payload)
+      state.topic = {
+        id: action.payload.id,
+        name: action.payload.name,
+        groupId: action.payload.groupId,
+      }
     },
     clearTopic: (state) => {
-      state.topic = { id: '', name: '' }
+      state.topic = emptyTopic
     },
   },
   extraReducers(builder) {
     builder.addCase(logOut, (state) => {
-      state.group = { id: '', name: '' }
-      state.topic = { id: '', name: '' }
+      state.group = emptyGroup
+      state.topic = emptyTopic
     })
   },
 })

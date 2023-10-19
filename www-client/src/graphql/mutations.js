@@ -29,6 +29,7 @@ export const CREATE_TOPIC = gql`
     createTopic(groupId: $groupId, name: $name) {
       id
       name
+      groupId
     }
   }
 `
@@ -43,6 +44,7 @@ export const CREATE_MESSAGE = gql`
         id
         name
       }
+      topicId
     }
   }
 `
@@ -51,19 +53,10 @@ export const LOGIN = gql`
   mutation login($credentials: UserLoginInput) {
     login(credentials: $credentials) {
       token
-      user {
-        id
-        username
-        email
-        name
-        groups {
-          role
-          group {
-            id
-            name
-          }
-        }
-      }
+      email
+      name
+      userId
+      username
     }
   }
 `

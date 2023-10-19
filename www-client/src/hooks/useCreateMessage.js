@@ -4,20 +4,25 @@ import logger from '../utils/logger'
 import { GET_MESSAGES } from '../graphql/queries'
 
 const useCreateMessage = () => {
-  /*const updateCache = (cache, { data }) => {
-    console.log('Got data to update cache', data, console.log(GET_MESSAGES))
-  }*/
-
-  /*const [mutation, result] = useMutation(CREATE_MESSAGE, {
-    update: updateCache,
-  })*/
-
   const [mutation, result] = useMutation(CREATE_MESSAGE, {
-    update: (cache, response) => {
-      cache.updateQuery(
+    update: (store, response) => {
+      const newMessage = response.data.createMessage
+      const messagesInStore = store.readQuery({
+        query: GET_MESSAGES,
+        variables: { topicId: newMessage.topicId },
+      })
+      store.writeQuery({
+        query: GET_MESSAGES,
+        variables: { topicId: newMessage.topicId },
+        data: {
+          ...messagesInStore,
+          getMessages: [...messagesInStore.getMessages, newMessage],
+        },
+      })
+      /*cache.updateQuery(
         {
           query: GET_MESSAGES,
-          variables: { topicId: '651557fc3e3cf5f6f0c6f8b9' },
+          //  variables: { topicId },
         },
         (data) => {
           if (data) {
@@ -30,7 +35,7 @@ const useCreateMessage = () => {
           }
           console.log('data undefined! response', response)
         }
-      )
+      )*/
     },
   })
 
@@ -44,7 +49,7 @@ const useCreateMessage = () => {
       id: createResult.data.createMessage.id,
       fromUser: createResult.data.createMessage.fromUser,
       sentTime: createResult.data.createMessage.sentTime,
-      groupId: topicId,
+      topicId,
       body,
     }
   }

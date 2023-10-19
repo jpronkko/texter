@@ -4,7 +4,8 @@ const emptyUser = {
   id: '',
   name: '',
   username: '',
-  groups: [],
+  email: '',
+  //groups: [],
 }
 
 export const userSlice = createSlice({
@@ -17,23 +18,27 @@ export const userSlice = createSlice({
     logIn: (state, action) => {
       console.log('Login action payload:', action.payload)
       state.token = action.payload.token
-      const user = action.payload.user
+
       state.userData = {
-        username: user.username,
-        name: user.name,
-        email: user.email,
-        groups: user.groups ? user.groups : [],
+        id: action.payload.userId,
+        email: action.payload.email,
+        name: action.payload.name,
+        username: action.payload.username,
+        //groups: [],
       }
     },
     logOut: (state) => {
       state.token = null
       state.userData = emptyUser
     },
+    /*setGroups: (state, action) => {
+
+    }
     addJoinedGroup: (state, action) => {
       state.userData.groups.push(action.payload)
-    },
+    },*/
   },
 })
 
-export const { logIn, logOut, addJoinedGroup } = userSlice.actions
+export const { logIn, logOut /*addJoinedGroup*/ } = userSlice.actions
 export default userSlice.reducer

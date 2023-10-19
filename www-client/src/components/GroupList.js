@@ -5,9 +5,10 @@ import { Button, Divider, Drawer, Toolbar, Typography } from '@mui/material'
 
 import { AddBox } from '@mui/icons-material'
 
-import { addJoinedGroup } from '../app/userSlice'
 import useCreateGroup from '../hooks/useCreateGroup'
+import useGroups from '../hooks/useGroups'
 import useCreateTopic from '../hooks/useCreateTopic'
+
 import { clearGroup, setGroup } from '../app/selectionSlice'
 
 import InputTextDlg from './dialogs/InputTextDlg'
@@ -19,7 +20,7 @@ const drawerWidth = 300
 
 const GroupList = () => {
   const user = useSelector((state) => state.user.userData)
-  const group = useSelector((state) => state.selection.group)
+  const selectedGroup = useSelector((state) => state.selection.group)
 
   const dispatch = useDispatch()
   const topicDlgRef = useRef()
@@ -27,6 +28,8 @@ const GroupList = () => {
 
   const [createGroup] = useCreateGroup()
   const [createTopic] = useCreateTopic()
+  const { userGroups, loading, error } = useGroups()
+
   /*const [expanded, setExpanded] = React.useState('panel1')
 
   const handleChange = (panel) => (event, newExpanded) => {
@@ -35,39 +38,48 @@ const GroupList = () => {
   }*/
 
   const handleSelectGroup = async (newGroup) => {
-    if (newGroup.id === group?.id) return
+    if (newGroup.id === selectedGroup?.id) return
     console.log('Selecting group:', newGroup)
     if (newGroup) dispatch(setGroup(newGroup))
     else dispatch(clearGroup(newGroup))
   }
 
-  console.log('user groups', user.groups)
+  console.log(
+    'user state',
+    user,
+    'user groups',
+    userGroups,
+    'loading:',
+    loading,
+    'error',
+    error
+  )
 
   const handleCreateGroup = async (name) => {
     const groupData = await createGroup(name)
     console.log(groupData)
-    if (groupData) {
+    /* if (groupData) {
       dispatch(
         addJoinedGroup({
           role: 'OWNER',
           group: { id: groupData.id, name: groupData.name },
         })
       )
-    }
+    }*/
     groupDlgRef.current.close()
   }
 
   const handleCreateTopic = async (name) => {
-    const topic = await createTopic(group.id, name)
+    const topic = await createTopic(selectedGroup.id, name)
     console.log('Handle Create Topic', topic)
     topicDlgRef.current.close()
   }
 
-  const renderedGroups = user.groups.map((item) => (
+  const renderedGroups = userGroups.map((item) => (
     <Accordion
       key={item.group.id}
       //expanded={expanded === item.group}
-      expanded={group?.id === item.group.id}
+      expanded={selectedGroup?.id === item.group.id}
       //onChange={handleChange(item.group)}
       onChange={() => handleSelectGroup(item.group)}
     >
