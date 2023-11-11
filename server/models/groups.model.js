@@ -34,7 +34,7 @@ const createGroup = async (user, name) => {
   }
 
   const userToUpdate = await User.findById(user.id)
-  userToUpdate.groups = userToUpdate.groups.concat({
+  userToUpdate.joinedGroups = userToUpdate.joinedGroups.concat({
     group: savedGroup._id,
     role: 'OWNER',
   })
@@ -55,6 +55,7 @@ const createGroup = async (user, name) => {
   const groupInfo = {
     id: savedGroup._id,
     name: savedGroup.name,
+    ownerId: savedGroup.ownerId,
   }
   console.log('Created Group', groupInfo)
   return savedGroup.toJSON()

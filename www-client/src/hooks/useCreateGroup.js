@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client'
 
 import { CREATE_GROUP } from '../graphql/mutations'
+import { GET_USER_JOINED_GROUPS } from '../graphql/queries'
 import logger from '../utils/logger'
 import useError from './useErrorMessage'
 
@@ -9,6 +10,34 @@ const useCreateGroup = () => {
   const [mutation, result] = useMutation(CREATE_GROUP, {
     onError: (error) => {
       showError(error.toString())
+    },
+    update: (store, response) => {
+      const newGroup = response.data.createGroup
+      const groupsInStore = store.readQuery({
+        query: GET_USER_JOINED_GROUPS,
+        variables: { userId: newGroup.ownerId },
+      })
+      console.log('useCreateGroup: new group', newGroup)
+      console.log('useCreateGroup: groups in store', groupsInStore)
+
+      store.writeQuery({
+        query: GET_USER_JOINED_GROUPS,
+        data: {
+          //...groupsInStore,
+          variables: { userId: newGroup.ownerId },
+          getUserJoinedGroups: {
+            userId: newGroup.ownerId,
+            joinedGroups: [
+              ...groupsInStore.getUserJoinedGroups.joinedGroups,
+              { groupId: newGroup.id, groupName: newGroup.name, role: 'owner' },
+            ],
+          },
+          // getUserJoinedGroups: [
+          //   ...groupsInStore.getUserJoinedGroups.joinedGroups,
+          //   newGroup,
+          // ],
+        },
+      })
     },
   })
 

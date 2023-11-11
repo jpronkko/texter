@@ -1,6 +1,6 @@
 // Original: https://mui.com/material-ui/react-app-bar/, starting mods from there.
+import React from 'react'
 
-import React, { useRef } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -8,63 +8,25 @@ import Typography from '@mui/material/Typography'
 
 //import MenuIcon from '@mui/icons-material/Menu'
 import Container from '@mui/material/Container'
-
-import Button from '@mui/material/Button'
 import AdbIcon from '@mui/icons-material/Adb'
 
-import { useNavigate } from 'react-router-dom'
 import { useSelector /*useDispatch*/ } from 'react-redux'
-import useLogInOut from '../hooks/useLogInOut'
+
+import InvitationMenu from './InvitationMenu'
 import UserMenu from './UserMenu'
-import ConfirmMessage from './dialogs/ConfirmMessage'
 
 const TopBar = () => {
-  const confirmDlgRef = useRef()
-
-  const navigate = useNavigate()
-  const [, logout] = useLogInOut()
-
   const user = useSelector((state) => state.user.userData)
   const group = useSelector((state) => state.selection.group)
   const topic = useSelector((state) => state.selection.topic)
 
   const userLoggedIn = () => user.username !== ''
 
-  const showLogout = () => {
-    confirmDlgRef.current.open()
-  }
-
-  const userMenuItems = [
-    { name: 'Profile', callback: () => navigate('/profile') },
-    { name: 'Logout', callback: showLogout },
-  ]
-
-  const loggedInPages = []
-  // const loggedInPages = [
-  //   { name: 'Home', path: '/' },
-  //   { name: 'Groups', path: '/groups' },
-  // ]
-
-  const loggedOutPages = []
-  // const loggedOutPages = [
-  //   { name: 'Login', path: '/login' },
-  //   { name: 'Create Account', path: '/create_account' },
-  // ]
-
-  const pages = () => {
-    return userLoggedIn() ? loggedInPages : loggedOutPages
-  }
-
   return (
     <AppBar
       position="fixed"
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
     >
-      <ConfirmMessage
-        ref={confirmDlgRef}
-        title="Are you sure you want to logout?"
-        onOk={() => logout()}
-      />
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -83,10 +45,25 @@ const TopBar = () => {
               textDecoration: 'none',
             }}
           >
-            TEXTER - user: {user.username} group: {group?.name} topic:{' '}
-            {topic?.name}
+            TEXTER - user: {user.username} logged in, group: {group?.name}{' '}
+            topic: {topic?.name}
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1 }}>{userLoggedIn() && <InvitationMenu />}</Box>
+          <Box sx={{ flexGrow: 0 }}>{userLoggedIn() && <UserMenu />}</Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
+  )
+}
+export default TopBar
+
+/*
+  const loggedInPages = [
+    { name: 'Invitations', path: '/' },
+    //   { name: 'Groups', path: '/groups' },
+  ]
+
+ <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages().map((page) => (
               <Button
                 key={page.name}
@@ -97,13 +74,4 @@ const TopBar = () => {
               </Button>
             ))}
           </Box>
-
-          <Box sx={{ flexGrow: 0 }}>
-            {userLoggedIn() && <UserMenu itemList={userMenuItems} />}
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
-  )
-}
-export default TopBar
+        */

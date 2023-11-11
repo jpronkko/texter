@@ -11,25 +11,37 @@ type UserGroupRole {
 }
 
 type JoinedGroup {
-  group: GroupInfo!
+  groupId: ID!
+  groupName: String!
   role: Role!
 }
 
-type User {
-  id: ID!
-  name: String!
-  username: String!
-  email: String!
-  passwordHash: String!
-  groups: [JoinedGroup]
+type JoinedGroupInfo {
+  userId: ID!
+  joinedGroups: [JoinedGroup]
 }
+
+# type User {
+#   id: ID!
+#   name: String!
+#   username: String!
+#   email: String!
+#   passwordHash: String!
+#   joinedGroups: [JoinedGroup]
+# }
 
 type UserInfo {
   id: ID!
   name: String!
   username: String!
   email: String!
-  groups: [JoinedGroup]
+  joinedGroups: [JoinedGroup]
+}
+
+type UserBaseData {
+  id: ID!
+  name: String!
+  username: String!
 }
 
 input UserInput {
@@ -54,10 +66,9 @@ type LoginData {
 
 type Query {
   me: UserInfo
+  getUserBaseData(id: ID!): UserBaseData
   allUsers: [UserInfo]
-  findUser(username: String!): UserInfo
-  getUserJoinedGroups: [JoinedGroup]
-  findUserById(id: ID!): UserInfo
+  getUserJoinedGroups: JoinedGroupInfo
 }
 
 type Mutation {
@@ -65,11 +76,6 @@ type Mutation {
   login(credentials: UserLoginInput): LoginData
   addUserToGroup(groupId: ID!, userId: ID!): UserGroupRole
   updateUserRole(userId: ID!, groupId: ID!, role: Role!): UserGroupRole
-}
-
-type AddedGroups {
-  userId: ID!
-  joinedGroups: [JoinedGroup]
 }
 
 type Subscription {

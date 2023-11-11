@@ -5,7 +5,11 @@ const { GraphQLError } = require('graphql')
 const topicsModel = require('../models/topics.model')
 const logger = require('../utils/logger')
 
-const { checkUser, checkUserOwnsGroup, checkUserInTopicGroup } = require('../utils/checkUser')
+const {
+  checkUser,
+  checkUserOwnsGroup,
+  checkUserInTopicGroup,
+} = require('../utils/checkUser')
 
 const pubsub = new PubSub()
 
@@ -14,13 +18,13 @@ module.exports = {
     allTopics: async () => await topicsModel.getAllTopics(),
     getMessages: async (root, args, { currentUser }) => {
       console.log('Get messages, current user', currentUser)
-      checkUser(currentUser, 'Not authorized 1!')
+      checkUser(currentUser, 'Current user not authorized!')
 
       try {
-        if(!checkUserInTopicGroup(currentUser, args.topicId)) {
-          throw new GraphQLError('Not authorized 2!')
+        if (!checkUserInTopicGroup(currentUser, args.topicId)) {
+          throw new GraphQLError('User not authorized for topic!')
         }
-      } catch(error) {
+      } catch (error) {
         throw new GraphQLError('Check your topic id!')
       }
       const messages = await topicsModel.getMessages(args.topicId)
@@ -32,29 +36,34 @@ module.exports = {
       const { groupId, name } = args
       checkUser(currentUser, 'Creating a topic failed!')
 
-      if(!checkUserOwnsGroup(currentUser, groupId)) {
+      if (!checkUserOwnsGroup(currentUser, groupId)) {
         throw new GraphQLError('No permission to add topic to a group')
       }
 
       const topic = await topicsModel.createTopic(groupId, name)
-      if(!topic) {
+      if (!topic) {
         logger.error('Create topic failed!', topic)
-        throw new GraphQLError( 'Topic name taken', { extensions: { code: 'TOPIC_NAME_TAKEN' } })
+        throw new GraphQLError('Topic name taken', {
+          extensions: { code: 'TOPIC_NAME_TAKEN' },
+        })
       }
 
-      pubsub.publish('TOPIC_ADDED', { groupId, topicAdded: topic })
+      pubsub.publish('TOPIC_ADDED_TO_GROUP', {
+        groupId,
+        topicAddedToGroup: topic,
+      })
       return topic
     },
   },
   Subscription: {
-    topicAdded: {
+    topicAddedToGroup: {
       subscribe: withFilter(
-        () => pubsub.asyncIterator(['TOPIC_ADDED']),
+        () => pubsub.asyncIterator(['TOPIC_ADDED_TO_GROUP']),
         (payload, variables) => {
           console.log('payload', payload)
           return payload.topicAdded.groupId === variables.groupId
         }
-      )
+      ),
     },
-  }
+  },
 }

@@ -49,14 +49,14 @@ describe('invitations test', () => {
 
     expect(invitation).toBeDefined()
     expect(invitation.groupId).toEqual(groupData.id)
-    expect(invitation.fromUser).toEqual(userData1.userId)
-    expect(invitation.toUser).toEqual(userData2.userId)
+    expect(invitation.fromUserId).toEqual(userData1.userId)
+    expect(invitation.toUserId).toEqual(userData2.userId)
     expect(invitation.status).toEqual('PENDING')
 
     const invitationInDb = await findInvitationById(invitation.id)
     expect(invitationInDb.groupId).toEqual(groupData.id)
-    expect(invitationInDb.fromUser).toEqual(userData1.userId)
-    expect(invitationInDb.toUser).toEqual(userData2.userId)
+    expect(invitationInDb.fromUserId).toEqual(userData1.userId)
+    expect(invitationInDb.toUserId).toEqual(userData2.userId)
     expect(invitationInDb.status).toEqual('PENDING')
   })
 
@@ -89,8 +89,8 @@ describe('invitations test', () => {
         getSentInvitations(fromUserId: "${userData1.userId}"){
           id
           groupId
-          fromUser
-          toUser
+          fromUserId
+          toUserId
           status
           sentTime
         }
@@ -101,8 +101,8 @@ describe('invitations test', () => {
 
     expect(invitation).toBeDefined()
     expect(invitation.groupId).toEqual(groupData.id)
-    expect(invitation.fromUser).toEqual(userData1.userId)
-    expect(invitation.toUser).toEqual(userData2.userId)
+    expect(invitation.fromUserId).toEqual(userData1.userId)
+    expect(invitation.toUserId).toEqual(userData2.userId)
     expect(invitation.status).toEqual('PENDING')
   })
 
@@ -118,8 +118,8 @@ describe('invitations test', () => {
         getReceivedInvitations {
           id
           groupId
-          fromUser
-          toUser
+          fromUserId
+          toUserId
           status
           sentTime
         }
@@ -130,8 +130,8 @@ describe('invitations test', () => {
     const invitation = result.body?.data?.getReceivedInvitations[0]
     expect(invitation).toBeDefined()
     expect(invitation.groupId).toEqual(groupData.id)
-    expect(invitation.fromUser).toEqual(userData1.userId)
-    expect(invitation.toUser).toEqual(userData2.userId)
+    expect(invitation.fromUserId).toEqual(userData1.userId)
+    expect(invitation.toUserId).toEqual(userData2.userId)
     expect(invitation.status).toEqual('PENDING')
   })
 
@@ -148,8 +148,8 @@ describe('invitations test', () => {
         changeInvitationStatus(id: "${invitation.id}" status: ACCEPTED ) {
           id
           groupId
-          fromUser
-          toUser
+          fromUserId
+          toUserId
           status
           sentTime
         }

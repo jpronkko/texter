@@ -29,7 +29,7 @@ describe('user test', () => {
   let httpServer, apolloServer
 
   beforeAll(async () => {
-    ;({ httpServer, apolloServer } = await startServer())
+    ({ httpServer, apolloServer } = await startServer())
   })
 
   afterAll(async () => {

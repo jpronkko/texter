@@ -15,8 +15,16 @@ const useCreateMessage = () => {
         query: GET_MESSAGES,
         variables: { topicId: newMessage.topicId },
         data: {
-          ...messagesInStore,
-          getMessages: [...messagesInStore.getMessages, newMessage],
+          getMessages: [
+            ...messagesInStore.getMessages,
+            {
+              id: newMessage.id,
+              topicId: newMessage.topicId,
+              body: newMessage.body,
+              fromUser: newMessage.fromUser,
+              sentTime: newMessage.sentTime,
+            },
+          ],
         },
       })
       /*cache.updateQuery(

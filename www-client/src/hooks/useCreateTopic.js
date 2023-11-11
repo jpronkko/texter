@@ -4,28 +4,38 @@ import { CREATE_TOPIC } from '../graphql/mutations'
 import { GET_TOPICS } from '../graphql/queries'
 
 import logger from '../utils/logger'
-//import useError from './useErrorMessage'
+import useError from './useErrorMessage'
 
 const useCreateTopic = () => {
-  //const [showError] = useError()
+  const [showError] = useError()
   const [mutation, result] = useMutation(CREATE_TOPIC, {
-    /*onError: (error) => {
+    onError: (error) => {
       showError(error.toString())
-    },*/
+    },
     update: (store, response) => {
       const newTopic = response.data.createTopic
       const topicsInStore = store.readQuery({
         query: GET_TOPICS,
         variables: { groupId: newTopic.groupId },
       })
-      console.log('ntopic', newTopic, topicsInStore)
+      console.log('-------------------')
+      console.log('Search topics in store with group id', newTopic.groupId)
+      console.log('topics in store', topicsInStore)
+      console.log('new topic', newTopic)
+
       store.writeQuery({
         query: GET_TOPICS,
         variables: { groupId: newTopic.groupId },
         data: {
-          ...topicsInStore,
-          getTopics: [...topicsInStore.getTopics, newTopic],
+          getTopics: [
+            ...topicsInStore.getTopics,
+            { id: newTopic.id, name: newTopic.name, groupId: newTopic.groupId },
+          ],
         },
+        // data: {
+        //   //...topicsInStore,
+        //   getTopics: [...topicsInStore.getTopics, newTopic],
+        // },
       })
     },
     //refetchQueries: [{ query: GET_TOPICS }],

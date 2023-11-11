@@ -2,10 +2,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-import {
-  BrowserRouter as Router,
-  Routes, Route,
-} from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import { Toolbar } from '@mui/material'
 
@@ -15,14 +12,13 @@ import ErrorMessage from './ErrorMessage'
 
 import CreateUser from './pages/CreateUser'
 import Login from './pages/Login'
+import Profile from './pages/Profile'
 
 import logger from '../utils/logger'
 import TopBar from './TopBar'
 
-
 const App = () => {
-
-  const user = useSelector(state => state.user.userData)
+  const user = useSelector((state) => state.user.userData)
 
   console.log('User now', user)
 
@@ -38,17 +34,32 @@ const App = () => {
     <div>
       <Router>
         <ErrorMessage />
-        <TopBar/>
+        <TopBar />
         <Toolbar />
         <Routes>
-          <Route path='/' element={<MainPage />} />
-          <Route path='/create_account' element={<CreateUser handleCreate={handleCreateUser} />} />
-          <Route path='/login' element={<Login handleLogin={loginUser}/>} />
-          <Route path='/users' element={<UserList />} />
+          <Route
+            path="/"
+            element={<MainPage />}
+          />
+          <Route
+            path="/create_account"
+            element={<CreateUser handleCreate={handleCreateUser} />}
+          />
+          <Route
+            path="/login"
+            element={<Login handleLogin={loginUser} />}
+          />
+          <Route
+            path="/users"
+            element={<UserList />}
+          />
+          <Route
+            path="/profile"
+            element={<Profile />}
+          />
         </Routes>
       </Router>
     </div>
-
   )
 }
 

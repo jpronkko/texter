@@ -63,7 +63,7 @@ const createUser = async (name, username, email, password) => {
         }
        }`
   const result = await gqlToServer(url, mutation)
-  console.log(result.body)
+  console.log('Create user result', result.body)
   return result.body?.data?.createUser
 }
 
@@ -127,16 +127,16 @@ const addUserToGroup = async (userId, groupId, token) => {
   return result.body?.data?.addUserToGroup
 }
 
-const createInvitation = async (groupId, fromUser, toUser, token) => {
+const createInvitation = async (groupId, fromUserId, toUser, token) => {
   const mutation = `mutation CreateInvitation { 
       createInvitation(invitation: {
         groupId: "${groupId}"
-        fromUser: "${fromUser}"
+        fromUserId: "${fromUserId}"
         toUser: "${toUser}"
       }){
         id
         groupId
-        fromUser
+        fromUserId
         toUser
         status
         sentTime

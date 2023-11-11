@@ -17,11 +17,28 @@ export const GET_MY_INFO = gql`
   }
 `
 
+export const GET_USER_BASE_DATA = gql`
+  query GetUserBaseData($id: ID!) {
+    getUserBaseData(id: $id) {
+      id
+      name
+      username
+    }
+  }
+`
+
 export const GET_ALL_USERS = gql`
   query GetAllUsers {
     allUsers {
+      email
+      id
       name
       username
+      joinedGroups {
+        groupId
+        groupName
+        role
+      }
     }
   }
 `
@@ -48,9 +65,11 @@ export const GET_ALL_MESSAGES = gql`
 export const GET_USER_JOINED_GROUPS = gql`
   query GetUserJoinedGroups {
     getUserJoinedGroups {
-      group {
-        id
-        name
+      userId
+      joinedGroups {
+        groupId
+        groupName
+        role
       }
     }
   }
@@ -75,6 +94,46 @@ export const GET_MESSAGES = gql`
       fromUser {
         id
         name
+      }
+    }
+  }
+`
+
+export const GET_SENT_INVITATIONS = gql`
+  query GetSentInvitations {
+    getSentInvitations {
+      id
+      sentTime
+      status
+      user {
+        id
+        name
+        username
+      }
+      group {
+        id
+        name
+        ownerId
+      }
+    }
+  }
+`
+
+export const GET_RECV_INVITATIONS = gql`
+  query GetReceivedInvitations {
+    getReceivedInvitations {
+      user {
+        id
+        name
+        username
+      }
+      status
+      sentTime
+      id
+      group {
+        id
+        name
+        ownerId
       }
     }
   }

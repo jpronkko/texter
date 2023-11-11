@@ -16,8 +16,8 @@ const schema = yup.object({
   input: yup.string().required(),
 })
 
-const InputTextDlg = forwardRef((props, ref) => {
-  const { title, label, handleInput } = props
+const CreateInvitation = forwardRef((props, ref) => {
+  const { groupId, handleCreateInvitation } = props
   const [visible, setVisible] = useState(false)
 
   const { control, reset, handleSubmit } = useForm({
@@ -31,7 +31,7 @@ const InputTextDlg = forwardRef((props, ref) => {
   const onSubmit = (data) => {
     console.log('Submiting input:', data)
     //setTextInput(data.name)
-    handleInput(data.input)
+    handleCreateInvitation(groupId, data.input)
   }
 
   const open = () => {
@@ -56,14 +56,14 @@ const InputTextDlg = forwardRef((props, ref) => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {title}
+          Invite to Group
         </DialogTitle>
         <DialogContent sx={{ margin: '5px' }}>
           <FormTextInput
             id='input'
             name='input'
             control={control}
-            label={label}
+            label='User name'
           />
           <Button sx={{ marginLeft: '5px' }} onClick={() => reset()} variant={'outlined'}>x</Button>
         </DialogContent>
@@ -79,6 +79,6 @@ const InputTextDlg = forwardRef((props, ref) => {
   )
 })
 
-InputTextDlg.displayName = 'InputDlg'
+CreateInvitation.displayName = 'CreateGroupInvitation'
 
-export default InputTextDlg
+export default CreateInvitation

@@ -2,14 +2,14 @@ import React from 'react'
 import { Button, Typography } from '@mui/material'
 import { AddBox } from '@mui/icons-material'
 
-import useTopics from '../hooks/useGetTopics'
+import useGetTopics from '../hooks/useGetTopics'
 import { setTopic } from '../app/selectionSlice'
 import { useDispatch, useSelector } from 'react-redux'
 
 import AccordionDetails from './AccordionDetails'
 
 const Topics = ({ group, handleCreateTopic, selectGroupOfTopic }) => {
-  const { topics, loading } = useTopics(group?.id)
+  const { topics, error, loading } = useGetTopics(group?.id)
   const selectedTopic = useSelector((state) => state.selection.topic)
   const dispatch = useDispatch()
 
@@ -22,6 +22,17 @@ const Topics = ({ group, handleCreateTopic, selectGroupOfTopic }) => {
 
   const backgroundColor = (item) =>
     selectedTopic?.id === item.id ? '#f0a070' : 'white'
+
+  console.log(
+    'group',
+    group,
+    'topics',
+    topics,
+    'error',
+    error,
+    'loading',
+    loading
+  )
 
   const renderTopics = () => {
     if (topics) {
@@ -44,11 +55,14 @@ const Topics = ({ group, handleCreateTopic, selectGroupOfTopic }) => {
       {renderTopics()}
       <Button
         variant="text"
-        startIcon={<AddBox />}
+        //startIcon={<AddBox />}
         style={{ justifyContent: 'flex-start' }}
         onClick={handleCreateTopic}
       >
-        <Typography>Create topic</Typography>
+        <Typography>
+          {' '}
+          <AddBox /> Create topic
+        </Typography>
       </Button>
     </div>
   )

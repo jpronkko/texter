@@ -11,7 +11,7 @@ const mongoConnect = () => {
   mongoose
     .connect(config.MONGODB_URI)
     .then((dbConnection) => {
-      logger.info('Connected to MongoDB.')
+      logger.info('Connected to MongoDB.', config.MONGODB_URI)
       logger.info('Waiting connections...\n')
       db = dbConnection
     })

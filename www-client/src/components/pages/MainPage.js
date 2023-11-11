@@ -11,15 +11,18 @@ const MainPage = () => {
   const user = useSelector((state) => state.user.userData)
   const topic = useSelector((state) => state.selection.topic)
 
+
   useEffect(() => {
     if (user.username === '') {
       navigate('/login')
     }
   }, [user.username])
 
+
   return (
     <div>
       <Typography>Main Page</Typography>
+
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <GroupList />

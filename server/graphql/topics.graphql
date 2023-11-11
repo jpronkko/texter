@@ -15,5 +15,5 @@ type Mutation {
 }
 
 type Subscription {
-  topicAdded(groupId: ID!): Invitation
+  topicAddedToGroup(groupId: ID!): Topic
 }

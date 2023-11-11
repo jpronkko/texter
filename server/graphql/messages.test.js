@@ -16,7 +16,7 @@ describe('messages test', () => {
   let httpServer, apolloServer, userData, groupData, topicData
 
   beforeAll(async () => {
-    ;({ httpServer, apolloServer } = await startServer())
+    ({ httpServer, apolloServer } = await startServer())
   })
 
   afterAll(async () => {

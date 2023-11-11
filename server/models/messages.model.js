@@ -27,20 +27,18 @@ const createMessage = async (user, topicId, body) => {
     sentTime: Date.now(),
   })
   const savedMessage = await message.save()
-  const populatedMessage = await message.populate({
-    path: 'fromUser',
-    select: '_id name',
-  })
-  logger.info('Trying create message save', savedMessage)
+  if (!savedMessage) {
+    logger.error('Message save failed:', message)
+    throw new Error(`Message save failed! ${message}`)
+  }
 
   topic.messages = topic.messages.concat(message._id)
-  await topic.save()
-  logger.info(
-    `Saved message: ${populatedMessage} toJSON: ${JSON.stringify(
-      populatedMessage.toJSON()
-    )}`
-  )
-  return populatedMessage.toJSON()
+  const savedTopic = await topic.save()
+  if (!savedTopic) {
+    logger.error('Topic save failed:', topic)
+    throw new Error(`Topic save failed! ${topic}`)
+  }
+  return { ...savedMessage.toJSON(), fromUser: { id: user.id, name: user.name } }
 }
 
 module.exports = {

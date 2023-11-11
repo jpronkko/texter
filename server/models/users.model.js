@@ -3,10 +3,44 @@ const logger = require('../utils/logger')
 const User = require('./users.mongo')
 const { pwCompare, tokenFromUser } = require('../utils/pwtoken')
 
-const findUser = async (username) => {
-  //const user = await User.findOne({ username }).populate('groups')
+/* const groupsToJoinedGroups = (joinedGroups) => {
+  console.log('userGroups for user joined groups', joinedGroups)
+
+  joinedGroups.forEach((item) =>
+    console.log('item', JSON.stringify(item.group), '\n')
+  )
+
+  const retVal = joinedGroups.map((item) => ({
+    groupId: item.group.id,
+    groupName: item.group.name,
+    role: item.role,
+  }))
+
+  console.log('retVal in groupsToJoinedGroups', retVal)
+  return retVal
+}
+ */
+const findUserWithId = async (userId) => {
+  const user = await User.findById(userId)
+  if (user) {
+    return user.toJSON()
+  }
+
+  return null
+}
+
+const findUserByUsername = async (username) => {
+  const user = await User.findOne({ username })
+  if (user) {
+    return user.toJSON()
+  }
+
+  return null
+}
+
+const findUserWithGroups = async (username) => {
   const user = await User.findOne({ username }).populate({
-    path: 'groups',
+    path: 'joinedGroups',
     model: 'JoinedGroup',
     populate: {
       path: 'group',
@@ -16,36 +50,35 @@ const findUser = async (username) => {
 
   if (!user) return null
   const jsonedUser = user.toJSON()
-  const jsonedUserGroups = user.groups.map((group) => group.toJSON())
-  console.log(jsonedUserGroups)
-  jsonedUser.groups = jsonedUserGroups
-  console.log('find user', JSON.stringify(jsonedUser))
+  jsonedUser.joinedGroups = jsonedUser.joinedGroups.map((item) => ({
+    groupId: item.group.id,
+    groupName: item.group.name,
+    role: item.role,
+  }))
   return jsonedUser
 }
 
-const findUserWithId = async (userId) => {
-  //console.log('finding user with id', userId, typeof userId)
-  const user = await User.findById(userId)
-  // const user = await User.findById(userId).populate({
-  //   path: 'groups',
-  //   model: 'JoinedGroup',
-  //   populate: {
-  //     path: 'group',
-  //     model: 'Group',
-  //   },
-  // })
-
-  if (user) {
-    return user.toJSON()
-  }
-
-  console.error('useri', user)
-  return null
-}
-
 const getAllUsers = async () => {
-  const allUsers = await User.find({})
-  return allUsers.map((user) => user.toJSON())
+  const allUsers = await User.find({}).populate({
+    path: 'joinedGroups',
+    model: 'JoinedGroup',
+    populate: {
+      path: 'group',
+      model: 'Group',
+      select: '_id, name',
+    },
+  })
+
+  const allUsersJSON = allUsers.map((user) => user.toJSON())
+  console.log('all users I', allUsersJSON)
+  allUsersJSON.forEach((user) => {
+    user.joinedGroups = user.joinedGroups.map((item) => ({
+      groupId: item.group.id,
+      groupName: item.group.name,
+      role: item.role,
+    }))
+  })
+  return allUsersJSON
 }
 
 const createUser = async (name, username, email, passwordHash) => {
@@ -65,16 +98,6 @@ const createUser = async (name, username, email, passwordHash) => {
 const login = async (username, password) => {
   logger.info('Login with username', username, 'password', password)
   const user = await User.findOne({ username })
-  /* .populate(
-      {
-        path: 'groups',
-        model: 'JoinedGroup',
-        populate: {
-          path: 'group',
-          model: 'Group'
-        }
-      }
-    )*/
 
   if (!user) {
     throw new Error('No such user')
@@ -98,23 +121,22 @@ const login = async (username, password) => {
 }
 
 const addUserToGroup = async (userId, groupId, role) => {
-  console.log('Add user --- ', userId, groupId, role)
   const user = await User.findById(userId)
   if (!user) {
     logger.error(`User with id: ${userId} not found!`)
     throw new Error('No such user!')
   }
 
-  console.log('user 1', user)
-  const exists = user.groups.find((item) => item.group.toString() === groupId)
+  const exists = user.joinedGroups.find(
+    (item) => item.group.toString() === groupId
+  )
   if (exists) {
     throw new Error('User exists in group already')
   }
-  user.groups = user.groups.concat({
+  user.joinedGroups = user.joinedGroups.concat({
     group: groupId,
     role,
   })
-  console.log('user 2', user)
 
   try {
     const updatedUser = await user.save()
@@ -122,43 +144,32 @@ const addUserToGroup = async (userId, groupId, role) => {
       logger.error('User save failed in addUserToGroup')
       throw new Error('Saving user failed!')
     }
-    // const jsonedUserGroups = user.groups.map((group) => group.toJSON())
-    // return jsonedUserGroups
-    return { user: userId, group: groupId, role }
+
+    return { user: updatedUser.id, group: groupId, role }
   } catch (error) {
     throw new Error('Saving user failed!')
   }
 }
 
 const updateRoleInGroup = async (userId, groupId, role) => {
-  console.log('2!------------------------------------!')
-  console.log(`userId: ${userId} groupId ${groupId} role ${role}.`)
-  const user = await User.findById(userId) /*.populate({
-    path: 'groups',
-    model: 'JoinedGroup',
-    populate: {
-      path: 'group',
-      model: 'Group',
-    },
-  })*/
+  const user = await User.findById(userId)
 
   if (!user) {
     logger.error(`No such user found: ${userId}`)
     throw new Error('No such user!')
   }
 
-  user.groups = user.groups.map((item) =>
+  user.joinedGroups = user.joinedGroups.map((item) =>
     item.group.toString() === groupId ? { ...item, role } : item
   )
 
-  console.log('User groups', user.groups)
   await user.save()
   return { user: userId, group: groupId, role }
 }
 
 const getUserJoinedGroups = async (userId) => {
   const user = await User.findById(userId).populate({
-    path: 'groups',
+    path: 'joinedGroups',
     model: 'JoinedGroup',
     populate: {
       path: 'group',
@@ -167,24 +178,43 @@ const getUserJoinedGroups = async (userId) => {
     },
   })
 
-  console.log('wut: userGroups for user joined groups', user)
   if (!user) {
     logger.error(`No user with ${userId} found!`)
     throw new Error('No such user!')
   }
 
-  const jsonedUserGroups = user.groups.map((group) => group.toJSON())
+  const jsonedUser = user.toJSON()
   console.log(
-    'jsoned userGroups for user joined groups',
-    JSON.stringify(jsonedUserGroups)
+    'getUserJoinedGroups jsonedUser',
+    jsonedUser,
+    'joined groups',
+    jsonedUser.joinedGroups
   )
 
-  return jsonedUserGroups
+  console.log('foreachitys')
+  jsonedUser.joinedGroups.forEach((item) => {
+    console.log('item', item)
+  })
+
+  const retVal = jsonedUser.joinedGroups.map((item) => ({
+    groupId: item.group.id,
+    groupName: item.group.name,
+    role: item.role,
+  }))
+
+  console.log('retVal', retVal)
+  return retVal
+  // if (jsonedUser.joinedGroups) {
+  //   return groupsToJoinedGroups(jsonedUser.joinedGroups)
+  // }
+  // return []
+  // //return groupsToJoinedGroups(jsonedUser.groups)
 }
 
 module.exports = {
-  findUser,
+  findUserByUsername,
   findUserWithId,
+  findUserWithGroups,
   getAllUsers,
   createUser,
   login,

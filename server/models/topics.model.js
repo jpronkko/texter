@@ -27,13 +27,19 @@ const getMessages = async (topicId) => {
       select: '_id name',
     },
   })
-  if (topic) {
-    logger.info('Messages', topic.messages)
-    return topic.messages.map((message) => message.toJSON())
+
+  if (!topic) {
+    logger.error(`No topic with id ${topicId} found!`)
+    throw new Error('No such topic!')
   }
-  const topics = await Topic.find({})
-  console.log(topics.map((topic) => topic.toJSON()))
-  return null
+
+  const messagesJSON = topic.messages.map((message) => ({
+    ...message.toJSON(),
+    fromUser: message.fromUser.toJSON(),
+  }))
+
+  logger.info('getMessages', JSON.stringify(messagesJSON, null, 4))
+  return messagesJSON
 }
 
 const createTopic = async (groupId, name) => {

@@ -60,6 +60,7 @@ const startServer = async () => {
             const currentUser = await usersModel.findUserWithId(
               decodedToken.userId
             )
+            //console.log('Current user:', currentUser)
             return { currentUser }
           } catch (error) {
             logger.error('Middleware: Token decode failed', error)

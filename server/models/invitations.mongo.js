@@ -6,12 +6,12 @@ const schema = new mongoose.Schema({
     ref: 'Group',
     required: true,
   },
-  fromUser: {
+  fromUserId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
-  toUser: {
+  toUserId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
@@ -33,8 +33,8 @@ schema.set('toJSON', {
     delete returnedObject._id
     delete returnedObject.__v
     returnedObject.groupId = returnedObject.groupId.toString()
-    returnedObject.fromUser = returnedObject.fromUser.toString()
-    returnedObject.toUser = returnedObject.toUser.toString()
+    returnedObject.fromUserId = returnedObject.fromUserId.toString()
+    returnedObject.toUserId = returnedObject.toUserId.toString()
   }
 })
 

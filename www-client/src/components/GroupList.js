@@ -6,8 +6,9 @@ import { Button, Divider, Drawer, Toolbar, Typography } from '@mui/material'
 import { AddBox } from '@mui/icons-material'
 
 import useCreateGroup from '../hooks/useCreateGroup'
-import useGroups from '../hooks/useGroups'
+import useGetUserGroups from '../hooks/useGroups'
 import useCreateTopic from '../hooks/useCreateTopic'
+import useCreateInvitation from '../hooks/useCreateInvitation'
 
 import { clearGroup, setGroup } from '../app/selectionSlice'
 
@@ -15,6 +16,7 @@ import InputTextDlg from './dialogs/InputTextDlg'
 import Topics from './Topics'
 import Accordion from './Accordion'
 import AccordionSummary from './AccordionSummary'
+import CreateInvitation from './dialogs/CreateInvitation'
 
 const drawerWidth = 300
 
@@ -25,17 +27,15 @@ const GroupList = () => {
   const dispatch = useDispatch()
   const topicDlgRef = useRef()
   const groupDlgRef = useRef()
+  const invitationDlgRef = useRef()
 
   const [createGroup] = useCreateGroup()
   const [createTopic] = useCreateTopic()
-  const { userGroups, loading, error } = useGroups()
+  const [createInvitation] = useCreateInvitation()
 
-  /*const [expanded, setExpanded] = React.useState('panel1')
+  const { userGroups, loading, error } = useGetUserGroups()
 
-  const handleChange = (panel) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false)
-    handleSelectGroup(newExpanded ? panel : '')
-  }*/
+  console.log('userGroups', userGroups)
 
   const handleSelectGroup = async (newGroup) => {
     if (newGroup.id === selectedGroup?.id) return
@@ -58,14 +58,6 @@ const GroupList = () => {
   const handleCreateGroup = async (name) => {
     const groupData = await createGroup(name)
     console.log(groupData)
-    /* if (groupData) {
-      dispatch(
-        addJoinedGroup({
-          role: 'OWNER',
-          group: { id: groupData.id, name: groupData.name },
-        })
-      )
-    }*/
     groupDlgRef.current.close()
   }
 
@@ -75,33 +67,38 @@ const GroupList = () => {
     topicDlgRef.current.close()
   }
 
+  const handleInviteToGroup = async (groupId, userName) => {
+    const invitation = await createInvitation(user.id, groupId, userName)
+    console.log('Handle Invite to Group', invitation)
+    invitationDlgRef.current.close()
+  }
+
   const renderedGroups = userGroups.map((item) => (
     <Accordion
-      key={item.group.id}
-      //expanded={expanded === item.group}
-      expanded={selectedGroup?.id === item.group.id}
-      //onChange={handleChange(item.group)}
-      onChange={() => handleSelectGroup(item.group)}
+      key={item.id}
+      expanded={selectedGroup?.id === item.id}
+      onChange={() => handleSelectGroup(item)}
     >
-      <AccordionSummary key={item.group.id}>
+      <AccordionSummary key={item.id}>
         <Button
           variant="text"
           //onClick={() => handleSelectGroup(item.group)}
           onClick={() => console.log('group foffa!')}
         >
-          <Typography>{item.group.name}</Typography>
+          <Typography>{item.name}</Typography>
         </Button>
       </AccordionSummary>
       <Topics
-        group={item.group}
+        group={item}
         handleCreateTopic={() => topicDlgRef.current.open()}
         selectGroupOfTopic={handleSelectGroup}
       />
       <Button
         variant="text"
-        startIcon={<AddBox />}
+        onClick={() => invitationDlgRef.current.open()}
+        // startIcon={<AddBox />}
       >
-        <Typography variant="subtitle2">Add Members</Typography>
+        <Typography variant="subtitle2"> - Add Members</Typography>
       </Button>
     </Accordion>
   ))
@@ -120,6 +117,12 @@ const GroupList = () => {
         title="Create Topic"
         label="Name"
         handleInput={handleCreateTopic}
+      />
+
+      <CreateInvitation
+        ref={invitationDlgRef}
+        groupId={selectedGroup?.id}
+        handleCreateInvitation={handleInviteToGroup}
       />
 
       <Drawer

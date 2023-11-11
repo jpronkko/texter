@@ -25,7 +25,6 @@ module.exports = {
       checkUser(currentUser, 'Creating a group failed!')
 
       const { name } = args
-
       const newGroup = await groupsModel.createGroup(currentUser, name)
 
       return newGroup

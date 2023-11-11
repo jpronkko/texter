@@ -3,6 +3,9 @@ const { PubSub, withFilter } = require('graphql-subscriptions')
 const { GraphQLError } = require('graphql')
 
 const invitationsModel = require('../models/invitations.model')
+const groupsModel = require('../models/groups.model')
+const usersModel = require('../models/users.model')
+
 const logger = require('../utils/logger')
 
 const { checkUser, checkUserOwnsGroup } = require('../utils/checkUser')
@@ -14,46 +17,76 @@ module.exports = {
     allInvitations: async () => await invitationsModel.getAllInvitations(),
     getReceivedInvitations: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Getting recv. invitations failed!')
-      const invitations = await invitationsModel.getInvitations(
-        currentUser.id,
-        false
+      const invitationInfo = await invitationsModel.getReceivedInvitations(
+        currentUser.id
       )
-      return invitations
+      console.log('Invitaiton Info', invitationInfo)
+      return invitationInfo
     },
     getSentInvitations: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Getting sent invitations failed!')
-      const invitations = await invitationsModel.getInvitations(
-        currentUser.id,
-        true
+
+      const invitationInfo = await invitationsModel.getSentInvitations(
+        currentUser.id
       )
-      return invitations
+      console.log('Invitaiton Info', invitationInfo)
+      return invitationInfo
     },
   },
+  InvitationInfo: {
+    group: async (parent) => {
+      console.log('group args', parent)
+      const group = await groupsModel.findGroup(parent.group)
+      console.log('group', group)
+      //return group
+      return { id: group.id, name: group.name, ownerId: group.ownerId }
+    },
+    user: async (parent) => {
+      console.log('user args', parent)
+      const user = await usersModel.findUserWithId(parent.user)
+      console.log('user', user)
+      return { id: user.id, username: user.username, name: user.name }
+    },
+    /*fromUser: async (parent) => {
+      console.log('user args', parent)
+      const user = await usersModel.findUserWithId(parent.fromUser)
+      return { id: user.id, username: user.username, name: user.name }
+    },
+    toUser: async (parent) => {
+      console.log('user args', parent)
+      const user = await usersModel.findUserWithId(parent.fromUser)
+      return { id: user.id, username: user.username, name: user.name }
+    },*/
+  },
+
   Mutation: {
     createInvitation: async (root, args, { currentUser }) => {
       const {
-        invitation: { groupId, fromUser, toUser },
+        invitation: { toUser, groupId },
+        //invitation: { fromUserId, toUser, groupId },
       } = args
       checkUser(currentUser, 'Creating invitation failed!')
-
-      if (currentUser.id !== fromUser) {
-        throw new GraphQLError('Maligned input')
-      }
 
       try {
         if (!checkUserOwnsGroup(currentUser, groupId)) {
           throw new GraphQLError('No permission to add invitation to a group')
         }
 
+        console.log(
+          'Prep creazte. Creating invitation',
+          currentUser.id,
+          toUser,
+          groupId
+        )
         const invitation = await invitationsModel.createInvitation(
-          fromUser,
+          currentUser.id,
           toUser,
           groupId
         )
         if (!invitation) {
           logger.error('Create invitation failed!', invitation)
-          throw new GraphQLError('Username taken', {
-            extensions: { code: 'USERNAME_TAKEN' },
+          throw new GraphQLError('Create invitation failedf!', {
+            extensions: { code: 'CREATE_INVITATION_FAILED' },
           })
         }
         pubsub.publish('INVITATION_ADDED', { invitationAdded: invitation })

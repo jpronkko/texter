@@ -38,5 +38,5 @@ type Mutation {
 }
 
 type Subscription {
-  messageAdded(groupId: ID!): MessageOut
+  messageAddedToTopic(groupId: ID!): MessageOut
 }

@@ -16,7 +16,7 @@ module.exports = {
   Mutation: {
     createMessage: async (root, args, { currentUser }) => {
       console.log('resolver createMessage args', args)
-      checkUser(currentUser, 'Not authorized!')
+      checkUser(currentUser, 'Not authorized to create a message!')
 
       const {
         messageInput: { topicId, body },
@@ -35,20 +35,25 @@ module.exports = {
           body
         )
         pubsub.publish('MESSAGE_ADDED', {
+          topicId,
           messageAdded: {
-            topicId,
             message,
           },
         })
+        console.log(
+          'msg:',
+          JSON.stringify(message),
+          JSON.stringify(message.fromUser)
+        )
         return message
       } catch (error) {
         logger.error('Error:', error)
-        throw new GraphQLError('Topic id error!')
+        throw new GraphQLError('Message error!')
       }
     },
   },
   Subscription: {
-    messageAdded: {
+    messageAddedToTopic: {
       subscribe: withFilter(
         () => pubsub.asyncIterator(['MESSAGE_ADDED']),
         (payload, variables) => {

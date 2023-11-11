@@ -5,7 +5,7 @@ const { GraphQLError } = require('graphql')
 const usersModel = require('../models/users.model')
 const logger = require('../utils/logger')
 
-const { tokenFromUser, getHash } = require('../utils/pwtoken')
+const { getHash } = require('../utils/pwtoken')
 const { checkUser, checkUserOwnsGroup } = require('../utils/checkUser')
 
 const pubsub = new PubSub()
@@ -16,20 +16,34 @@ module.exports = {
       console.log('context', contextValue)
       return contextValue.currentUser
     },
+    getUserBaseData: async (root, args, { currentUser }) => {
+      checkUser(currentUser, 'Getting user data failed!')
+      const user = await usersModel.findUserWithId(currentUser.id)
+      console.log('user', user)
+      return { id: user.id, username: user.username, name: user.name }
+    },
     allUsers: async () => await usersModel.getAllUsers(),
-    findUser: async (root, args) => await usersModel.findUser(args.username),
+    //findUser: async (root, args) => await usersModel.findUser(args.username),
     getUserJoinedGroups: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Getting user groups failed!')
       const groupInfo = await usersModel.getUserJoinedGroups(currentUser.id)
       console.log('Group Info', groupInfo)
-      return groupInfo
+      return { userId: currentUser.id, joinedGroups: groupInfo }
     },
-    findUserById: async (root, args) => {
+    /*findUserById: async (root, args) => {
       console.log(args)
       const user = await usersModel.findUserWithId(args.id)
       return user
-    },
+    },*/
   },
+  // JoinedGroup: {
+  //   group: async (parent) => {
+  //     console.log('group args', parent)
+  //     const group = await groupsModel.findGroup(parent.group)
+  //     return { groupId: group.id, grouName: group.name, ownerId: group.ownerId }
+  //   },
+  // },
+
   Mutation: {
     createUser: async (root, args) => {
       const {
@@ -103,9 +117,9 @@ module.exports = {
       console.log('addusertog', userGroupRole)
 
       pubsub.publish('USER_ADDED_TO_GROUP', {
+        userId,
         userAddedToGroup: {
-          userId,
-          userGroupRole,
+          ...userGroupRole,
         },
       })
       return userGroupRole

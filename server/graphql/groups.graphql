@@ -7,6 +7,7 @@ type Group {
 type GroupInfo {
   id: ID!
   name: String!
+  ownerId: ID!
 }
 
 type Query {

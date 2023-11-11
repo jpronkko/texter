@@ -1,12 +1,14 @@
 const logger = require('../utils/logger')
 
 const Invitation = require('./invitations.mongo')
+const User = require('./users.mongo')
 const { addUserToGroup } = require('./users.model')
 
 const getAllInvitations = async () => {
   const invitations = await Invitation.find({})
   console.log('all invitations', invitations)
-  if (invitations.length > 0) return invitations.toJSON()
+  if (invitations.length > 0)
+    return invitations.map((invitation) => invitation.toJSON())
   return []
 }
 
@@ -15,32 +17,54 @@ const findInvitationById = async (id) => {
   return invitation.toJSON()
 }
 
-const getInvitations = async (userId, isFromUser) => {
-  if (isFromUser) {
-    const invitation = await Invitation.find({ fromUser: userId })
-    if (!invitation) {
-      throw new Error(`Invitations from user ${userId} not found!`)
-    }
-    return invitation.map((item) => item.toJSON())
+const getSentInvitations = async (userId) => {
+  const invitations = await Invitation.find({ fromUserId: userId })
+  if (!invitations) {
+    throw new Error(`Invitations from user ${userId} not found!`)
   }
+  return invitations.map((item) => ({
+    id: item._id.toString(),
+    group: item.groupId,
+    user: item.toUserId,
+    status: item.status,
+    sentTime: item.sentTime,
+  }))
+}
 
-  const invitations = await Invitation.find({ toUser: userId })
+const getReceivedInvitations = async (userId) => {
+  const invitations = await Invitation.find({ toUserId: userId })
   if (!invitations) {
     throw new Error(`Invitations to user ${userId} not found!`)
   }
-  return invitations.map((item) => item.toJSON())
+  return invitations.map((item) => ({
+    id: item._id.toString(),
+    group: item.groupId,
+    user: item.fromUserId,
+    status: item.status,
+    sentTime: item.sentTime,
+  }))
 }
 
-const createInvitation = async (fromUser, toUser, groupId) => {
-  const invitatiton = await Invitation.findOne({ fromUser, toUser })
+const createInvitation = async (fromUserId, toUser, groupId) => {
+  const userToInvite = await User.findOne({ username: toUser })
+  if (!userToInvite) {
+    throw new Error('User to invite not found!')
+  }
+
+  const toUserId = userToInvite._id
+  const invitatiton = await Invitation.findOne({
+    fromUserId,
+    toUserId,
+    groupId,
+  })
 
   if (invitatiton) {
     throw new Error('There is already an invitation!')
   }
   const newInvitation = new Invitation({
     groupId,
-    fromUser,
-    toUser,
+    fromUserId,
+    toUserId,
     status: 'PENDING',
     sentTime: Date.now(),
   })
@@ -61,17 +85,17 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
   }
 
   if (status === 'ACCEPTED') {
-    if (invitation2.toUser !== userId) {
+    if (invitation2.toUserId !== userId) {
       logger.error(
         'Not authorizded to accept invitation!',
-        invitation.toUser,
+        invitation.toUserId,
         userId
       )
       throw new Error('Not authorized to accept invitation!')
     }
 
     const groupId = await addUserToGroup(
-      invitation2.toUser,
+      invitation2.toUserId,
       invitation2.groupId,
       'MEMBER'
     )
@@ -87,7 +111,8 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
 
 module.exports = {
   getAllInvitations,
-  getInvitations,
+  getReceivedInvitations,
+  getSentInvitations,
   findInvitationById,
   createInvitation,
   changeInvitationStatus,

@@ -1,6 +1,5 @@
 import React from 'react'
 
-
 import LoginForm from '../forms/LoginForm'
 
 import useLogInOut from '../../hooks/useLogInOut'
@@ -12,38 +11,38 @@ import { Button } from '@mui/material'
 
 const Login = () => {
   const navigate = useNavigate()
-  const [login, ,/*result*/] = useLogInOut()
-  const [showError, /*clearError*/] = useError()
+  const [login /*result*/, ,] = useLogInOut()
+  const [showError /*clearError*/] = useError()
 
   const handleLogin = async (credentials) => {
     logger.info('Login user input data:', credentials)
     try {
-      const user = await login(
-        credentials.username,
-        credentials.password
-      )
+      const user = await login(credentials.username, credentials.password)
       logger.info('Login result:', user)
       navigate('/')
-    } catch(error) {
+    } catch (error) {
       showError(error.toString())
     }
   }
 
-  const fastLogin = async () => {
+  const fastLogin = async (username, password) => {
     try {
-      await login('anni', 'klonksahtava')
+      await login(username, password)
       navigate('/')
-    } catch(error) {
+    } catch (error) {
       showError(error.toString())
     }
   }
   return (
     <div>
-      <Button onClick={() => fastLogin()} >Anni</Button>
+      <Button onClick={() => fastLogin('anni', 'klonksahtava')}>Anni</Button>
+      <Button onClick={() => fastLogin('sonja', 'eyeofsauron')}>Sonja</Button>
+      <Button onClick={() => fastLogin('raikku', 'hilpatihalpati')}>
+        Raimo
+      </Button>
       <LoginForm handleLogin={handleLogin} />
     </div>
   )
 }
 
 export default Login
-

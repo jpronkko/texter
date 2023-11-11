@@ -4,7 +4,7 @@ import React from 'react'
 import { useSubscription } from '@apollo/client'
 import { /*useDispatch,*/ useSelector } from 'react-redux'
 
-import { MESSAGE_ADDED } from '../../graphql/subscriptions'
+import { MESSAGE_ADDED_TO_TOPIC } from '../../graphql/subscriptions'
 import useMessages from '../../hooks/useGetMessages'
 
 import { Button, Divider, List, Typography } from '@mui/material'
@@ -18,8 +18,8 @@ const MessageList = () => {
   const group = useSelector((state) => state.selection.group)
   const topic = useSelector((state) => state.selection.topic)
 
-  useSubscription(MESSAGE_ADDED, {
-    variables: { groupId: group.id },
+  useSubscription(MESSAGE_ADDED_TO_TOPIC, {
+    variables: { topicId: topic.id },
     onData: ({ data }) => {
       logger.info('Subsribe add msg', data)
     },
