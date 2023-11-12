@@ -34,11 +34,8 @@ module.exports = {
           topicId,
           body
         )
-        pubsub.publish('MESSAGE_ADDED', {
-          topicId,
-          messageAdded: {
-            message,
-          },
+        pubsub.publish('MESSAGE_ADDED_TO_TOPIC', {
+          messageAddedToTopic: { ...message },
         })
         console.log(
           'msg:',
@@ -55,10 +52,10 @@ module.exports = {
   Subscription: {
     messageAddedToTopic: {
       subscribe: withFilter(
-        () => pubsub.asyncIterator(['MESSAGE_ADDED']),
+        () => pubsub.asyncIterator(['MESSAGE_ADDED_TO_TOPIC']),
         (payload, variables) => {
           console.log('msg added subs paload', payload)
-          return payload.messageAdded.topicId === variables.topicId
+          return payload.messageAddedToTopic.topicId === variables.topicId
         }
       ),
     },

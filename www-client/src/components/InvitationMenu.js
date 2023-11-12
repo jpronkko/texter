@@ -14,10 +14,11 @@ import {
 
 import useSentInvitations from '../hooks/useSentInvitations'
 import useRecvInvitations from '../hooks/useRecvInvitations'
-import useModifyInvitations from '../hooks/useModifyInvitations'
+import useModifySentInv from '../hooks/useModifySentInv'
+import useModifyRecvInv from '../hooks/useModifyRecvInv'
 
 const RecvInvItem = ({ invitation }) => {
-  const [acceptInvitation, rejectInvitation] = useModifyInvitations()
+  const [acceptInvitation, rejectInvitation] = useModifyRecvInv()
 
   const handleAccept = async () => {
     const retval = await acceptInvitation(invitation.id)
@@ -31,7 +32,8 @@ const RecvInvItem = ({ invitation }) => {
   return (
     <MenuItem>
       <Typography>
-        {invitation.user.name} invited you to join {invitation.group.name}
+        {invitation.user.name} invited you to {invitation.group.name}, status is{' '}
+        {invitation.status}
       </Typography>
       <Button onClick={handleAccept}>Accept</Button>
       <Button onClick={handleReject}>Reject</Button>
@@ -40,7 +42,7 @@ const RecvInvItem = ({ invitation }) => {
 }
 
 const SentInvItem = ({ invitation }) => {
-  const [cancelInvitation] = useModifyInvitations()
+  const [cancelInvitation] = useModifySentInv()
 
   const handleCancel = () => {
     cancelInvitation(invitation.id)
@@ -58,9 +60,10 @@ const SentInvItem = ({ invitation }) => {
 
 const InvitationMenu = () => {
   const username = useSelector((state) => state.user.userData.username)
+  const userId = useSelector((state) => state.user.userData.id)
 
-  const { recvInvitations } = useRecvInvitations()
-  const { sentInvitations } = useSentInvitations()
+  const { recvInvitations /* refetch */ } = useRecvInvitations(userId)
+  const { sentInvitations } = useSentInvitations(userId)
 
   const [anchorElUser, setAnchorElUser] = useState(null)
 

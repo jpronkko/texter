@@ -89,6 +89,7 @@ export const GET_MESSAGES = gql`
   query GetMessages($topicId: ID!) {
     getMessages(topicId: $topicId) {
       id
+      topicId
       body
       sentTime
       fromUser {

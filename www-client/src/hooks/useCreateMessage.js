@@ -18,6 +18,7 @@ const useCreateMessage = () => {
           getMessages: [
             ...messagesInStore.getMessages,
             {
+              __typename: 'MessageInfo',
               id: newMessage.id,
               topicId: newMessage.topicId,
               body: newMessage.body,

@@ -29,7 +29,7 @@ const useCreateGroup = () => {
             userId: newGroup.ownerId,
             joinedGroups: [
               ...groupsInStore.getUserJoinedGroups.joinedGroups,
-              { groupId: newGroup.id, groupName: newGroup.name, role: 'owner' },
+              { groupId: newGroup.id, groupName: newGroup.name, role: 'OWNER' },
             ],
           },
           // getUserJoinedGroups: [

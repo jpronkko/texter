@@ -14,8 +14,8 @@ const checkUser = (currentUser, errorMessage) => {
 const checkUserInGroup = (user, groupId) => {
   const userGroups = user.joinedGroups
 
-  console.error('-----------------')
-  console.log('Check user in group, userGroups', user, userGroups)
+  //console.error('-----------------')
+  //console.log('Check user in group, userGroups', user, userGroups)
   if (userGroups.find((item) => item.group.toString() === groupId)) {
     return true
   }
@@ -50,8 +50,7 @@ const checkUserOwnsGroup = (user, groupId) => {
   console.log('trying to find group', groupId, typeof groupId)
 
   const joinedGroup = user.joinedGroups.find(
-    (item) => item.group,
-    toString() === groupId
+    (item) => item.group.toString() === groupId
   )
   if (joinedGroup && joinedGroup.role === 'OWNER') return true
 

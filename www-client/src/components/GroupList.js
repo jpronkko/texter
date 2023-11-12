@@ -33,9 +33,9 @@ const GroupList = () => {
   const [createTopic] = useCreateTopic()
   const [createInvitation] = useCreateInvitation()
 
-  const { userGroups, loading, error } = useGetUserGroups()
+  const { ownedGroups, joinedGroups, loading, error } = useGetUserGroups()
 
-  console.log('userGroups', userGroups)
+  console.log('userGroups', joinedGroups)
 
   const handleSelectGroup = async (newGroup) => {
     if (newGroup.id === selectedGroup?.id) return
@@ -48,7 +48,7 @@ const GroupList = () => {
     'user state',
     user,
     'user groups',
-    userGroups,
+    joinedGroups,
     'loading:',
     loading,
     'error',
@@ -73,7 +73,7 @@ const GroupList = () => {
     invitationDlgRef.current.close()
   }
 
-  const renderedGroups = userGroups.map((item) => (
+  const renderedOwnedGroups = ownedGroups.map((item) => (
     <Accordion
       key={item.id}
       expanded={selectedGroup?.id === item.id}
@@ -90,6 +90,7 @@ const GroupList = () => {
       </AccordionSummary>
       <Topics
         group={item}
+        isOwned={true}
         handleCreateTopic={() => topicDlgRef.current.open()}
         selectGroupOfTopic={handleSelectGroup}
       />
@@ -103,8 +104,32 @@ const GroupList = () => {
     </Accordion>
   ))
 
+  const renderedOtherJoinedGroups = joinedGroups.map((item) => (
+    <Accordion
+      key={item.id}
+      expanded={selectedGroup?.id === item.id}
+      onChange={() => handleSelectGroup(item)}
+    >
+      <AccordionSummary key={item.id}>
+        <Button
+          variant="text"
+          //onClick={() => handleSelectGroup(item.group)}
+          onClick={() => console.log('group foffa!')}
+        >
+          <Typography>{item.name}</Typography>
+        </Button>
+      </AccordionSummary>
+      <Topics
+        group={item}
+        isOwned={false}
+        handleCreateTopic={() => topicDlgRef.current.open()}
+        selectGroupOfTopic={handleSelectGroup}
+      />
+    </Accordion>
+  ))
+
   return (
-    <div>
+    <div style={{ margin: '5px' }}>
       <InputTextDlg
         ref={groupDlgRef}
         title="Create Group"
@@ -127,6 +152,7 @@ const GroupList = () => {
 
       <Drawer
         sx={{
+          padding: '5px',
           width: drawerWidth,
           flexShrink: 0,
           ['& .MuiDrawer-paper']: {
@@ -138,9 +164,8 @@ const GroupList = () => {
         anchor="left"
       >
         <Toolbar />
-        <Typography>Huppa Luppa</Typography>
         <Divider />
-        {renderedGroups}
+        <Typography>Own groups</Typography>
         <Button
           variant="text"
           startIcon={<AddBox />}
@@ -149,6 +174,10 @@ const GroupList = () => {
         >
           <Typography>Add group</Typography>
         </Button>
+        {renderedOwnedGroups}
+        <Divider />
+        <Typography>Joined groups</Typography>
+        {renderedOtherJoinedGroups}
         <Divider />
       </Drawer>
     </div>

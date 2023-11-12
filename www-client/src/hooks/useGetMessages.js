@@ -1,6 +1,7 @@
-import { useQuery } from '@apollo/client'
+import { useQuery /* useSubscription */ } from '@apollo/client'
 
 import { GET_MESSAGES } from '../graphql/queries'
+//import { MESSAGE_ADDED_TO_TOPIC } from '../graphql/subscriptions'
 
 const useMessages = (topicId) => {
   const { data, error, loading, fetchMore, refetch, ...result } = useQuery(
@@ -12,6 +13,14 @@ const useMessages = (topicId) => {
     }
   )
 
+  /* useSubscription(MESSAGE_ADDED_TO_TOPIC, {
+    variables: {
+      topicId: topicId,
+    },
+    onData: ({ data }) => {
+      console.log(data)
+    },
+  }) */
   //console.log(`Repo id ${JSON.stringify(id)} data ${JSON.stringify(data)}`);
 
   const handleFetchMore = () => {

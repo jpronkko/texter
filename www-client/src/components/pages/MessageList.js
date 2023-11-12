@@ -1,10 +1,10 @@
 //import { useEffect, useState } from 'react';
 import React from 'react'
 
-import { useSubscription } from '@apollo/client'
+//import { useSubscription } from '@apollo/client'
 import { /*useDispatch,*/ useSelector } from 'react-redux'
 
-import { MESSAGE_ADDED_TO_TOPIC } from '../../graphql/subscriptions'
+//import { MESSAGE_ADDED_TO_TOPIC } from '../../graphql/subscriptions'
 import useMessages from '../../hooks/useGetMessages'
 
 import { Button, Divider, List, Typography } from '@mui/material'
@@ -13,22 +13,26 @@ import CreateMessageForm from '../forms/CreateMessageForm'
 
 import logger from '../../utils/logger'
 import useCreateMessage from '../../hooks/useCreateMessage'
+import useMsgSubsription from '../../hooks/useMsgSubsription'
 
 const MessageList = () => {
   const group = useSelector((state) => state.selection.group)
   const topic = useSelector((state) => state.selection.topic)
 
-  useSubscription(MESSAGE_ADDED_TO_TOPIC, {
-    variables: { topicId: topic.id },
-    onData: ({ data }) => {
-      logger.info('Subsribe add msg', data)
-    },
-  })
+  // useSubscription(MESSAGE_ADDED_TO_TOPIC, {
+  //   variables: { topicId: topic.id },
+  //   onData: ({ data }) => {
+  //     logger.info('Subsribe add msg', data)
+  //   },
+  // })
 
   // const [getMessages, messagesResult] = useQuery(GET_MESSAGES)
 
   const { messages, loading, error } = useMessages(topic.id)
   const [createMessage, result] = useCreateMessage()
+  const newLocal = useMsgSubsription(topic.id)
+  console.log(' -> ', newLocal.messages, newLocal.loading, newLocal.error)
+
   //const dispatch = useDispatch()
 
   console.log(
@@ -59,7 +63,7 @@ const MessageList = () => {
     //dispatch(addMessage(message))
   }
   // data.getMessages.map((message) =>
-  const renderMessages = messages
+  const renderedMessages = messages
     ? messages.map((message) => (
         <MessageListItem
           key={message.id}
@@ -73,7 +77,7 @@ const MessageList = () => {
   return (
     <div>
       <Typography>Message List</Typography>
-      <List>{renderMessages ? renderMessages : 'No messages'}</List>
+      <List>{renderedMessages ? renderedMessages : 'No messages'}</List>
       <Button
         variant="contained"
         onClick={handleClick}

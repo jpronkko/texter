@@ -59,6 +59,13 @@ const createInvitation = async (fromUserId, toUser, groupId) => {
   })
 
   if (invitatiton) {
+    logger.error(
+      'There is already an invitation!',
+      invitatiton,
+      fromUserId,
+      toUserId,
+      groupId
+    )
     throw new Error('There is already an invitation!')
   }
   const newInvitation = new Invitation({
@@ -77,15 +84,15 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
     throw new Error('Invitation not found!')
   }
 
-  const invitation2 = invitation.toJSON()
+  const invitationJSON = invitation.toJSON()
 
-  if (invitation2.status === status) {
+  if (invitationJSON.status === status) {
     logger.info(`Changing invitation status, but it as already ${status}.`)
-    return
+    return invitationJSON
   }
 
   if (status === 'ACCEPTED') {
-    if (invitation2.toUserId !== userId) {
+    if (invitationJSON.toUserId !== userId) {
       logger.error(
         'Not authorizded to accept invitation!',
         invitation.toUserId,
@@ -95,13 +102,13 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
     }
 
     const groupId = await addUserToGroup(
-      invitation2.toUserId,
-      invitation2.groupId,
+      invitationJSON.toUserId,
+      invitationJSON.groupId,
       'MEMBER'
     )
     if (!groupId) {
       logger.error('No user group found!')
-      return null
+      throw new Error('No user group found!')
     }
   }
 

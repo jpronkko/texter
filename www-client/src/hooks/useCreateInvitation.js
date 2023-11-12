@@ -30,8 +30,8 @@ const useCreateInvitation = () => {
             // fromUserId: newInvitation.fromUserId,
             // toUserId: newInvitation.toUserId,
           },
-          getInvitations:
-            invitationsInStore.getInvitations.concat(newInvitation),
+          getSentInvitations:
+            invitationsInStore.getSentInvitations.concat(newInvitation),
         },
       })
     },

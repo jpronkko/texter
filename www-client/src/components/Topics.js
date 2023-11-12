@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import AccordionDetails from './AccordionDetails'
 
-const Topics = ({ group, handleCreateTopic, selectGroupOfTopic }) => {
+const Topics = ({ group, isOwned, handleCreateTopic, selectGroupOfTopic }) => {
   const { topics, error, loading } = useGetTopics(group?.id)
   const selectedTopic = useSelector((state) => state.selection.topic)
   const dispatch = useDispatch()
@@ -23,17 +23,6 @@ const Topics = ({ group, handleCreateTopic, selectGroupOfTopic }) => {
   const backgroundColor = (item) =>
     selectedTopic?.id === item.id ? '#f0a070' : 'white'
 
-  console.log(
-    'group',
-    group,
-    'topics',
-    topics,
-    'error',
-    error,
-    'loading',
-    loading
-  )
-
   const renderTopics = () => {
     if (topics) {
       return topics.map((item) => (
@@ -42,7 +31,7 @@ const Topics = ({ group, handleCreateTopic, selectGroupOfTopic }) => {
           onClick={() => handleSelectTopic(item)}
           style={{ backgroundColor: backgroundColor(item) }}
         >
-          {item.name}
+          # {item.name}
         </AccordionDetails>
       ))
     } else if (loading) {
@@ -50,9 +39,8 @@ const Topics = ({ group, handleCreateTopic, selectGroupOfTopic }) => {
     }
   }
 
-  return (
-    <div>
-      {renderTopics()}
+  const renderIfOwned = () => {
+    return (
       <Button
         variant="text"
         //startIcon={<AddBox />}
@@ -64,6 +52,14 @@ const Topics = ({ group, handleCreateTopic, selectGroupOfTopic }) => {
           <AddBox /> Create topic
         </Typography>
       </Button>
+    )
+  }
+
+  return (
+    <div>
+      {error && <Typography>{error}</Typography>}
+      {renderTopics()}
+      {isOwned && renderIfOwned()}
     </div>
   )
 }

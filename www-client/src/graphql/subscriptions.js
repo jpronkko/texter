@@ -24,18 +24,27 @@ export const TOPIC_ADDED_TO_GROUP = gql`
 
 export const MESSAGE_ADDED_TO_TOPIC = gql`
   subscription messageAddedToTopic($topicId: ID!) {
-    messageAddedToTopic(topicId: topicId) {
-      message {
+    messageAddedToTopic(topicId: $topicId) {
+      body
+      fromUser {
+        id
+        name
+      }
+      id
+      sentTime
+      topicId
+    }
+  }
+`
+/*
+message {
         body
         fromUser
         id
         sentTime
       }
       topicId
-    }
-  }
-`
-
+*/
 export const INVITATION_ADDED = gql`
   subscription messageAdded($groupId: ID!) {
     invitationAdded(toUserId: $toUserId) {

@@ -24,10 +24,10 @@ input MessageInput {
   body: String!
 }
 
-type MessageOut {
-  topicId: ID!
-  message: Message!
-}
+# type MessageOut {
+#   topicId: ID!
+#   message: Message!
+# }
 
 type Query {
   allMessages: [Message]
@@ -38,5 +38,5 @@ type Mutation {
 }
 
 type Subscription {
-  messageAddedToTopic(groupId: ID!): MessageOut
+  messageAddedToTopic(topicId: ID!): MessageInfo
 }
