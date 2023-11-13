@@ -11,7 +11,10 @@ const useCreateMessage = () => {
         query: GET_MESSAGES,
         variables: { topicId: newMessage.topicId },
       })
-      store.writeQuery({
+      console.log('-------------------')
+      console.log('Search messages in store with topic id', newMessage.topicId)
+      console.log('messages in store', messagesInStore)
+      /*store.writeQuery({
         query: GET_MESSAGES,
         variables: { topicId: newMessage.topicId },
         data: {
@@ -27,7 +30,7 @@ const useCreateMessage = () => {
             },
           ],
         },
-      })
+      })*/
       /*cache.updateQuery(
         {
           query: GET_MESSAGES,

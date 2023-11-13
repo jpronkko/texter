@@ -71,13 +71,6 @@ module.exports = {
 
         const tokenAndUser = await usersModel.login(username, password)
         return tokenAndUser
-        /*return {
-          token: tokenFromUser(newUser),
-          userId: newUser.userId,
-          username: newUser.username,
-          email: newUser.email,
-          name: newUser.name,
-        }*/
       } catch (error) {
         throw new GraphQLError('Creating user failed', {
           extensions: {

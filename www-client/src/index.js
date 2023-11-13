@@ -21,6 +21,8 @@ import { createClient } from 'graphql-ws'
 
 import store from './app/store'
 import logger from './utils/logger'
+import theme from './theme'
+import { ThemeProvider } from '@emotion/react'
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('texter-token')
@@ -65,7 +67,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <Provider store={store}>
     <ApolloProvider client={client}>
-      <App />
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
     </ApolloProvider>
   </Provider>
 )

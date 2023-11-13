@@ -1,7 +1,6 @@
 import React from 'react'
 
-import { Divider, ListItemButton, Typography } from '@mui/material'
-
+import { Box, Divider, /*ListItemButton */ Typography } from '@mui/material'
 
 const pad = (number) => ('0' + number).slice(-2)
 
@@ -9,7 +8,7 @@ const getDate = (month, day) => {
   return `${pad(day)}/${pad(month)}`
 }
 
-const MessageListItem = ({ sender, sentTime, body, onClick }) => {
+const MessageListItem = ({ sender, sentTime, body /* onClick */ }) => {
   const date = new Date(parseInt(sentTime))
   const dateNow = new Date(Date.now())
 
@@ -24,14 +23,26 @@ const MessageListItem = ({ sender, sentTime, body, onClick }) => {
     dateString = year + getDate(month, dayOfMonth) + dateString
   }
 
-  if (month !== dateNow.getMonth() ||
-    dayOfMonth !== dateNow.getDay()) {
+  if (month !== dateNow.getMonth() || dayOfMonth !== dateNow.getDay()) {
     dateString = getDate(month, dayOfMonth) + dateString
   }
 
-  return(
-    <div>
-      <ListItemButton onClick={onClick}>
+  return (
+    <>
+      <Divider>
+        {sender.name} {dateString}
+      </Divider>
+      <Box sx={{ padding: '5px' }}>
+        <Typography>{body}</Typography>
+      </Box>
+    </>
+  )
+}
+
+export default MessageListItem
+
+/*
+<ListItemButton onClick={onClick}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{
             display: 'flex',
@@ -48,11 +59,4 @@ const MessageListItem = ({ sender, sentTime, body, onClick }) => {
             <Typography>{body}</Typography>
           </div>
         </div>
-      </ListItemButton>
-      <Divider />
-    </div>
-  )
-
-}
-
-export default MessageListItem
+      </ListItemButton>*/

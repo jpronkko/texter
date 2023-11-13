@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client'
 import { CREATE_INVITATION } from '../graphql/mutations'
-import { GET_SENT_INVITATIONS } from '../graphql/queries'
+//import { GET_SENT_INVITATIONS } from '../graphql/queries'
 import useError from './useErrorMessage'
 import logger from '../utils/logger'
 
@@ -12,7 +12,7 @@ const useCreateInvitation = () => {
       logger.error('create invitation error:', error)
     },
 
-    update: (store, response) => {
+    /*  update: (store, response) => {
       const newInvitation = response.data.createInvitation
       const invitationsInStore = store.readQuery({
         query: GET_SENT_INVITATIONS,
@@ -25,7 +25,9 @@ const useCreateInvitation = () => {
       store.writeQuery({
         query: GET_SENT_INVITATIONS,
         data: {
+          // There is only one invitation per invitation id in the store
           variables: {
+            __typename: 'Invitation',
             id: newInvitation.id,
             // fromUserId: newInvitation.fromUserId,
             // toUserId: newInvitation.toUserId,
@@ -34,7 +36,7 @@ const useCreateInvitation = () => {
             invitationsInStore.getSentInvitations.concat(newInvitation),
         },
       })
-    },
+    }, */
   })
 
   const createInvitation = async (fromUserId, groupId, toUser) => {

@@ -36,23 +36,27 @@ export const MESSAGE_ADDED_TO_TOPIC = gql`
     }
   }
 `
-/*
-message {
-        body
-        fromUser
-        id
-        sentTime
-      }
-      topicId
-*/
+
 export const INVITATION_ADDED = gql`
-  subscription messageAdded($groupId: ID!) {
+  subscription invitationAdded($toUserId: ID!) {
     invitationAdded(toUserId: $toUserId) {
-      fromUserId
-      groupId
       id
       sentTime
       status
+      fromUser {
+        id
+        name
+        username
+      }
+      group {
+        id
+        name
+      }
+      toUser {
+        id
+        name
+        username
+      }
     }
   }
 `

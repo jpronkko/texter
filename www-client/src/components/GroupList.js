@@ -9,6 +9,7 @@ import useCreateGroup from '../hooks/useCreateGroup'
 import useGetUserGroups from '../hooks/useGroups'
 import useCreateTopic from '../hooks/useCreateTopic'
 import useCreateInvitation from '../hooks/useCreateInvitation'
+import useRecvInvitations from '../hooks/useRecvInvitations'
 
 import { clearGroup, setGroup } from '../app/selectionSlice'
 
@@ -17,7 +18,7 @@ import Topics from './Topics'
 import Accordion from './Accordion'
 import AccordionSummary from './AccordionSummary'
 import CreateInvitation from './dialogs/CreateInvitation'
-
+import RecvInvItem from './RecvInvItem'
 const drawerWidth = 300
 
 const GroupList = () => {
@@ -34,6 +35,7 @@ const GroupList = () => {
   const [createInvitation] = useCreateInvitation()
 
   const { ownedGroups, joinedGroups, loading, error } = useGetUserGroups()
+  const { recvInvitations } = useRecvInvitations()
 
   console.log('userGroups', joinedGroups)
 
@@ -43,17 +45,6 @@ const GroupList = () => {
     if (newGroup) dispatch(setGroup(newGroup))
     else dispatch(clearGroup(newGroup))
   }
-
-  console.log(
-    'user state',
-    user,
-    'user groups',
-    joinedGroups,
-    'loading:',
-    loading,
-    'error',
-    error
-  )
 
   const handleCreateGroup = async (name) => {
     const groupData = await createGroup(name)
@@ -128,8 +119,20 @@ const GroupList = () => {
     </Accordion>
   ))
 
+  const renderedInvitePending = () => {
+    return recvInvitations?.map(
+      (item) =>
+        item.status === 'PENDING' && (
+          <RecvInvItem
+            key={item.id}
+            invitation={item}
+          />
+        )
+    )
+  }
+
   return (
-    <div style={{ margin: '5px' }}>
+    <div style={{ padding: '5px', border: '1px solid red' }}>
       <InputTextDlg
         ref={groupDlgRef}
         title="Create Group"
@@ -149,10 +152,13 @@ const GroupList = () => {
         groupId={selectedGroup?.id}
         handleCreateInvitation={handleInviteToGroup}
       />
-
+      <Typography variant="h6">
+        {loading}
+        {error}
+      </Typography>
       <Drawer
         sx={{
-          padding: '5px',
+          margin: '5px',
           width: drawerWidth,
           flexShrink: 0,
           ['& .MuiDrawer-paper']: {
@@ -179,6 +185,8 @@ const GroupList = () => {
         <Typography>Joined groups</Typography>
         {renderedOtherJoinedGroups}
         <Divider />
+        <Typography variant="h6">Pending invite accept</Typography>
+        {renderedInvitePending()}
       </Drawer>
     </div>
   )

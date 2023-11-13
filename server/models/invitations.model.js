@@ -22,13 +22,15 @@ const getSentInvitations = async (userId) => {
   if (!invitations) {
     throw new Error(`Invitations from user ${userId} not found!`)
   }
-  return invitations.map((item) => ({
+  return invitations.map((item) => item.toJSON())
+
+  /*return invitations.map((item) => ({
     id: item._id.toString(),
     group: item.groupId,
     user: item.toUserId,
     status: item.status,
     sentTime: item.sentTime,
-  }))
+  }))*/
 }
 
 const getReceivedInvitations = async (userId) => {
@@ -36,13 +38,14 @@ const getReceivedInvitations = async (userId) => {
   if (!invitations) {
     throw new Error(`Invitations to user ${userId} not found!`)
   }
-  return invitations.map((item) => ({
+  return invitations.map((item) => item.toJSON())
+  /*return invitations.map((item) => ({
     id: item._id.toString(),
     group: item.groupId,
     user: item.fromUserId,
     status: item.status,
     sentTime: item.sentTime,
-  }))
+  }))*/
 }
 
 const createInvitation = async (fromUserId, toUser, groupId) => {

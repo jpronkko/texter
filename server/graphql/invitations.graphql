@@ -7,17 +7,9 @@ enum InvitationStatus {
 
 type Invitation {
   id: ID!
-  groupId: ID!
-  fromUserId: ID!
-  toUserId: ID!
-  status: InvitationStatus
-  sentTime: String!
-}
-
-type InvitationInfo {
-  id: ID!
-  group: GroupInfo
-  user: UserBaseData
+  group: GroupInfo!
+  fromUser: UserBaseData!
+  toUser: UserBaseData!
   status: InvitationStatus
   sentTime: String!
 }
@@ -30,8 +22,8 @@ input InvitationInput {
 
 type Query {
   allInvitations: [Invitation]
-  getReceivedInvitations: [InvitationInfo]
-  getSentInvitations: [InvitationInfo]
+  getReceivedInvitations: [Invitation]
+  getSentInvitations: [Invitation]
 }
 
 type Mutation {

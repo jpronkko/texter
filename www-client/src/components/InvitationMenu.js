@@ -32,8 +32,8 @@ const RecvInvItem = ({ invitation }) => {
   return (
     <MenuItem>
       <Typography>
-        {invitation.user.name} invited you to {invitation.group.name}, status is{' '}
-        {invitation.status}
+        {invitation.fromUser.username} invited you to {invitation.group.name},
+        status is {invitation.status}
       </Typography>
       <Button onClick={handleAccept}>Accept</Button>
       <Button onClick={handleReject}>Reject</Button>
@@ -51,7 +51,7 @@ const SentInvItem = ({ invitation }) => {
   return (
     <MenuItem>
       <Typography>
-        You invited {invitation.user.name} to join {invitation.group.name}
+        You invited {invitation.toUser.username} to join {invitation.group.name}
       </Typography>
       <Button onClick={handleCancel}>Cancel</Button>
     </MenuItem>
@@ -62,7 +62,7 @@ const InvitationMenu = () => {
   const username = useSelector((state) => state.user.userData.username)
   const userId = useSelector((state) => state.user.userData.id)
 
-  const { recvInvitations /* refetch */ } = useRecvInvitations(userId)
+  const { recvInvitations, foo /* refetch */ } = useRecvInvitations(userId)
   const { sentInvitations } = useSentInvitations(userId)
 
   const [anchorElUser, setAnchorElUser] = useState(null)
@@ -77,6 +77,7 @@ const InvitationMenu = () => {
 
   console.log('recvInvitations', recvInvitations)
   console.log('sentInvitations', sentInvitations)
+  console.log('foo', foo)
 
   return (
     <>

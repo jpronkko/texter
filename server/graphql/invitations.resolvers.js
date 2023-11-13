@@ -33,18 +33,21 @@ module.exports = {
       return invitationInfo
     },
   },
-  InvitationInfo: {
+  Invitation: {
     group: async (parent) => {
-      console.log('group args', parent)
-      const group = await groupsModel.findGroup(parent.group)
-      console.log('group', group)
+      const group = await groupsModel.findGroup(parent.groupId)
       //return group
       return { id: group.id, name: group.name, ownerId: group.ownerId }
     },
-    user: async (parent) => {
-      console.log('user args', parent)
-      const user = await usersModel.findUserWithId(parent.user)
-      console.log('user', user)
+    fromUser: async (parent) => {
+      const user = await usersModel.findUserWithId(parent.fromUserId)
+      return { id: user.id, username: user.username, name: user.name }
+    },
+    toUser: async (parent) => {
+      console.log('-------------')
+      console.log('Parent user args', parent)
+      const user = await usersModel.findUserWithId(parent.toUserId)
+      console.log('to user', user)
       return { id: user.id, username: user.username, name: user.name }
     },
     /*fromUser: async (parent) => {

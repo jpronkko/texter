@@ -63,12 +63,24 @@ export const LOGIN = gql`
 export const CREATE_INVITATION = gql`
   mutation CreateInvitation($invitation: InvitationInput) {
     createInvitation(invitation: $invitation) {
+      fromUser {
+        id
+        name
+        username
+      }
+      group {
+        id
+        name
+        ownerId
+      }
       id
-      groupId
-      fromUserId
-      toUserId
-      status
       sentTime
+      status
+      toUser {
+        id
+        name
+        username
+      }
     }
   }
 `

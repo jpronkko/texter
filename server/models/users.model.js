@@ -3,23 +3,6 @@ const logger = require('../utils/logger')
 const User = require('./users.mongo')
 const { pwCompare, tokenFromUser } = require('../utils/pwtoken')
 
-/* const groupsToJoinedGroups = (joinedGroups) => {
-  console.log('userGroups for user joined groups', joinedGroups)
-
-  joinedGroups.forEach((item) =>
-    console.log('item', JSON.stringify(item.group), '\n')
-  )
-
-  const retVal = joinedGroups.map((item) => ({
-    groupId: item.group.id,
-    groupName: item.group.name,
-    role: item.role,
-  }))
-
-  console.log('retVal in groupsToJoinedGroups', retVal)
-  return retVal
-}
- */
 const findUserWithId = async (userId) => {
   const user = await User.findById(userId)
   if (user) {

@@ -106,15 +106,20 @@ export const GET_SENT_INVITATIONS = gql`
       id
       sentTime
       status
-      user {
-        id
-        name
-        username
-      }
       group {
         id
         name
         ownerId
+      }
+      fromUser {
+        id
+        name
+        username
+      }
+      toUser {
+        id
+        name
+        username
       }
     }
   }
@@ -123,18 +128,23 @@ export const GET_SENT_INVITATIONS = gql`
 export const GET_RECV_INVITATIONS = gql`
   query GetReceivedInvitations {
     getReceivedInvitations {
-      user {
-        id
-        name
-        username
-      }
-      status
-      sentTime
       id
+      sentTime
+      status
       group {
         id
         name
         ownerId
+      }
+      fromUser {
+        id
+        name
+        username
+      }
+      toUser {
+        id
+        name
+        username
       }
     }
   }

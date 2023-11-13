@@ -29,7 +29,12 @@ const useCreateTopic = () => {
         data: {
           getTopics: [
             ...topicsInStore.getTopics,
-            { id: newTopic.id, name: newTopic.name, groupId: newTopic.groupId },
+            {
+              __typename: 'Topic',
+              id: newTopic.id,
+              name: newTopic.name,
+              groupId: newTopic.groupId,
+            },
           ],
         },
         // data: {
