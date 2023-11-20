@@ -25,6 +25,7 @@ const UserMenu = () => {
 
   const userMenuItems = [
     { name: 'Profile', callback: () => navigate('/profile') },
+    { name: 'Group Admin', callback: () => navigate('/group_admin') },
     { name: 'All Users', callback: () => navigate('/users') },
     { name: 'Logout', callback: showLogout },
   ]

@@ -1,24 +1,37 @@
 //* eslint-disable no-unused-vars */
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import { Toolbar } from '@mui/material'
+import { logIn } from '../app/userSlice'
 
 import MainPage from './pages/MainPage'
+import MessagesPage from './pages/MessagesPage'
+
 import UserList from './pages/UserList'
 import ErrorMessage from './ErrorMessage'
 
 import CreateUser from './pages/CreateUser'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
-
+import GroupAmin from './pages/GroupAdmin'
 import logger from '../utils/logger'
 import TopBar from './TopBar'
 
 const App = () => {
   const user = useSelector((state) => state.user.userData)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const loginData = localStorage.getItem('texter-login')
+    const loginDataAsObj = loginData ? JSON.parse(loginData) : null
+    if (loginDataAsObj) {
+      logger.info('App: setting login data', loginDataAsObj)
+      dispatch(logIn(loginDataAsObj))
+    }
+  }, [])
 
   console.log('User now', user)
 
@@ -40,6 +53,14 @@ const App = () => {
           <Route
             path="/"
             element={<MainPage />}
+          />
+          <Route
+            path="/messages"
+            element={<MessagesPage />}
+          />
+          <Route
+            path="/group_admin"
+            element={<GroupAmin />}
           />
           <Route
             path="/create_account"

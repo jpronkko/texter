@@ -1,34 +1,197 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { Box, CssBaseline, Typography } from '@mui/material'
+import { useDispatch, useSelector } from 'react-redux'
+import { Button, Container, Grid } from '@mui/material'
 
-import GroupList from '../GroupList'
-import MessageList from './MessageList'
+import TitleBox from '../TitleBox'
+import GroupCard from '../GroupCard'
+import InputTextDlg from '../dialogs/InputTextDlg'
+import ConfirmMessage from '../dialogs/ConfirmMessage'
+
+import useGetUserGroups from '../../hooks/useGroups'
+import { clearGroup, setGroup } from '../../app/selectionSlice'
+import useCreateGroup from '../../hooks/useCreateGroup'
 
 const MainPage = () => {
   const navigate = useNavigate()
-  const user = useSelector((state) => state.user.userData)
-  const topic = useSelector((state) => state.selection.topic)
+  const dispatch = useDispatch()
 
+  const groupDlgRef = useRef()
+  const confirmDlgRef = useRef()
+
+  const user = useSelector((state) => state.user.userData)
+  const selectedGroup = useSelector((state) => state.selection.group)
+  const [createGroup] = useCreateGroup()
+
+  const { ownedGroups, joinedGroups, loading, error } = useGetUserGroups()
 
   useEffect(() => {
     if (user.username === '') {
       navigate('/login')
+    } else {
+      navigate('/')
     }
   }, [user.username])
 
+  const handleSelectGroup = async (newGroup) => {
+    console.log('Selecting group:', newGroup, selectedGroup)
+    if (selectedGroup && newGroup.id === selectedGroup.id) return
+    console.log('Selecting group II:', newGroup)
 
+    if (newGroup) dispatch(setGroup(newGroup))
+    else dispatch(clearGroup(newGroup))
+    navigate('/messages')
+  }
+
+  const handleCreateGroup = async (name) => {
+    const groupData = await createGroup(name)
+    console.log(groupData)
+    groupDlgRef.current.close()
+  }
+
+  const handleLeaveGroup = async (name) => {
+    confirmDlgRef.current.open()
+    console.log('Leave group', name)
+  }
+
+  const leaveGroup = (name) => {
+    console.log('Leaving group', name)
+  }
+
+  const handleManageGroup = async (name) => {
+    console.log('Manage group', name)
+  }
+
+  const renderedOwnedGroups = ownedGroups.map((group) => (
+    <Grid
+      item
+      xs={4}
+      key={group.id}
+    >
+      <GroupCard
+        group={group}
+        description={'Lorem upsum kumsum' /* item.description */}
+        ownGroup
+        handleSelectGroup={handleSelectGroup}
+        handleManageGroup={handleManageGroup}
+        handleLeaveGroup={handleLeaveGroup}
+      />
+    </Grid>
+  ))
+
+  const renderedOtherJoinedGroups = joinedGroups.map((group) => (
+    <Grid
+      item
+      xs={4}
+      key={group.id}
+    >
+      <GroupCard
+        group={group}
+        handleSelectGroup={handleSelectGroup}
+        handleLeaveGroup={handleLeaveGroup}
+      />
+    </Grid>
+  ))
+
+  if (loading) return <div>Loading...</div>
+
+  if (error) return <div>Error: {error}</div>
+  // <CssBaseline />
   return (
-    <div>
-      <Typography>Main Page</Typography>
+    <Container sx={{ mb: 2 }}>
+      <InputTextDlg
+        ref={groupDlgRef}
+        title="Create Group"
+        label="Name"
+        handleInput={handleCreateGroup}
+      />
 
-      <Box sx={{ display: 'flex' }}>
-        <CssBaseline />
-        <GroupList />
+      <ConfirmMessage
+        ref={confirmDlgRef}
+        title="Confirm Leave Group"
+        message="Are you sure?"
+        onOK={() => leaveGroup(selectedGroup.name)}
+      />
+
+      <Grid
+        container
+        alignContent="left"
+        spacing={-1}
+        direction="column"
+        alignItems="left"
+      >
+        <Grid
+          item
+          xs={12}
+        >
+          <TitleBox title={'Own Groups'}>
+            <Button
+              variant="contained"
+              onClick={() => groupDlgRef.current.open()}
+            >
+              Create
+            </Button>
+          </TitleBox>
+        </Grid>
+
+        <Grid
+          container
+          direction={'row'}
+          spacing={2}
+        >
+          {renderedOwnedGroups}
+        </Grid>
+        <Grid
+          item
+          xs={12}
+        >
+          <TitleBox title={'Joined Groups'}></TitleBox>
+        </Grid>
+        <Grid
+          container
+          direction={'row'}
+          spacing={2}
+        >
+          {renderedOtherJoinedGroups}
+        </Grid>
+      </Grid>
+    </Container>
+  )
+}
+
+export default MainPage
+
+/*
+<Grid
+          item
+          xs={12}
+        >
+          <Paper
+            elevation={2}
+            sx={{ my: 2 }}
+          >
+            <Typography variant="h4">Joined groups</Typography>
+          </Paper>
+        </Grid>
+
+        <Grid
+          container
+          direction={'row'}
+        >
+          {renderedOtherJoinedGroups}
+        </Grid>
+        <Grid
+          item
+          xs={12}
+        >
+          <Button variant="contained">Create Group</Button>
+        </Grid> */
+/*
+
+<GroupList />
         <Box
           component="main"
-          sx={{ flexGrow: 1, p: 2 }}
+          sx={{ flexGrow: 1, margin: '10px', p: 2, backgroundColor: '#f0f0f0' }}
         >
           {topic?.name ? (
             <MessageList />
@@ -36,9 +199,4 @@ const MainPage = () => {
             <Typography>No topic selected</Typography>
           )}
         </Box>
-      </Box>
-    </div>
-  )
-}
-
-export default MainPage
+          */

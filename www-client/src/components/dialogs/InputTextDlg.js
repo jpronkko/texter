@@ -1,4 +1,4 @@
-import React,{ useState, useImperativeHandle, forwardRef } from 'react'
+import React, { useState, useImperativeHandle, forwardRef } from 'react'
 
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -20,12 +20,12 @@ const InputTextDlg = forwardRef((props, ref) => {
   const { title, label, handleInput } = props
   const [visible, setVisible] = useState(false)
 
-  const { control, reset, handleSubmit } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       input: '',
     },
     resolver: yupResolver(schema),
-    mode: 'onChange'
+    mode: 'onChange',
   })
 
   const onSubmit = (data) => {
@@ -44,10 +44,10 @@ const InputTextDlg = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => {
     return {
       open,
-      close
+      close,
     }
   })
-  return(
+  return (
     <div>
       <Dialog
         open={visible}
@@ -55,21 +55,28 @@ const InputTextDlg = forwardRef((props, ref) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
+        <DialogTitle
+          color="primary.contrastText"
+          backgroundColor="primary.dark"
+          id="alert-dialog-title"
+        >
           {title}
         </DialogTitle>
         <DialogContent sx={{ margin: '5px' }}>
           <FormTextInput
-            id='input'
-            name='input'
+            id="input"
+            name="input"
             control={control}
             label={label}
           />
-          <Button sx={{ marginLeft: '5px' }} onClick={() => reset()} variant={'outlined'}>x</Button>
         </DialogContent>
         <DialogActions>
-          <Button id='create-button' onClick={handleSubmit(onSubmit)} variant={'contained'}>
-          Submit
+          <Button
+            id="create-button"
+            onClick={handleSubmit(onSubmit)}
+            variant={'contained'}
+          >
+            Submit
           </Button>
 
           <Button onClick={close}>Cancel</Button>

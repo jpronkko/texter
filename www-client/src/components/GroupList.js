@@ -64,6 +64,15 @@ const GroupList = () => {
     invitationDlgRef.current.close()
   }
 
+  /*
+  <Button
+          variant="text"
+          //onClick={() => handleSelectGroup(item.group)}
+          onClick={() => console.log('group foffa!')}
+        >
+          <Typography>{item.name}</Typography>
+            </Button>
+  */
   const renderedOwnedGroups = ownedGroups.map((item) => (
     <Accordion
       key={item.id}
@@ -71,13 +80,7 @@ const GroupList = () => {
       onChange={() => handleSelectGroup(item)}
     >
       <AccordionSummary key={item.id}>
-        <Button
-          variant="text"
-          //onClick={() => handleSelectGroup(item.group)}
-          onClick={() => console.log('group foffa!')}
-        >
-          <Typography>{item.name}</Typography>
-        </Button>
+        <Typography>{item.name}</Typography>
       </AccordionSummary>
       <Topics
         group={item}

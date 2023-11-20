@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
-import { Box, Button, /*Grid, Paper,*/ Typography } from '@mui/material'
+import { /* Box, */ Button, Container } from '@mui/material'
+import Grid from '@mui/material/Unstable_Grid2'
 
 import FormTextInput from './FormTextInput'
 
@@ -12,43 +13,55 @@ const schema = yup.object({
 })
 
 const CreateMessageForm = ({ handleCreate }) => {
-  const { control, reset, handleSubmit } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       message: '',
     },
     resolver: yupResolver(schema),
-    mode: 'onChange'
+    mode: 'onChange',
   })
 
   const onSubmit = (data) => {
     handleCreate(data.message)
   }
 
-  return(
-    <div>
-      <Box sx={{ margin: '2px', padding: '2px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', rowGap: '10px' }}>
-          <div>
-            <Typography variant="h6"> Send message</Typography>
-          </div>
-          <div>
-            <FormTextInput
-              id='message'
-              name='message'
-              control={control}
-              label='Message'
-            />
-            <Button onClick={() => reset()} variant={'outlined'}>
-              x
-            </Button>
-            <Button id='create-button' onClick={handleSubmit(onSubmit)} variant={'contained'}>
-              Submit
-            </Button>
-          </div>
-        </div>
-      </Box>
-    </div>
+  return (
+    <Container>
+      <Grid
+        container
+        spacing={2}
+        sx={{ alignItems: 'center' }}
+      >
+        <Grid
+          item
+          xs={10.5}
+        >
+          <FormTextInput
+            id="message"
+            name="message"
+            control={control}
+            label="Message"
+          />
+        </Grid>
+        <Grid
+          item
+          xs={1.5}
+        >
+          <Button
+            id="create-button"
+            type="submit"
+            onClick={handleSubmit(onSubmit)}
+            variant={'contained'}
+          >
+            Submit
+          </Button>
+        </Grid>
+      </Grid>
+    </Container>
   )
 }
 
+// <Box sx={{ display: 'flex', margin: '2px', padding: '2px' }}>
+
+// <div style={{ display: 'flex', flexDirection: 'column', rowGap: '10px' }}>
 export default CreateMessageForm

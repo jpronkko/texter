@@ -12,7 +12,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import useError from '../hooks/useErrorMessage'
 
 const ErrorMessage = () => {
-  const errorMessage = useSelector(state => state.error.message)
+  const errorMessage = useSelector((state) => state.error.message)
 
   const [, clearError] = useError()
   const handleClose = () => {
@@ -29,16 +29,30 @@ const ErrorMessage = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
+        <DialogTitle
+          color="primary.contrastText"
+          backgroundColor="error.dark"
+          id="alert-dialog-title"
+        >
           {'Error!'}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText
+            color="text.error"
+            id="alert-dialog-description"
+          >
             {errorMessage}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} autoFocus>OK</Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={handleClose}
+            autoFocus
+          >
+            OK
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

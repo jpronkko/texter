@@ -4,13 +4,13 @@ import { AddBox } from '@mui/icons-material'
 
 import useGetTopics from '../hooks/useGetTopics'
 import { setTopic } from '../app/selectionSlice'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch /* useSelector */ } from 'react-redux'
 
 import AccordionDetails from './AccordionDetails'
 
 const Topics = ({ group, isOwned, handleCreateTopic, selectGroupOfTopic }) => {
   const { topics, error, loading } = useGetTopics(group?.id)
-  const selectedTopic = useSelector((state) => state.selection.topic)
+  //const selectedTopic = useSelector((state) => state.selection.topic)
   const dispatch = useDispatch()
 
   //console.log('group', group, 'topics', topics)
@@ -20,16 +20,16 @@ const Topics = ({ group, isOwned, handleCreateTopic, selectGroupOfTopic }) => {
     selectGroupOfTopic(group)
   }
 
-  const backgroundColor = (item) =>
-    selectedTopic?.id === item.id ? '#f0a070' : 'white'
-
+  /* const backgroundColor = (item) =>
+    selectedTopic?.id === item.id ? '#f0a070' : 'green'
+    style={{ backgroundColor: backgroundColor(item) }}
+   */
   const renderTopics = () => {
     if (topics) {
       return topics.map((item) => (
         <AccordionDetails
           key={item.id}
           onClick={() => handleSelectTopic(item)}
-          style={{ backgroundColor: backgroundColor(item) }}
         >
           # {item.name}
         </AccordionDetails>

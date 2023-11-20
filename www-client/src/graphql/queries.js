@@ -53,6 +53,16 @@ export const GET_ALL_GROUPS = gql`
   }
 `
 
+export const GET_GROUP_MEMBERS = gql`
+  query GetGroupMembers($groupId: ID!) {
+    getGroupMembers(groupId: $groupId) {
+      id
+      name
+      username
+    }
+  }
+`
+
 export const GET_ALL_MESSAGES = gql`
   query GetAllMessages {
     allMessages {

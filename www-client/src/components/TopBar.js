@@ -8,8 +8,7 @@ import Typography from '@mui/material/Typography'
 
 //import MenuIcon from '@mui/icons-material/Menu'
 import Container from '@mui/material/Container'
-import AdbIcon from '@mui/icons-material/Adb'
-
+import { BorderColor } from '@mui/icons-material'
 import { useSelector /*useDispatch*/ } from 'react-redux'
 
 import InvitationMenu from './InvitationMenu'
@@ -29,7 +28,7 @@ const TopBar = () => {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <BorderColor sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -45,8 +44,10 @@ const TopBar = () => {
               textDecoration: 'none',
             }}
           >
-            TEXTER - user: {user.username} logged in, group: {group?.name}{' '}
-            topic: {topic?.name}
+            TEXTER
+          </Typography>
+          <Typography>
+            group: {group?.name} topic: {topic?.name}
           </Typography>
           <Box sx={{ flexGrow: 1 }}>{userLoggedIn() && <InvitationMenu />}</Box>
           <Box sx={{ flexGrow: 0 }}>{userLoggedIn() && <UserMenu />}</Box>

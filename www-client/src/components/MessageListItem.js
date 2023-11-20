@@ -28,14 +28,14 @@ const MessageListItem = ({ sender, sentTime, body /* onClick */ }) => {
   }
 
   return (
-    <>
+    <Box sx={{ p: 0.75 }}>
       <Divider>
         {sender.name} {dateString}
       </Divider>
-      <Box sx={{ padding: '5px' }}>
+      <Box sx={{ py: 0.25 }}>
         <Typography>{body}</Typography>
       </Box>
-    </>
+    </Box>
   )
 }
 

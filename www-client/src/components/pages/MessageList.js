@@ -1,39 +1,23 @@
 //import { useEffect, useState } from 'react';
 import React from 'react'
 
-//import { useSubscription } from '@apollo/client'
-import { /*useDispatch,*/ useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
-//import { MESSAGE_ADDED_TO_TOPIC } from '../../graphql/subscriptions'
 import useMessages from '../../hooks/useGetMessages'
 
-import { Button, Divider, List, Typography } from '@mui/material'
-import MessageListItem from '../MessageListItem'
-import CreateMessageForm from '../forms/CreateMessageForm'
+import { Container, Divider, List } from '@mui/material'
 
-import logger from '../../utils/logger'
-import useCreateMessage from '../../hooks/useCreateMessage'
+import MessageListItem from '../MessageListItem'
+
 import useMsgSubsription from '../../hooks/useMsgSubsription'
 
 const MessageList = () => {
   const group = useSelector((state) => state.selection.group)
   const topic = useSelector((state) => state.selection.topic)
 
-  // useSubscription(MESSAGE_ADDED_TO_TOPIC, {
-  //   variables: { topicId: topic.id },
-  //   onData: ({ data }) => {
-  //     logger.info('Subsribe add msg', data)
-  //   },
-  // })
-
-  // const [getMessages, messagesResult] = useQuery(GET_MESSAGES)
-
   const { messages, loading, error } = useMessages(topic.id)
-  const [createMessage, result] = useCreateMessage()
   const newLocal = useMsgSubsription(topic.id)
   console.log(' -> ', newLocal.messages, newLocal.loading, newLocal.error)
-
-  //const dispatch = useDispatch()
 
   console.log(
     `message list: group ${JSON.stringify(group.id)}, topic ${JSON.stringify(
@@ -50,19 +34,6 @@ const MessageList = () => {
     return <div>Error Retrieving messages: {JSON.stringify(error)}</div>
   }
 
-  const handleClick = () => {
-    logger.info('Trying refetch in message list!')
-    //refetch()
-    logger.info('Data', messages)
-  }
-
-  const handleCreate = async (data) => {
-    console.log(data, result)
-    const message = await createMessage(topic.id, data)
-    console.log('Message created', message)
-    //dispatch(addMessage(message))
-  }
-  // data.getMessages.map((message) =>
   const renderedMessages = messages
     ? messages.map((message) => (
         <MessageListItem
@@ -75,19 +46,25 @@ const MessageList = () => {
     : []
 
   return (
-    <div>
-      <Typography>Message List</Typography>
+    <Container>
+      {/* <List sx={{ minHeight: '100%', overflow: 'auto' }}></List> */}
       <List>{renderedMessages ? renderedMessages : 'No messages'}</List>
-      <Button
-        variant="contained"
-        onClick={handleClick}
-      >
-        Test refetch
-      </Button>
-      <Divider />
-      <CreateMessageForm handleCreate={handleCreate} />
-    </div>
+      <Divider sx={{ mb: 2.5 }} />
+    </Container>
   )
 }
 
 export default MessageList
+
+{
+  /* <Box
+      component="main"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        flex: '1',
+        bgcolor: 'background.default',
+        padding: '10px',
+      }}
+    > */
+}

@@ -26,7 +26,8 @@ import { ThemeProvider } from '@emotion/react'
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('texter-token')
-  logger.info('Setting token to', token)
+  logger.info('AuthLink: setting token to', token)
+
   return {
     headers: {
       ...headers,
