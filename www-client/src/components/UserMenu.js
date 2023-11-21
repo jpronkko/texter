@@ -59,6 +59,13 @@ const UserMenu = () => {
             alt="Remy Sharp"
             src="/static/images/avatar/2.jpg"
           />
+          <Typography
+            variant="body1"
+            color={'primary.contrastText'}
+            sx={{ ml: 1.5 }}
+          >
+            {username}
+          </Typography>
         </IconButton>
       </Tooltip>
       <Menu
@@ -81,8 +88,14 @@ const UserMenu = () => {
           <MenuItem
             key={item.name}
             onClick={() => callItemCallback(item)}
+            sx={{ backgroundColor: 'background.drawer' }}
           >
-            <Typography textAlign="center">{item.name}</Typography>
+            <Typography
+              textAlign="center"
+              color={'primary.contrastText'}
+            >
+              {item.name}
+            </Typography>
           </MenuItem>
         ))}
       </Menu>

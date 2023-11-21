@@ -6,31 +6,30 @@ import {
   Button,
   Dialog,
   DialogContent,
-  DialogTitle,
-  Grid,
-  Typography,
+  DialogTitle /* Grid */,
 } from '@mui/material'
 import FormTextInput from '../forms/FormTextInput'
 
 const schema = yup.object({
-  name: yup.string().required(),
-  password: yup
+  old_password: yup.string().required(),
+  new_password: yup
     .string()
     .min(5, ({ min }) => `Password must be at least ${min} characters.`)
     .max(50, ({ max }) => `Password must be no more than ${max} characters.`)
     .required('Password is required'),
   password_repeat: yup
     .string()
-    .equals([yup.ref('password')], 'Passwords must match'),
+    .equals([yup.ref('new_password')], 'Passwords must match'),
 })
 
 const PasswordDlg = forwardRef((props, ref) => {
   const { handleInput } = props
   const [visible, setVisible] = useState(false)
 
-  const { control, /* reset, */ handleSubmit } = useForm({
+  const { control, reset, handleSubmit } = useForm({
     defaultValues: {
-      password: '',
+      old_password: '',
+      new_password: '',
       password_repeat: '',
     },
     resolver: yupResolver(schema),
@@ -46,6 +45,7 @@ const PasswordDlg = forwardRef((props, ref) => {
   }
   const close = () => {
     setVisible(false)
+    reset() // Clear form fields
   }
 
   useImperativeHandle(ref, () => {
@@ -65,38 +65,43 @@ const PasswordDlg = forwardRef((props, ref) => {
       >
         <DialogTitle id="alert-dialog-title">Change password</DialogTitle>
         <DialogContent sx={{ margin: '5px' }}>
-          <Grid
-            container
-            alignContent="left"
-            spacing={-1}
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
+          <FormTextInput
+            id="old_password"
+            name="old_password"
+            control={control}
+            label="Old Password"
+            type="password"
+          />
+          <FormTextInput
+            id="new_password"
+            name="new_password"
+            control={control}
+            label="New Password"
+            type="password"
+          />
+          <FormTextInput
+            id="password_repeat"
+            name="password_repeat"
+            control={control}
+            label="Repeat Password"
+            type="password"
+          />
+          <Button
+            id="create-button"
+            onClick={handleSubmit(onSubmit)}
+            variant={'contained'}
+            sx={{ my: 1 }}
           >
-            <Typography variant="h4"> Change Password</Typography>
-
-            <FormTextInput
-              id="password"
-              name="password"
-              control={control}
-              label="Password"
-              type="password"
-            />
-            <FormTextInput
-              id="password_repeat"
-              name="password_repeat"
-              control={control}
-              label="Repeat Password"
-              type="password"
-            />
-            <Button
-              id="create-button"
-              onClick={handleSubmit(onSubmit)}
-              variant={'contained'}
-            >
-              Submit
-            </Button>
-          </Grid>
+            Change
+          </Button>
+          <Button
+            id="cancel-button"
+            onClick={close}
+            variant={'outlined'}
+            sx={{ ml: 2 }}
+          >
+            Cancel
+          </Button>
         </DialogContent>
       </Dialog>
     </div>
@@ -105,3 +110,13 @@ const PasswordDlg = forwardRef((props, ref) => {
 
 PasswordDlg.displayName = 'PasswordDlg'
 export default PasswordDlg
+/*
+<Grid
+            container
+            alignContent="left"
+            spacing={1}
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+          >
+          </Grid> */

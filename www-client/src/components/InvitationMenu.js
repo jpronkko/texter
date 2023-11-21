@@ -2,9 +2,8 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import {
-  Avatar,
   Button,
-  Divider,
+  //  Divider,
   IconButton,
   Menu,
   MenuItem,
@@ -12,10 +11,11 @@ import {
   Typography,
 } from '@mui/material'
 
-import useSentInvitations from '../hooks/useSentInvitations'
+//import useSentInvitations from '../hooks/useSentInvitations'
 import useRecvInvitations from '../hooks/useRecvInvitations'
-import useModifySentInv from '../hooks/useModifySentInv'
+//import useModifySentInv from '../hooks/useModifySentInv'
 import useModifyRecvInv from '../hooks/useModifyRecvInv'
+import { Email } from '@mui/icons-material'
 
 const RecvInvItem = ({ invitation }) => {
   const [acceptInvitation, rejectInvitation] = useModifyRecvInv()
@@ -41,8 +41,8 @@ const RecvInvItem = ({ invitation }) => {
   )
 }
 
-const SentInvItem = ({ invitation }) => {
-  const [cancelInvitation] = useModifySentInv()
+/* const SentInvItem = ({ invitation }) => {
+  //const [cancelInvitation] = useModifySentInv()
 
   const handleCancel = () => {
     cancelInvitation(invitation.id)
@@ -57,14 +57,16 @@ const SentInvItem = ({ invitation }) => {
     </MenuItem>
   )
 }
-
+ */
 const InvitationMenu = () => {
   const username = useSelector((state) => state.user.userData.username)
   const userId = useSelector((state) => state.user.userData.id)
 
   const { recvInvitations, foo /* refetch */ } = useRecvInvitations(userId)
-  const { sentInvitations } = useSentInvitations(userId)
-
+  //const { sentInvitations } = useSentInvitations(userId)
+  const rInvitations = recvInvitations?.filter(
+    (inv) => inv.status === 'PENDING'
+  )
   const [anchorElUser, setAnchorElUser] = useState(null)
 
   const handleOpenInvitationMenu = (event) => {
@@ -76,9 +78,25 @@ const InvitationMenu = () => {
   }
 
   console.log('recvInvitations', recvInvitations)
-  console.log('sentInvitations', sentInvitations)
+  //console.log('sentInvitations', sentInvitations)
   console.log('foo', foo)
 
+  const renderInvitations = () => {
+    if (rInvitations) {
+      return rInvitations.map((item) => (
+        <RecvInvItem
+          key={item.id}
+          invitation={item}
+        />
+      ))
+    } else {
+      return (
+        <MenuItem>
+          <Typography>No invitations</Typography>
+        </MenuItem>
+      )
+    }
+  }
   return (
     <>
       <Tooltip title={username}>
@@ -86,12 +104,14 @@ const InvitationMenu = () => {
           onClick={handleOpenInvitationMenu}
           sx={{ p: 1 }}
         >
-          <Avatar
-            alt="Remy Sharp"
-            src="/static/images/avatar/2.jpg"
-          />
-          <Typography variant="subtitle2">
-            {recvInvitations?.length + sentInvitations?.length}
+          <Email sx={{ color: 'white' }} />
+          <Typography
+            variant="subtitle2"
+            color={'primary.contrastText'}
+          >
+            {rInvitations?.length === 0
+              ? 'No invitations'
+              : 'New invitations' + rInvitations?.length}
           </Typography>
         </IconButton>
       </Tooltip>
@@ -112,19 +132,14 @@ const InvitationMenu = () => {
         onClose={handleCloseInvitationMenu}
       >
         <Typography variant="subtitle2">Received inviations</Typography>
-        {recvInvitations?.map((item) => (
-          <RecvInvItem
-            key={item.id}
-            invitation={item}
-          />
-        ))}
-        <Divider />
-        {sentInvitations?.map((item) => (
+        {renderInvitations()}
+        {/*         {sentInvitations?.map((item) => (
           <SentInvItem
             key={item.id}
             invitation={item}
           />
         ))}
+ */}{' '}
       </Menu>
     </>
   )

@@ -3,13 +3,13 @@ import React from 'react'
 
 import { useSelector } from 'react-redux'
 
-import useMessages from '../../hooks/useGetMessages'
+import useMessages from '../hooks/useGetMessages'
 
 import { Container, Divider, List } from '@mui/material'
 
-import MessageListItem from '../MessageListItem'
+import MessageListItem from './MessageListItem'
 
-import useMsgSubsription from '../../hooks/useMsgSubsription'
+import useMsgSubsription from '../hooks/useMsgSubsription'
 
 const MessageList = () => {
   const group = useSelector((state) => state.selection.group)
@@ -32,6 +32,10 @@ const MessageList = () => {
 
   if (error) {
     return <div>Error Retrieving messages: {JSON.stringify(error)}</div>
+  }
+
+  if (!messages || messages.length === 0) {
+    return <div>No messages yet</div>
   }
 
   const renderedMessages = messages

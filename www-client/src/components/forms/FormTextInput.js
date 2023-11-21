@@ -52,6 +52,7 @@ function Input({ control, id, testId, name, label, type }) {
       fullWidth
       inputRef={field.ref} // send input ref, so we can focus on input when error appear
       InputProps={inputProps}
+      sx={{ p: 0.3 }}
     />
   )
 }

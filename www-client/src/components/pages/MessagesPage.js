@@ -18,7 +18,7 @@ import useGetTopics from '../../hooks/useGetTopics'
 
 import InputTextDlg from '../dialogs/InputTextDlg'
 import TitleBox from '../TitleBox'
-import MessageList from './MessageList'
+import MessageList from '../MessageList'
 import CreateMessage from '../CreateMessage'
 import theme from '../../theme'
 import { useNavigate } from 'react-router-dom'

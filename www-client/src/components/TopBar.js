@@ -49,13 +49,27 @@ const TopBar = () => {
           <Typography>
             group: {group?.name} topic: {topic?.name}
           </Typography>
-          <Box sx={{ flexGrow: 1 }}>{userLoggedIn() && <InvitationMenu />}</Box>
-          <Box sx={{ flexGrow: 0 }}>{userLoggedIn() && <UserMenu />}</Box>
+          <Box
+            sx={{
+              display: 'flex',
+              direction: 'row',
+              justifyContent: 'flex-end',
+              flexGrow: 1,
+            }}
+          >
+            <Box sx={{ mx: 1 }}>{userLoggedIn() && <InvitationMenu />}</Box>
+            <Box sx={{ mx: 1 }}>{userLoggedIn() && <UserMenu />}</Box>
+          </Box>
         </Toolbar>
       </Container>
     </AppBar>
   )
 }
+/*
+<Box sx={{ flexGrow: 1 }}>
+            </Box>
+            <Box sx={{ flexGrow: 1 }}></Box>
+*/
 export default TopBar
 
 /*

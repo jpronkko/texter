@@ -1,7 +1,7 @@
 const logger = require('../utils/logger')
 
 const User = require('./users.mongo')
-const { pwCompare, tokenFromUser } = require('../utils/pwtoken')
+const { getHash, pwCompare, tokenFromUser } = require('../utils/pwtoken')
 
 const findUserWithId = async (userId) => {
   const user = await User.findById(userId)
@@ -103,6 +103,47 @@ const login = async (username, password) => {
   }
 }
 
+const changePassword = async (userId, newPassword) => {
+  const user = await User.findById(userId)
+  if (!user) {
+    logger.error(`User with id: ${userId} not found!`)
+    throw new Error('No such user!')
+  }
+
+  const passwordHash = await getHash(newPassword)
+  user.passwordHash = passwordHash
+
+  try {
+    const updatedUser = await user.save()
+    if (!updatedUser) {
+      logger.error('User save failed in changePassword')
+      throw new Error('Saving user failed!')
+    }
+    return updatedUser.id
+  } catch (error) {
+    throw new Error('Saving user failed!')
+  }
+}
+
+const changeEmail = async (userId, newEmail) => {
+  const user = await User.findById(userId)
+  if (!user) {
+    logger.error(`User with id: ${userId} not found!`)
+    throw new Error('No such user!')
+  }
+  user.email = newEmail
+  try {
+    const updatedUser = await user.save()
+    if (!updatedUser) {
+      logger.error('User save failed in changePassword')
+      throw new Error('Saving user failed!')
+    }
+    return updatedUser.id
+  } catch (error) {
+    throw new Error('Saving user failed!')
+  }
+}
+
 const addUserToGroup = async (userId, groupId, role) => {
   const user = await User.findById(userId)
   if (!user) {
@@ -129,6 +170,30 @@ const addUserToGroup = async (userId, groupId, role) => {
     }
 
     return { user: updatedUser.id, group: groupId, role }
+  } catch (error) {
+    throw new Error('Saving user failed!')
+  }
+}
+
+const removeUserFromGroup = async (userId, groupId) => {
+  const user = await User.findById(userId)
+  if (!user) {
+    logger.error(`User with id: ${userId} not found!`)
+    throw new Error('No such user!')
+  }
+
+  const userGroups = user.joinedGroups.filter(
+    (joinedGroup) => joinedGroup.groupId !== groupId
+  )
+  user.joinedGroups = userGroups
+
+  try {
+    const updatedUser = await user.save()
+    if (!updatedUser) {
+      logger.error('User save failed in addUserToGroup')
+      throw new Error('Saving user failed!')
+    }
+    return updatedUser.id
   } catch (error) {
     throw new Error('Saving user failed!')
   }
@@ -201,7 +266,10 @@ module.exports = {
   getAllUsers,
   createUser,
   login,
+  changePassword,
+  changeEmail,
   addUserToGroup,
+  removeUserFromGroup,
   updateRoleInGroup,
   getUserJoinedGroups,
 }

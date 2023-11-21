@@ -9,9 +9,9 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 
-import useError from '../hooks/useErrorMessage'
+import useError from '../../hooks/useErrorMessage'
 
-const ErrorMessage = () => {
+const ErrorDlg = () => {
   const errorMessage = useSelector((state) => state.error.message)
 
   const [, clearError] = useError()
@@ -59,4 +59,4 @@ const ErrorMessage = () => {
   )
 }
 
-export default ErrorMessage
+export default ErrorDlg

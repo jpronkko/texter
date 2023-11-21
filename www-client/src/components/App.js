@@ -7,16 +7,17 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Toolbar } from '@mui/material'
 import { logIn } from '../app/userSlice'
 
+import CreateUserPage from './pages/CreateUserPage'
+import LoginPage from './pages/LoginPage'
+import ProfilePage from './pages/ProfilePage'
+import GroupAdminPage from './pages/GroupAdminPage'
+
 import MainPage from './pages/MainPage'
 import MessagesPage from './pages/MessagesPage'
+import UserListPage from './pages/UserListPage'
 
-import UserList from './pages/UserList'
-import ErrorMessage from './ErrorMessage'
+import ErrorDlg from './dialogs/ErrorDlg'
 
-import CreateUser from './pages/CreateUser'
-import Login from './pages/Login'
-import Profile from './pages/Profile'
-import GroupAmin from './pages/GroupAdmin'
 import logger from '../utils/logger'
 import TopBar from './TopBar'
 
@@ -46,7 +47,7 @@ const App = () => {
   return (
     <div>
       <Router>
-        <ErrorMessage />
+        <ErrorDlg />
         <TopBar />
         <Toolbar />
         <Routes>
@@ -60,23 +61,23 @@ const App = () => {
           />
           <Route
             path="/group_admin"
-            element={<GroupAmin />}
+            element={<GroupAdminPage />}
           />
           <Route
             path="/create_account"
-            element={<CreateUser handleCreate={handleCreateUser} />}
+            element={<CreateUserPage handleCreate={handleCreateUser} />}
           />
           <Route
             path="/login"
-            element={<Login handleLogin={loginUser} />}
+            element={<LoginPage handleLogin={loginUser} />}
           />
           <Route
             path="/users"
-            element={<UserList />}
+            element={<UserListPage />}
           />
           <Route
             path="/profile"
-            element={<Profile />}
+            element={<ProfilePage />}
           />
         </Routes>
       </Router>

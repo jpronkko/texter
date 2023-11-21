@@ -5,7 +5,7 @@ const { GraphQLError } = require('graphql')
 const usersModel = require('../models/users.model')
 const logger = require('../utils/logger')
 
-const { getHash } = require('../utils/pwtoken')
+const { getHash, pwCompare } = require('../utils/pwtoken')
 const { checkUser, checkUserOwnsGroup } = require('../utils/checkUser')
 
 const pubsub = new PubSub()
@@ -89,6 +89,31 @@ module.exports = {
       const tokenAndUser = await usersModel.login(username, password)
       return tokenAndUser
     },
+    changePassword: async (root, args, { currentUser }) => {
+      logger.info('Change password arguments', args)
+      checkUser(currentUser, 'Changing password failed!')
+      const { oldPassword, newPassword } = args
+
+      const user = await usersModel.findUserWithId(currentUser.id)
+      const passwordCorrect = await pwCompare(oldPassword, user.passwordHash)
+      if (!passwordCorrect) {
+        throw new GraphQLError('Wrong password')
+      }
+
+      const userId = await usersModel.changePassword(
+        currentUser.id,
+        newPassword
+      )
+      return userId
+    },
+    changeEmail: async (root, args, { currentUser }) => {
+      logger.info('Change email arguments', args)
+      checkUser(currentUser, 'Changing email failed!')
+      const { newEmail } = args
+
+      const userId = await usersModel.changeEmail(currentUser.id, newEmail)
+      return userId
+    },
     addUserToGroup: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Adding a user to a group failed!')
 
@@ -116,6 +141,24 @@ module.exports = {
         },
       })
       return userGroupRole
+    },
+    removeUserFromGroup: async (root, args, { currentUser }) => {
+      checkUser(currentUser, 'Removing user from group failed!')
+
+      const { groupId, userId } = args
+      if (!checkUserOwnsGroup(currentUser, groupId)) {
+        throw new GraphQLError('No permission to remove user from group!')
+      }
+
+      try {
+        const updatedUserId = await usersModel.removeUserFromGroup(
+          userId,
+          groupId
+        )
+        return updatedUserId
+      } catch (error) {
+        throw new GraphQLError('User removal did not work', error.message)
+      }
     },
     updateUserRole: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Updating user role failed!')

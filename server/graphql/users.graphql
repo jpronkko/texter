@@ -2,6 +2,7 @@ enum Role {
   OWNER
   ADMIN
   MEMBER
+  BANNED
 }
 
 type UserGroupRole {
@@ -74,7 +75,10 @@ type Query {
 type Mutation {
   createUser(user: UserInput): LoginData
   login(credentials: UserLoginInput): LoginData
+  changePassword(oldPassword: String!, newPassword: String!): ID
+  changeEmail(password: String!, newEmail: String!): ID
   addUserToGroup(groupId: ID!, userId: ID!): UserGroupRole
+  removeUserFromGroup(groupId: ID!, userId: ID!): ID
   updateUserRole(userId: ID!, groupId: ID!, role: Role!): UserGroupRole
 }
 

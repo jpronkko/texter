@@ -9,7 +9,7 @@ import useCreateUser from '../../hooks/useCreateUser'
 import logger from '../../utils/logger'
 import { useNavigate } from 'react-router-dom'
 
-const CreateUser = () => {
+const CreateUserPage = () => {
   const [createUser] = useCreateUser()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -22,9 +22,7 @@ const CreateUser = () => {
     navigate('/')
   }
 
-  return (
-    <CreateUserForm handleCreate={handleCreate} />
-  )
+  return <CreateUserForm handleCreate={handleCreate} />
 }
 
-export default CreateUser
+export default CreateUserPage

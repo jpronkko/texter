@@ -2,7 +2,8 @@ import React, { useRef } from 'react'
 import { Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-
+import useChangePassword from '../../hooks/useChangePassword'
+import useChangeEmail from '../../hooks/useChangeEmail'
 import NewPasswordDlg from '../dialogs/NewPasswordDlg'
 import NewEmailDlg from '../dialogs/NewEmailDlg'
 
@@ -10,26 +11,31 @@ const Profile = () => {
   const navigate = useNavigate()
   const user = useSelector((state) => state.user.userData)
 
+  const [changePassword] = useChangePassword()
+  const [changeEmail] = useChangeEmail()
+
   const newPasswordDlg = useRef()
   const newEmailDlg = useRef()
 
-  const changePassword = async (password) => {
+  const handleChangePassword = async (password) => {
     console.log('New password', password)
+    await changePassword(password)
   }
 
-  const changeEmail = async (email) => {
+  const handleChangeEmail = async (email) => {
     console.log('New email', email)
+    await changeEmail(email)
   }
 
   return (
     <div>
       <NewPasswordDlg
         ref={newPasswordDlg}
-        handleInput={changePassword}
+        handleInput={handleChangePassword}
       />
       <NewEmailDlg
         ref={newEmailDlg}
-        handleInput={changeEmail}
+        handleInput={handleChangeEmail}
       />
       <Grid
         container
@@ -38,10 +44,10 @@ const Profile = () => {
         direction="column"
       >
         <Paper
-          elevation={0}
+          elevation={2}
           style={{
             display: 'grid',
-            width: '700px',
+            width: '800px',
             gridRowGap: '20px',
             padding: '20px',
             margin: '10px 10px',
@@ -123,7 +129,7 @@ const Profile = () => {
             variant={'contained'}
             onClick={() => navigate('/')}
           >
-            Home
+            Done
           </Button>
         </Paper>
       </Grid>

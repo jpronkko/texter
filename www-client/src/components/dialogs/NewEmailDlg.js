@@ -2,36 +2,24 @@ import React, { forwardRef, useState, useImperativeHandle } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  Typography,
-} from '@mui/material'
+import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material'
 import FormTextInput from '../forms/FormTextInput'
 
 const schema = yup.object({
-  name: yup.string().required(),
-  password: yup
-    .string()
-    .min(5, ({ min }) => `Password must be at least ${min} characters.`)
-    .max(50, ({ max }) => `Password must be no more than ${max} characters.`)
-    .required('Password is required'),
-  password_repeat: yup
-    .string()
-    .equals([yup.ref('password')], 'Passwords must match'),
+  password: yup.string().required(),
+  email: yup.string().email().required(),
+  email_repeat: yup.string().equals([yup.ref('email')], 'E-mails must match'),
 })
 
-const PasswordDlg = forwardRef((props, ref) => {
+const EmailDlg = forwardRef((props, ref) => {
   const { handleInput } = props
   const [visible, setVisible] = useState(false)
 
-  const { control, /* reset, */ handleSubmit } = useForm({
+  const { control, reset, handleSubmit } = useForm({
     defaultValues: {
       password: '',
-      password_repeat: '',
+      email: '',
+      email_repeat: '',
     },
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -46,6 +34,7 @@ const PasswordDlg = forwardRef((props, ref) => {
   }
   const close = () => {
     setVisible(false)
+    reset() // Clear form fields
   }
 
   useImperativeHandle(ref, () => {
@@ -64,44 +53,49 @@ const PasswordDlg = forwardRef((props, ref) => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">Change your e-mail</DialogTitle>
-        <DialogContent sx={{ margin: '5px' }}>
-          <Grid
-            container
-            alignContent="left"
-            spacing={-1}
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
+        <DialogContent sx={{ my: 1 }}>
+          <FormTextInput
+            id="password"
+            name="password"
+            control={control}
+            label="Password"
+            type="password"
+          />
+          <FormTextInput
+            id="email"
+            name="email"
+            control={control}
+            label="E-mail"
+            type="email"
+          />
+          <FormTextInput
+            id="email_repeat"
+            name="email_repeat"
+            control={control}
+            label="Repeat E-mail"
+            type="email"
+          />
+          <Button
+            id="create-button"
+            onClick={handleSubmit(onSubmit)}
+            variant={'contained'}
+            sx={{ my: 1 }}
           >
-            <Typography variant="h4"> Change Password</Typography>
-
-            <FormTextInput
-              id="password"
-              name="password"
-              control={control}
-              label="Password"
-              type="password"
-            />
-            <FormTextInput
-              id="password_repeat"
-              name="password_repeat"
-              control={control}
-              label="Repeat Password"
-              type="password"
-            />
-            <Button
-              id="create-button"
-              onClick={handleSubmit(onSubmit)}
-              variant={'contained'}
-            >
-              Submit
-            </Button>
-          </Grid>
+            Change
+          </Button>
+          <Button
+            id="cancel-button"
+            onClick={close}
+            variant={'outlined'}
+            sx={{ ml: 2 }}
+          >
+            Cancel
+          </Button>
         </DialogContent>
       </Dialog>
     </div>
   )
 })
 
-PasswordDlg.displayName = 'PasswordDlg'
-export default PasswordDlg
+EmailDlg.displayName = 'EmailDlg'
+export default EmailDlg

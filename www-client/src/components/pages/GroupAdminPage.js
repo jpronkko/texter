@@ -12,7 +12,7 @@ const GroupItem = ({ topic }) => {
   )
 }
 
-const GroupAmin = () => {
+const GroupAdminPage = () => {
   const group = useSelector((state) => state.selection.group)
   const { topics, error, loading } = useGetTopics(group?.id)
   console.log('group', group, 'topics', topics)
@@ -39,4 +39,4 @@ const GroupAmin = () => {
   )
 }
 
-export default GroupAmin
+export default GroupAdminPage

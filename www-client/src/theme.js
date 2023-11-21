@@ -51,16 +51,22 @@ const themeOptions = {
         },
       },
     },
-
-    /*  MuiDialogTitle: {
+    MuiButton: {
       styleOverrides: {
         root: {
-          backgroundColor: '#a02020',
+          margin: '2px',
+        },
+      },
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#101c6b',
           color: 'white',
         },
       },
     },
-    MuiDialogContent: {
+    /*MuiDialogContent: {
       styleOverrides: {
         root: {
           backgroundColor: 'white',

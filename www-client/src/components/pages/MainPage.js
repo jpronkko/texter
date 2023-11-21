@@ -8,7 +8,7 @@ import GroupCard from '../GroupCard'
 import InputTextDlg from '../dialogs/InputTextDlg'
 import ConfirmMessage from '../dialogs/ConfirmMessage'
 
-import useGetUserGroups from '../../hooks/useGroups'
+import useGetUserGroups from '../../hooks/useGetGroups'
 import { clearGroup, setGroup } from '../../app/selectionSlice'
 import useCreateGroup from '../../hooks/useCreateGroup'
 

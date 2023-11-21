@@ -12,6 +12,22 @@ export const CREATE_USER = gql`
   }
 `
 
+export const CHANGE_PASSWORD = gql`
+  mutation changePassword($password: String!, $newPassword: String!) {
+    changePassword(password: $password, newPassword: $newPassword) {
+      id
+    }
+  }
+`
+
+export const CHANGE_EMAIL = gql`
+  mutation changeEmail($password: String!, $newEmail: String!) {
+    changePassword(password: $password, newEmail: $newEmail) {
+      id
+    }
+  }
+`
+
 export const CREATE_GROUP = gql`
   mutation createGroup($name: String!) {
     createGroup(name: $name) {
@@ -93,6 +109,14 @@ export const CHANGE_INVITATION_STATUS = gql`
     changeInvitationStatus(id: $invitationId, status: $status) {
       id
       status
+    }
+  }
+`
+
+export const REMOVE_USER_FROM_GROUP = gql`
+  mutation RemoveUserFromGroup($userId: ID!, $groupId: ID!) {
+    removeUserFromGroup(userId: $userId, groupId: $groupId) {
+      id
     }
   }
 `
