@@ -11,8 +11,9 @@ import ConfirmMessage from '../dialogs/ConfirmMessage'
 import useGetUserGroups from '../../hooks/useGetGroups'
 import { clearGroup, setGroup } from '../../app/selectionSlice'
 import useCreateGroup from '../../hooks/useCreateGroup'
+import useRemoveUserFromGroup from '../../hooks/useRemoveUserFromGroup'
 
-const MainPage = () => {
+const GroupSelectPage = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -24,6 +25,7 @@ const MainPage = () => {
   const [createGroup] = useCreateGroup()
 
   const { ownedGroups, joinedGroups, loading, error } = useGetUserGroups()
+  const [removeUserFromGroup] = useRemoveUserFromGroup()
 
   useEffect(() => {
     if (user.username === '') {
@@ -43,23 +45,26 @@ const MainPage = () => {
     navigate('/messages')
   }
 
-  const handleCreateGroup = async (name) => {
-    const groupData = await createGroup(name)
+  const handleCreateGroup = async (groupName) => {
+    const groupData = await createGroup(groupName)
     console.log(groupData)
     groupDlgRef.current.close()
   }
 
-  const handleLeaveGroup = async (name) => {
+  const handleLeaveGroup = async (group) => {
     confirmDlgRef.current.open()
-    console.log('Leave group', name)
+    console.log('Leave group', group.name)
   }
 
-  const leaveGroup = (name) => {
-    console.log('Leaving group', name)
+  const leaveGroup = async (group) => {
+    await removeUserFromGroup(user.id, group.id)
+    console.log('Leaving group', group.id)
   }
 
-  const handleManageGroup = async (name) => {
-    console.log('Manage group', name)
+  const handleManageGroup = async (group) => {
+    console.log('Manage group', group)
+    dispatch(setGroup(group))
+    navigate('/group_admin')
   }
 
   const renderedOwnedGroups = ownedGroups.map((group) => (
@@ -159,7 +164,7 @@ const MainPage = () => {
   )
 }
 
-export default MainPage
+export default GroupSelectPage
 
 /*
 <Grid

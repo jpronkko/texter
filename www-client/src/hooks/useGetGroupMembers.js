@@ -9,6 +9,9 @@ const useGetGroupMembers = (groupId) => {
       variables: {
         groupId: groupId,
       },
+      onError: (error) => {
+        console.log('error', error)
+      },
     }
   )
 

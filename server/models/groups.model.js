@@ -1,5 +1,7 @@
 const Group = require('./groups.mongo')
 const User = require('./users.mongo')
+const logger = require('../utils/logger')
+const mongoose = require('mongoose')
 
 const getAllGroups = async () => {
   const groups = await Group.find({})
@@ -45,13 +47,6 @@ const createGroup = async (user, name) => {
     console.error(error)
   }
 
-  /*const savedWithIds = savedGroup.toJSON()
-  console.log('Create Group Saved with ids', savedWithIds)
-  const groupInfo = {
-    id: savedWithIds.id,
-    name: savedWithIds.name,
-  }*/
-
   const groupInfo = {
     id: savedGroup._id,
     name: savedGroup.name,
@@ -59,7 +54,6 @@ const createGroup = async (user, name) => {
   }
   console.log('Created Group', groupInfo)
   return savedGroup.toJSON()
-  //return groupInfo
 }
 
 const getTopics = async (groupId) => {
@@ -72,10 +66,50 @@ const getTopics = async (groupId) => {
   return null
 }
 
+const getGroupMembers = async (groupId) => {
+  logger.info('getGroupMembers', groupId)
+  const user = await User.find({
+    'joinedGroups.group': new mongoose.Types.ObjectId(groupId),
+  })
+  /* .select({
+    name: 1,
+    username: 1,
+    email: 1,
+    'joinedGroups.group.role': 1,
+    _id: 1,
+  }) */
+
+  const usersData = user.map((user) => {
+    const group = user.joinedGroups.find(
+      (joinedGroup) => joinedGroup.group.toString() === groupId
+    )
+    return {
+      id: user._id.toString(),
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      role: group.role,
+    }
+  })
+  logger.info('---usersData', usersData)
+  if (usersData) {
+    return usersData
+    /* return usersData.map((user) => {
+      return {
+        id: user._id.toString(),
+        name: user.name,
+        username: user.username,
+      }
+    }) */
+  }
+  return null
+}
+
 module.exports = {
   getAllGroups,
   findGroup,
   findGroupWithName,
   createGroup,
   getTopics,
+  getGroupMembers,
 }

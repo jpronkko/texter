@@ -1,4 +1,4 @@
-import React,{ useState, useImperativeHandle, forwardRef } from 'react'
+import React, { useState, useImperativeHandle, forwardRef } from 'react'
 
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -7,15 +7,13 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 
-
 const ConfirmMessage = forwardRef((props, ref) => {
   const { title, message, onOk } = props
   const [visible, setVisible] = useState(false)
 
   const handleOk = () => {
     setVisible(false)
-    if(onOk)
-      onOk()
+    if (onOk) onOk()
   }
 
   const open = () => {
@@ -29,7 +27,7 @@ const ConfirmMessage = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => {
     return {
       open,
-      close
+      close,
     }
   })
 
@@ -41,17 +39,26 @@ const ConfirmMessage = forwardRef((props, ref) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {title}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             {message}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleOk} autoFocus>OK</Button>
-          <Button onClick={close}>Cancel</Button>
+          <Button
+            onClick={handleOk}
+            autoFocus
+            variant="contained"
+          >
+            OK
+          </Button>
+          <Button
+            onClick={close}
+            variant="outlined"
+          >
+            Cancel
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

@@ -10,9 +10,18 @@ type GroupInfo {
   ownerId: ID!
 }
 
+type MemberData {
+  id: ID!
+  name: String!
+  username: String!
+  email: String!
+  role: Role
+}
+
 type Query {
   allGroups: [GroupInfo]
   getTopics(groupId: ID!): [Topic]
+  getGroupMembers(groupId: ID!): [MemberData]
 }
 
 type Mutation {

@@ -59,6 +59,8 @@ export const GET_GROUP_MEMBERS = gql`
       id
       name
       username
+      email
+      role
     }
   }
 `

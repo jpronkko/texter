@@ -102,7 +102,7 @@ const MessagesPage = () => {
           variant="subtitle1"
           sx={{ px: 1.5, py: 1.5, color: 'primary.contrastText' }}
         >
-          TOPICS of {selectedGroup.name}
+          TOPICS OF {selectedGroup.name}
         </Typography>
         {renderTopics()}
         <Box
@@ -134,7 +134,7 @@ const MessagesPage = () => {
               color: 'primary.contrastText',
               justifyContent: 'flex-start',
             }}
-            onClick={() => navigate()}
+            onClick={() => navigate('/')}
           >
             <Typography>Groups</Typography>
           </Button>

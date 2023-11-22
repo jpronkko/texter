@@ -12,7 +12,7 @@ import LoginPage from './pages/LoginPage'
 import ProfilePage from './pages/ProfilePage'
 import GroupAdminPage from './pages/GroupAdminPage'
 
-import MainPage from './pages/MainPage'
+import GroupSelectPage from './pages/GroupSelectPage'
 import MessagesPage from './pages/MessagesPage'
 import UserListPage from './pages/UserListPage'
 
@@ -53,7 +53,7 @@ const App = () => {
         <Routes>
           <Route
             path="/"
-            element={<MainPage />}
+            element={<GroupSelectPage />}
           />
           <Route
             path="/messages"

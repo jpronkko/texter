@@ -1,8 +1,105 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import useGetTopics from '../../hooks/useGetTopics'
-import { Button, Typography } from '@mui/material'
+import { Button, Container, Paper, Typography } from '@mui/material'
+import { DataGrid } from '@mui/x-data-grid'
+import TitleBox from '../TitleBox'
+import useGetGroupMembers from '../../hooks/useGetGroupMembers'
+import SelectionPopup from '../forms/SelectionPopup'
+import { PersonRemove, DoNotTouch } from '@mui/icons-material'
 
+const GroupMembersTable = ({ groupId }) => {
+  const { members, loading, error } = useGetGroupMembers(groupId)
+
+  const columns = [
+    { field: 'username', headerName: 'Username', width: 100 },
+    {
+      field: 'fullName',
+      headerName: 'Full name',
+      description: 'This column has a value getter and is not sortable.',
+      sortable: false,
+      width: 150,
+      //valueGetter: (params) =>
+      //  `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+    },
+    { field: 'email', headerName: 'Email', width: 150 },
+    {
+      field: 'role',
+      headerName: 'Role',
+      width: 130,
+      renderCell: (params) =>
+        params.row.role === 'OWNER' ? (
+          params.row.role
+        ) : (
+          <SelectionPopup
+            defaultValue={params.row.role}
+            selectionValues={['ADMIN', 'MEMBER']}
+            handleSelectionChange={(value) => console.log(value)}
+          />
+        ),
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 130,
+      //valueGetter: (params) => `${params.row.age || ''}`,
+    },
+    {
+      field: 'remove',
+      headerName: 'Remove',
+      width: 150,
+      sortable: false,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          disabled={params.row.role === 'OWNER'}
+          onClick={() => console.log('Remove ', params.row.username)}
+        >
+          {params.row.role !== 'OWNER' ? <PersonRemove /> : <DoNotTouch />}
+        </Button>
+      ),
+    },
+  ]
+
+  /* if (loading) {
+    return <div>Loading...</div>
+  }*/
+
+  if (error) {
+    return <div>Error: {error.message}</div>
+  }
+
+  const rows = members
+    ? members.map((item) => ({
+        id: item.id,
+        username: item.username,
+        fullName: item.name,
+        email: item.email,
+        role: item.role,
+      }))
+    : []
+
+  return (
+    <div style={{ height: 400, width: '100%' }}>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        onSelectionModelChange={(newSelection) => {
+          console.log(newSelection)
+          // Perform any desired actions with the selected rows
+        }}
+        loading={loading}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 5 },
+          },
+        }}
+        pageSizeOptions={[5, 10]}
+        footer
+      />
+    </div>
+  )
+}
 const GroupItem = ({ topic }) => {
   return (
     <div style={{ flexDirection: 'row' }}>
@@ -18,7 +115,7 @@ const GroupAdminPage = () => {
   console.log('group', group, 'topics', topics)
 
   if (error) {
-    return <div>Error: {error}</div>
+    return <div>Error: {error.message}</div>
   }
 
   if (loading) {
@@ -26,7 +123,8 @@ const GroupAdminPage = () => {
   }
 
   return (
-    <div>
+    <Container>
+      <TitleBox title={'Group Admin' + group.name} />
       <Typography variant="h4">Group {group.name} Admin</Typography>
       <Button variant="contained">Add Topic</Button>
       {topics.map((item) => (
@@ -35,7 +133,11 @@ const GroupAdminPage = () => {
           topic={item}
         />
       ))}
-    </div>
+      <TitleBox title={'Group Members'} />
+      <Paper elevation={2}>
+        <GroupMembersTable groupId={group.id} />
+      </Paper>
+    </Container>
   )
 }
 

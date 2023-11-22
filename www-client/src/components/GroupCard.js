@@ -16,33 +16,33 @@ const GroupCard = ({
 }) => {
   return (
     <Card sx={{ minWidth: 345 }}>
-      <CardActionArea>
+      <CardActionArea onClick={() => handleSelectGroup(group)}>
         <CardMedia
           component="img"
           height="140"
-          image="logo192.png"
+          image="contemplative-reptile.jpg"
           alt="green iguana"
         />
-        <CardContent>
+        <CardContent sx={{ backgroundColor: 'background.default' }}>
           <Typography
             gutterBottom
-            variant="h5"
+            variant="h6"
             component="div"
           >
             {group.name}
           </Typography>
           <Typography
             variant="body2"
-            color="text.secondary"
+            color="text.primary"
           >
-            {group.description}
+            Turinaa groupista: {group.description}
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions>
+      <CardActions sx={{ backgroundColor: 'secondary.light' }}>
         <Button
           size="small"
-          color="primary"
+          color="secondary"
           onClick={() => handleSelectGroup(group)}
         >
           Select
