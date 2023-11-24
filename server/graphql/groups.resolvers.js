@@ -33,8 +33,12 @@ module.exports = {
       logger.info('Creating group', args.name)
       checkUser(currentUser, 'Creating a group failed!')
 
-      const { name } = args
-      const newGroup = await groupsModel.createGroup(currentUser, name)
+      const { name, description } = args
+      const newGroup = await groupsModel.createGroup(
+        currentUser,
+        name,
+        description
+      )
 
       return newGroup
 
@@ -43,6 +47,24 @@ module.exports = {
       //   name: newGroup.name,
       //   ownerId: newGroup.ownerId,
       // }
+    },
+    modifyGroup: async (root, args, { currentUser }) => {
+      logger.info('Modifying group', args.name)
+      checkUser(currentUser, 'Modifying a group failed!')
+
+      if (!checkUserInGroup(currentUser, args.groupId)) {
+        throw new GraphQLError('Not authorized for group!')
+      }
+
+      const { groupId, name, description } = args
+
+      const modifiedGroup = await groupsModel.modifyGroup(
+        groupId,
+        name,
+        description
+      )
+
+      return modifiedGroup
     },
   },
 }

@@ -81,6 +81,7 @@ export const GET_USER_JOINED_GROUPS = gql`
       joinedGroups {
         groupId
         groupName
+        description
         role
       }
     }

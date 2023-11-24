@@ -23,13 +23,13 @@ const findGroupWithName = async (ownerId, groupName) => {
   return null
 }
 
-const createGroup = async (user, name) => {
+const createGroup = async (user, name, description) => {
   const existingGroup = await findGroupWithName(user.id, name)
   if (existingGroup) {
     throw new Error(`User already has group with name ${name}.`)
   }
 
-  const group = new Group({ name, ownerId: user.id })
+  const group = new Group({ name, description, ownerId: user.id })
   const savedGroup = await group.save()
   if (!savedGroup) {
     throw new Error('Group save failed!')
@@ -47,12 +47,6 @@ const createGroup = async (user, name) => {
     console.error(error)
   }
 
-  const groupInfo = {
-    id: savedGroup._id,
-    name: savedGroup.name,
-    ownerId: savedGroup.ownerId,
-  }
-  console.log('Created Group', groupInfo)
   return savedGroup.toJSON()
 }
 
@@ -71,13 +65,6 @@ const getGroupMembers = async (groupId) => {
   const user = await User.find({
     'joinedGroups.group': new mongoose.Types.ObjectId(groupId),
   })
-  /* .select({
-    name: 1,
-    username: 1,
-    email: 1,
-    'joinedGroups.group.role': 1,
-    _id: 1,
-  }) */
 
   const usersData = user.map((user) => {
     const group = user.joinedGroups.find(
@@ -94,15 +81,22 @@ const getGroupMembers = async (groupId) => {
   logger.info('---usersData', usersData)
   if (usersData) {
     return usersData
-    /* return usersData.map((user) => {
-      return {
-        id: user._id.toString(),
-        name: user.name,
-        username: user.username,
-      }
-    }) */
   }
   return null
+}
+
+const modifyGroup = async (groupId, name, description) => {
+  const group = await Group.findById(groupId)
+  if (!group) {
+    throw new Error('No such group!')
+  }
+  group.name = name
+  group.description = description
+  const savedGroup = await group.save()
+  if (!savedGroup) {
+    throw new Error('Group save failed!')
+  }
+  return savedGroup.toJSON()
 }
 
 module.exports = {
@@ -112,4 +106,5 @@ module.exports = {
   createGroup,
   getTopics,
   getGroupMembers,
+  modifyGroup,
 }

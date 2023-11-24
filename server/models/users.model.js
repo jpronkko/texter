@@ -103,7 +103,19 @@ const login = async (username, password) => {
   }
 }
 
+const compUserPWWithHash = async (userId, password) => {
+  const user = await User.findById(userId)
+  if (!user) {
+    return false
+  }
+  const passwordCorrect = await pwCompare(password, user.passwordHash)
+  logger.info('Is password correct: ', passwordCorrect)
+
+  return passwordCorrect
+}
+
 const changePassword = async (userId, newPassword) => {
+  logger.info('Change password for user', userId)
   const user = await User.findById(userId)
   if (!user) {
     logger.error(`User with id: ${userId} not found!`)
@@ -119,7 +131,12 @@ const changePassword = async (userId, newPassword) => {
       logger.error('User save failed in changePassword')
       throw new Error('Saving user failed!')
     }
-    return updatedUser.id
+    return {
+      id: updatedUser.id,
+      name: updatedUser.name,
+      username: updatedUser.username,
+      email: updatedUser.email,
+    }
   } catch (error) {
     throw new Error('Saving user failed!')
   }
@@ -138,7 +155,12 @@ const changeEmail = async (userId, newEmail) => {
       logger.error('User save failed in changePassword')
       throw new Error('Saving user failed!')
     }
-    return updatedUser.id
+    return {
+      id: updatedUser.id,
+      name: updatedUser.name,
+      username: updatedUser.username,
+      email: updatedUser.email,
+    }
   } catch (error) {
     throw new Error('Saving user failed!')
   }
@@ -182,10 +204,9 @@ const removeUserFromGroup = async (userId, groupId) => {
     throw new Error('No such user!')
   }
 
-  const userGroups = user.joinedGroups.filter(
-    (joinedGroup) => joinedGroup.groupId !== groupId
+  user.joinedGroups = user.joinedGroups.filter(
+    (joinedGroup) => joinedGroup.group.toString() !== groupId
   )
-  user.joinedGroups = userGroups
 
   try {
     const updatedUser = await user.save()
@@ -193,7 +214,17 @@ const removeUserFromGroup = async (userId, groupId) => {
       logger.error('User save failed in addUserToGroup')
       throw new Error('Saving user failed!')
     }
-    return updatedUser.id
+
+    const jsonedUser = updatedUser.toJSON()
+    const retVal = jsonedUser.joinedGroups.map((item) => ({
+      groupId: item.group.id,
+      groupName: item.group.name,
+      description: item.group.description,
+      role: item.role,
+    }))
+
+    console.log('ret from model', retVal)
+    return retVal
   } catch (error) {
     throw new Error('Saving user failed!')
   }
@@ -222,10 +253,13 @@ const getUserJoinedGroups = async (userId) => {
     populate: {
       path: 'group',
       model: 'Group',
-      select: '_id, name',
+      select: 'name description id',
     },
   })
 
+  console.log('-------------------')
+  console.log('getUserJoinedGroups user:', JSON.stringify(user, null, 4))
+  console.log('-------------------')
   if (!user) {
     logger.error(`No user with ${userId} found!`)
     throw new Error('No such user!')
@@ -247,6 +281,7 @@ const getUserJoinedGroups = async (userId) => {
   const retVal = jsonedUser.joinedGroups.map((item) => ({
     groupId: item.group.id,
     groupName: item.group.name,
+    description: item.group.description,
     role: item.role,
   }))
 
@@ -266,6 +301,7 @@ module.exports = {
   getAllUsers,
   createUser,
   login,
+  compUserPWWithHash,
   changePassword,
   changeEmail,
   addUserToGroup,

@@ -1,12 +1,14 @@
 type Group {
   id: ID!
   name: String!
+  description: String!
   topics: [ID]
 }
 
 type GroupInfo {
   id: ID!
   name: String!
+  description: String!
   ownerId: ID!
 }
 
@@ -25,5 +27,6 @@ type Query {
 }
 
 type Mutation {
-  createGroup(name: String!): GroupInfo
+  createGroup(name: String!, description: String!): GroupInfo
+  modifyGroup(id: ID!, name: String, description: String): GroupInfo
 }

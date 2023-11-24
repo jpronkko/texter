@@ -9,23 +9,25 @@ import FormTextInput from './FormTextInput'
 
 const schema = yup.object({
   name: yup.string().required(),
+  description: yup.string().required(),
 })
 
-const CreateGroupForm = ({ handleCreate }) => {
+const GroupForm = ({ title, handleFormSubmit }) => {
   const { control, reset, handleSubmit } = useForm({
     defaultValues: {
       name: '',
+      description: '',
     },
     resolver: yupResolver(schema),
-    mode: 'onChange'
+    mode: 'onChange',
   })
 
   const onSubmit = (data) => {
     console.log('Submiting create group', data)
-    handleCreate(data)
+    handleFormSubmit(data)
   }
 
-  return(
+  return (
     <div>
       <Paper
         style={{
@@ -35,17 +37,30 @@ const CreateGroupForm = ({ handleCreate }) => {
           margin: '10px 200px',
         }}
       >
-        <Typography variant="h4"> Create new group</Typography>
+        <Typography variant="h4">{title}</Typography>
         <FormTextInput
-          id='name'
-          name='name'
+          id="name"
+          name="name"
           control={control}
-          label='Name'
+          label="Name"
         />
-        <Button id='create-button' onClick={handleSubmit(onSubmit)} variant={'contained'}>
+        <FormTextInput
+          id="description"
+          name="description"
+          control={control}
+          label="Description"
+        />
+        <Button
+          id="create-button"
+          onClick={handleSubmit(onSubmit)}
+          variant={'contained'}
+        >
           Submit
         </Button>
-        <Button onClick={() => reset()} variant={'outlined'}>
+        <Button
+          onClick={() => reset()}
+          variant={'outlined'}
+        >
           Reset
         </Button>
       </Paper>
@@ -53,4 +68,4 @@ const CreateGroupForm = ({ handleCreate }) => {
   )
 }
 
-export default CreateGroupForm
+export default GroupForm

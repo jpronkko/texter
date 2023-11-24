@@ -14,7 +14,7 @@ const themeOptions = {
       main: darkBlue,
       dark: darkerBlue,
       light: '#2a378c',
-      contrastText: '#fffff0',
+      contrastText: '#ffffff',
     },
     secondary: {
       main: '#304ddf',
@@ -22,7 +22,7 @@ const themeOptions = {
     },
     text: {
       primary: darkBlue, //'rgba(14,35,65,0.78)',
-      secondary: lightBlue, //'rgba(29,29,203,0.6)',
+      secondary: darkerBlue, //'rgba(29,29,203,0.6)',
       disabled: grey[300], //'rgba(84,84,84,0.38)',
       error: pink.A700, //'#b00020',
     },

@@ -31,49 +31,66 @@ const LoginForm = ({ handleLogin }) => {
       password: '',
     },
     resolver: yupResolver(schema),
-    mode: 'onChange'
+    mode: 'onChange',
   })
 
   const onSubmit = (data) => {
     handleLogin(data)
   }
 
-  return(
+  return (
     <div>
-      <Grid container alignContent="center" spacing={-1} direction='column'>
-        <Paper elevation={0}
+      <Grid
+        container
+        alignContent="center"
+        spacing={-1}
+        direction="column"
+      >
+        <Paper
+          elevation={3}
           style={{
             display: 'grid',
             width: '400px',
             gridRowGap: '20px',
             padding: '20px',
             margin: '10px 10px',
-          }}>
+          }}
+        >
           <Typography variant="h5"> Sign in</Typography>
           <FormTextInput
-            id='username'
-            name='username'
+            id="username"
+            name="username"
             control={control}
-            label='Username'
+            label="Username"
           />
           <FormTextInput
-            id='password'
-            testId='password'
-            name='password'
+            id="password"
+            testId="password"
+            name="password"
             control={control}
-            label='Password'
-            type='password'
+            label="Password"
+            type="password"
           />
-          <Button id='create-button' onClick={handleSubmit(onSubmit)} variant={'contained'}>
-          Submit
+          <Button
+            id="create-button"
+            onClick={handleSubmit(onSubmit)}
+            variant={'contained'}
+          >
+            Submit
           </Button>
-          <Button onClick={() => reset()} variant={'outlined'}>
-          Reset
+          <Button
+            onClick={() => reset()}
+            variant={'outlined'}
+          >
+            Reset
           </Button>
           <Divider />
           <Typography>Do not have an account?</Typography>
-          <Button variant={'contained'} onClick={() => navigate('/create_account')}>
-          Create a New Account
+          <Button
+            variant={'contained'}
+            onClick={() => navigate('/create_account')}
+          >
+            Create a New Account
           </Button>
         </Paper>
       </Grid>

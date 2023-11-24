@@ -1,12 +1,15 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import useGetTopics from '../../hooks/useGetTopics'
 import { Button, Container, Paper, Typography } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
-import TitleBox from '../TitleBox'
-import useGetGroupMembers from '../../hooks/useGetGroupMembers'
-import SelectionPopup from '../forms/SelectionPopup'
 import { PersonRemove, DoNotTouch } from '@mui/icons-material'
+
+import useGetGroupMembers from '../../hooks/useGetGroupMembers'
+import useGetTopics from '../../hooks/useGetTopics'
+
+import SelectionPopup from '../forms/SelectionPopup'
+import TitleBox from '../TitleBox'
+import GroupForm from '../forms/GroupForm'
 
 const GroupMembersTable = ({ groupId }) => {
   const { members, loading, error } = useGetGroupMembers(groupId)
@@ -61,6 +64,9 @@ const GroupMembersTable = ({ groupId }) => {
     },
   ]
 
+  const handleFormSubmit = (data) => {
+    console.log('Create group form submitted', data)
+  }
   /* if (loading) {
     return <div>Loading...</div>
   }*/
@@ -80,24 +86,27 @@ const GroupMembersTable = ({ groupId }) => {
     : []
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        onSelectionModelChange={(newSelection) => {
-          console.log(newSelection)
-          // Perform any desired actions with the selected rows
-        }}
-        loading={loading}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
-        footer
-      />
-    </div>
+    <Container>
+      <GroupForm handleFormSubmit={handleFormSubmit} />
+      <div style={{ height: 400, width: '100%' }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          onSelectionModelChange={(newSelection) => {
+            console.log(newSelection)
+            // Perform any desired actions with the selected rows
+          }}
+          loading={loading}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          footer
+        />
+      </div>
+    </Container>
   )
 }
 const GroupItem = ({ topic }) => {

@@ -14,6 +14,7 @@ type UserGroupRole {
 type JoinedGroup {
   groupId: ID!
   groupName: String!
+  description: String!
   role: Role!
 }
 
@@ -43,6 +44,7 @@ type UserBaseData {
   id: ID!
   name: String!
   username: String!
+  email: String!
 }
 
 input UserInput {
@@ -75,10 +77,10 @@ type Query {
 type Mutation {
   createUser(user: UserInput): LoginData
   login(credentials: UserLoginInput): LoginData
-  changePassword(oldPassword: String!, newPassword: String!): ID
-  changeEmail(password: String!, newEmail: String!): ID
+  changePassword(oldPassword: String!, newPassword: String!): UserBaseData
+  changeEmail(password: String!, newEmail: String!): UserBaseData
   addUserToGroup(groupId: ID!, userId: ID!): UserGroupRole
-  removeUserFromGroup(groupId: ID!, userId: ID!): ID
+  removeUserFromGroup(groupId: ID!, userId: ID!): JoinedGroupInfo
   updateUserRole(userId: ID!, groupId: ID!, role: Role!): UserGroupRole
 }
 

@@ -76,12 +76,13 @@ const createTestUser = async () => {
   )
 }
 
-const createGroup = async (groupName, token) => {
+const createGroup = async (groupName, description, token) => {
   console.log('Create group', groupName, 'token', token)
   const mutation = `mutation CreateGroup { 
-    createGroup(name: "${groupName}") {
+    createGroup(name: "${groupName}", description: "${description}") {
       id
       name
+      description
     } 
   }`
   const result = await gqlToServer(url, mutation, token)
@@ -163,7 +164,7 @@ const createTopic = async (groupId, name, token) => {
   return result.body?.data?.createTopic
 }
 
-const getUser = async (username) => {
+/* const getUser = async (username) => {
   const query = `query FindUser {
     findUser(username: "${username}") {
       id
@@ -181,6 +182,27 @@ const getUser = async (username) => {
 
   const result = await gqlToServer(url, query)
   return result.body.data.findUser
+}
+ */
+
+const getUserJoinedGroups = async (token) => {
+  const query = `query GetUserJoinedGroups {
+    getUserJoinedGroups {
+      userId
+      joinedGroups {
+        groupId
+        groupName
+        description
+        role
+      }
+    }
+  }`
+
+  const result = await gqlToServer(url, query, token)
+  console.log(result.body)
+
+  const joinedData = result.body.data.getUserJoinedGroups
+  return joinedData
 }
 
 const getMessages = async (topicId, token) => {
@@ -228,12 +250,13 @@ module.exports = {
   createTestUsers,
   createUser,
   createGroup,
-  getUser,
+  //getUser,
   login,
   loginTestUser,
   addUserToGroup,
   createInvitation,
   createTopic,
+  getUserJoinedGroups,
   getMessages,
   createMessage,
 }

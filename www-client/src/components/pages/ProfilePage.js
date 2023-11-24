@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { Button, Divider, Grid, Paper, Typography } from '@mui/material'
+import { Button, Divider, Drawer, Grid, Paper, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import useChangePassword from '../../hooks/useChangePassword'
@@ -37,102 +37,104 @@ const Profile = () => {
         ref={newEmailDlg}
         handleInput={handleChangeEmail}
       />
-      <Grid
-        container
-        alignContent="left"
-        spacing={-1}
-        direction="column"
-      >
-        <Paper
-          elevation={2}
-          style={{
-            display: 'grid',
-            width: '800px',
-            gridRowGap: '20px',
-            padding: '20px',
-            margin: '10px 10px',
-          }}
+      <Drawer>
+        <Grid
+          container
+          alignContent="left"
+          spacing={-1}
+          direction="column"
         >
-          <Typography variant="h4"> Account details</Typography>
-          <Grid
-            container
-            direction="row"
-            padding="10px"
-            justifyContent="start"
-            alignItems="stretch"
+          <Paper
+            elevation={2}
+            style={{
+              display: 'grid',
+              width: '800px',
+              gridRowGap: '20px',
+              padding: '20px',
+              margin: '10px 10px',
+            }}
           >
+            <Typography variant="h4"> Account details</Typography>
             <Grid
-              item
-              xs={6}
-            >
-              <Typography variant="h5">Name</Typography>
-              <Typography variant="body1">{user.name}</Typography>
-            </Grid>
-            <Grid>
-              <Typography variant="h5">Username</Typography>
-              <Typography variant="body1">{user.username}</Typography>
-            </Grid>
-          </Grid>
-          <Divider />
-          <Typography variant="h5">E-mail</Typography>
-          <Grid
-            container
-            direction="row"
-            alignItems="stretch"
-          >
-            <Grid
-              item
-              xs={9}
+              container
+              direction="row"
+              padding="10px"
+              justifyContent="start"
               alignItems="stretch"
             >
-              <Typography variant="body1">{user.email}</Typography>
-            </Grid>
-            <Grid
-              item
-              xs={3}
-            >
-              <Button
-                id="new-email-button"
-                onClick={() => newEmailDlg.current.open()}
-                variant={'contained'}
+              <Grid
+                item
+                xs={6}
               >
-                Change
-              </Button>
+                <Typography variant="h5">Name</Typography>
+                <Typography variant="body1">{user.name}</Typography>
+              </Grid>
+              <Grid>
+                <Typography variant="h5">Username</Typography>
+                <Typography variant="body1">{user.username}</Typography>
+              </Grid>
             </Grid>
-          </Grid>
-          <Divider />
-          <Grid
-            container
-            direction="row"
-          >
+            <Divider />
+            <Typography variant="h5">E-mail</Typography>
             <Grid
-              item
-              xs={9}
+              container
+              direction="row"
+              alignItems="stretch"
             >
-              <Typography variant="h5">Password *******</Typography>
-            </Grid>
-            <Grid
-              item
-              xs={3}
-            >
-              <Button
-                id="new-password-button"
-                onClick={() => newPasswordDlg.current.open()}
-                variant={'contained'}
+              <Grid
+                item
+                xs={9}
+                alignItems="stretch"
               >
-                Change
-              </Button>
+                <Typography variant="body1">{user.email}</Typography>
+              </Grid>
+              <Grid
+                item
+                xs={3}
+              >
+                <Button
+                  id="new-email-button"
+                  onClick={() => newEmailDlg.current.open()}
+                  variant={'contained'}
+                >
+                  Change
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
-          <Divider />
-          <Button
-            variant={'contained'}
-            onClick={() => navigate('/')}
-          >
-            Done
-          </Button>
-        </Paper>
-      </Grid>
+            <Divider />
+            <Grid
+              container
+              direction="row"
+            >
+              <Grid
+                item
+                xs={9}
+              >
+                <Typography variant="h5">Password *******</Typography>
+              </Grid>
+              <Grid
+                item
+                xs={3}
+              >
+                <Button
+                  id="new-password-button"
+                  onClick={() => newPasswordDlg.current.open()}
+                  variant={'contained'}
+                >
+                  Change
+                </Button>
+              </Grid>
+            </Grid>
+            <Divider />
+            <Button
+              variant={'contained'}
+              onClick={() => navigate('/')}
+            >
+              Done
+            </Button>
+          </Paper>
+        </Grid>
+      </Drawer>
     </div>
   )
 }

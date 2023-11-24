@@ -5,8 +5,12 @@ const { GraphQLError } = require('graphql')
 const usersModel = require('../models/users.model')
 const logger = require('../utils/logger')
 
-const { getHash, pwCompare } = require('../utils/pwtoken')
-const { checkUser, checkUserOwnsGroup } = require('../utils/checkUser')
+const { getHash } = require('../utils/pwtoken')
+const {
+  checkUser,
+  checkUserOwnsGroup,
+  checkUserInGroup,
+} = require('../utils/checkUser')
 
 const pubsub = new PubSub()
 
@@ -16,33 +20,26 @@ module.exports = {
       console.log('context', contextValue)
       return contextValue.currentUser
     },
+
     getUserBaseData: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Getting user data failed!')
       const user = await usersModel.findUserWithId(currentUser.id)
-      console.log('user', user)
-      return { id: user.id, username: user.username, name: user.name }
+      return {
+        id: user.id,
+        username: user.username,
+        name: user.name,
+        email: user.email,
+      }
     },
     allUsers: async () => await usersModel.getAllUsers(),
-    //findUser: async (root, args) => await usersModel.findUser(args.username),
+
     getUserJoinedGroups: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Getting user groups failed!')
-      const groupInfo = await usersModel.getUserJoinedGroups(currentUser.id)
-      console.log('Group Info', groupInfo)
-      return { userId: currentUser.id, joinedGroups: groupInfo }
+      const joinedGroups = await usersModel.getUserJoinedGroups(currentUser.id)
+      console.log('Users resolver get user joined groups:', joinedGroups)
+      return { userId: currentUser.id, joinedGroups }
     },
-    /*findUserById: async (root, args) => {
-      console.log(args)
-      const user = await usersModel.findUserWithId(args.id)
-      return user
-    },*/
   },
-  // JoinedGroup: {
-  //   group: async (parent) => {
-  //     console.log('group args', parent)
-  //     const group = await groupsModel.findGroup(parent.group)
-  //     return { groupId: group.id, grouName: group.name, ownerId: group.ownerId }
-  //   },
-  // },
 
   Mutation: {
     createUser: async (root, args) => {
@@ -50,7 +47,7 @@ module.exports = {
         user: { name, username, email, password },
       } = args
 
-      const user = await usersModel.findUser(username)
+      const user = await usersModel.findUserByUsername(username)
       if (user) {
         logger.error('Username taken', user)
         throw new GraphQLError('Username taken', {
@@ -81,6 +78,7 @@ module.exports = {
         })
       }
     },
+
     login: async (root, args) => {
       logger.info('Login arguments', args, args.username, args.password)
       const {
@@ -89,31 +87,46 @@ module.exports = {
       const tokenAndUser = await usersModel.login(username, password)
       return tokenAndUser
     },
+
     changePassword: async (root, args, { currentUser }) => {
       logger.info('Change password arguments', args)
       checkUser(currentUser, 'Changing password failed!')
       const { oldPassword, newPassword } = args
 
-      const user = await usersModel.findUserWithId(currentUser.id)
-      const passwordCorrect = await pwCompare(oldPassword, user.passwordHash)
-      if (!passwordCorrect) {
+      const correctPW = await usersModel.compUserPWWithHash(
+        currentUser.id,
+        oldPassword
+      )
+      console.log('Correct pw', correctPW)
+
+      if (!correctPW) {
+        logger.error('Wrong password', currentUser, oldPassword)
         throw new GraphQLError('Wrong password')
       }
 
-      const userId = await usersModel.changePassword(
+      const userBaseData = await usersModel.changePassword(
         currentUser.id,
         newPassword
       )
-      return userId
+      return userBaseData
     },
+
     changeEmail: async (root, args, { currentUser }) => {
       logger.info('Change email arguments', args)
       checkUser(currentUser, 'Changing email failed!')
-      const { newEmail } = args
+      const { password, newEmail } = args
 
-      const userId = await usersModel.changeEmail(currentUser.id, newEmail)
-      return userId
+      if (!usersModel.compUserPWWithHash(currentUser.id, password)) {
+        throw new GraphQLError('Wrong password')
+      }
+
+      const userBaseData = await usersModel.changeEmail(
+        currentUser.id,
+        newEmail
+      )
+      return userBaseData
     },
+
     addUserToGroup: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Adding a user to a group failed!')
 
@@ -142,24 +155,36 @@ module.exports = {
       })
       return userGroupRole
     },
+
     removeUserFromGroup: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Removing user from group failed!')
 
       const { groupId, userId } = args
-      if (!checkUserOwnsGroup(currentUser, groupId)) {
+
+      const userIsInGroup = checkUserInGroup(currentUser, groupId)
+      if (!userIsInGroup) {
+        throw new GraphQLError('User is not in group!')
+      }
+
+      const userOwnsGroup = checkUserOwnsGroup(currentUser, groupId)
+
+      // If user is group owner one can remove other users from the group
+      // If user is deleting him/herself from the group, it is allowed
+      if (!userOwnsGroup && currentUser.id !== userId) {
         throw new GraphQLError('No permission to remove user from group!')
       }
 
       try {
-        const updatedUserId = await usersModel.removeUserFromGroup(
+        const joinedGroups = await usersModel.removeUserFromGroup(
           userId,
           groupId
         )
-        return updatedUserId
+        return { userId: currentUser.id, joinedGroups }
       } catch (error) {
         throw new GraphQLError('User removal did not work', error.message)
       }
     },
+
     updateUserRole: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Updating user role failed!')
 
@@ -180,6 +205,7 @@ module.exports = {
       }
     },
   },
+
   Subscription: {
     userAddedToGroup: {
       subscribe: withFilter(

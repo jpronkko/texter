@@ -10,6 +10,11 @@ const schema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
+  description: {
+    type: String,
+    required: true,
+    minlength: 5,
+  },
   topics: [
     {
       type: mongoose.Schema.Types.ObjectId,
