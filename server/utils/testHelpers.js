@@ -136,15 +136,27 @@ const createInvitation = async (groupId, fromUserId, toUser, token) => {
         toUser: "${toUser}"
       }){
         id
-        groupId
-        fromUserId
-        toUser
+        group {
+          id
+          name
+        }
+        fromUser {
+          id
+          username
+          name
+        }
+        toUser {
+          id
+          username
+          name
+        }
         status
         sentTime
       } 
     }`
 
   const result = await gqlToServer(url, mutation, token)
+  console.log('error', result.body.error)
   return result.body?.data?.createInvitation
 }
 

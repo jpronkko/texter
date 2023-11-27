@@ -189,7 +189,7 @@ describe('user test', () => {
     expect(result.body.errors).toBeDefined()
   })
 
-  it('change password does not work with incorrect new password', async () => {
+  it('change password does not work with too short new password', async () => {
     const newPasswd = 'uus'
     const userData = await createTestUser()
 

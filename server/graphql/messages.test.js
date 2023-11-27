@@ -16,7 +16,7 @@ describe('messages test', () => {
   let httpServer, apolloServer, userData, groupData, topicData
 
   beforeAll(async () => {
-    ({ httpServer, apolloServer } = await startServer())
+    ;({ httpServer, apolloServer } = await startServer())
   })
 
   afterAll(async () => {
@@ -29,7 +29,11 @@ describe('messages test', () => {
     // Create test user for all the tests
     userData = await createTestUser()
 
-    groupData = await createGroup('test_group', userData.token)
+    groupData = await createGroup(
+      'test_group',
+      'test description',
+      userData.token
+    )
     topicData = await createTopic(groupData.id, testTopicName, userData.token)
   })
 
@@ -50,6 +54,16 @@ describe('messages test', () => {
     expect(messageInDb.id).toEqual(message.id)
     expect(messageInDb.fromUser.id).toEqual(userData.userId)
     expect(messageInDb.body).toEqual(testMessage)
+  })
+
+  it('create message with garbage token returns error', async () => {
+    const message = await createMessage(
+      topicData.id,
+      testMessage,
+      '123456789012345678901234'
+    )
+
+    expect(message).toBeNull()
   })
 
   /* it('Creating message with garbage token does not work', async () => {

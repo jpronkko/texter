@@ -28,5 +28,5 @@ type Query {
 
 type Mutation {
   createGroup(name: String!, description: String!): GroupInfo
-  modifyGroup(id: ID!, name: String, description: String): GroupInfo
+  modifyGroup(groupId: ID!, name: String, description: String): GroupInfo
 }

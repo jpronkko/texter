@@ -1,9 +1,10 @@
 const { startServer, stopServer } = require('../server')
 
 const {
+  url,
   createTestUser,
   createGroup,
-  modifyGroup,
+  gqlToServer,
   resetDatabases,
 } = require('../utils/testHelpers')
 
@@ -50,7 +51,13 @@ describe('groups tests', () => {
 
     // Check that the user has the group in the joinedGroups
     const savedUser = await findUserWithId(userData.userId)
-    expect(savedUser.joinedGroups).toEqual(
+    console.log('-------')
+    console.log(savedUser.joinedGroups)
+    const joinedGroups = savedUser.joinedGroups
+    /* const joinedGroups = savedUser.joinedGroups.map((item) => {
+      return { ...item, group: item.group.toString() }
+    }) */
+    expect(joinedGroups).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           group: groupId, //expect.objectContaining({ id: groupId }),
@@ -93,14 +100,24 @@ describe('groups tests', () => {
 
     const newGroupName = 'newGroupName'
     const newDescription = 'newDescription'
-    const newGroupData = await modifyGroup(
-      groupData.id,
-      newGroupName,
-      newDescription,
-      userData.token
-    )
-    expect(newGroupData).toBeDefined()
-    expect(newGroupData.name).toEqual(newGroupName)
-    expect(newGroupData.description).toEqual(newDescription)
+
+    const query = `mutation ModifyGroup {
+      modifyGroup(
+        groupId: "${groupData.id}",
+        name: "${newGroupName}",
+        description: "${newDescription}"
+      ) {
+        id
+        name
+        description
+      }
+    }`
+
+    const response = await gqlToServer(url, query, userData.token)
+    console.log('response.body.data', response.error)
+    const result = response.body.data.modifyGroup
+
+    expect(result.name).toEqual(newGroupName)
+    expect(result.description).toEqual(newDescription)
   })
 })

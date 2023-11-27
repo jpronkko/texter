@@ -17,11 +17,17 @@ module.exports = {
     allInvitations: async () => await invitationsModel.getAllInvitations(),
     getReceivedInvitations: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Getting recv. invitations failed!')
-      const invitationInfo = await invitationsModel.getReceivedInvitations(
-        currentUser.id
-      )
-      console.log('Invitaiton Info', invitationInfo)
-      return invitationInfo
+      try {
+        const invitationInfo = await invitationsModel.getReceivedInvitations(
+          currentUser.id
+        )
+        console.log('Resolver, getRecInv.. Invitation Info', invitationInfo)
+        return invitationInfo
+      } catch (error) {
+        throw new GraphQLError(
+          `Get received invitations failed: ${error.message}`
+        )
+      }
     },
     getSentInvitations: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Getting sent invitations failed!')

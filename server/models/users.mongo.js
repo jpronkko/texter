@@ -53,22 +53,6 @@ schema.set('toJSON', {
     delete returnedObject._id
     delete returnedObject.__v
     delete returnedObject.passwordHash
-
-    /* if (returnedObject.joinedGroups) {
-      returnedObject.joinedGroups = returnedObject.joinedGroups.map((item) => {
-        console.error(
-          'ret obj',
-          returnedObject.name,
-          'toJSON item string:',
-          item
-        )
-        return {
-          id: item._id.toString(),
-          group: item.group?.name ? item.group : item.group.toString(),
-          role: item.role,
-        }
-      })
-    }*/
   },
 })
 

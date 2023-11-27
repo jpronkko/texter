@@ -5,8 +5,17 @@ const { getHash, pwCompare, tokenFromUser } = require('../utils/pwtoken')
 
 const findUserWithId = async (userId) => {
   const user = await User.findById(userId)
+
   if (user) {
-    return user.toJSON()
+    const jsonedUser = user.toJSON()
+    //console.log('jsonedUser', jsonedUser)
+    jsonedUser.joinedGroups = user.joinedGroups.map((item) => ({
+      role: item.role,
+      group: item.group.toString(),
+    }))
+    //console.log('jsonedUser II', jsonedUser)
+
+    return jsonedUser
   }
 
   return null

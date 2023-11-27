@@ -12,6 +12,8 @@ const {
   checkUserInGroup,
 } = require('../utils/checkUser')
 
+const { MIN_PASSWORD_LENGTH } = require('../utils/config')
+
 const pubsub = new PubSub()
 
 module.exports = {
@@ -47,6 +49,14 @@ module.exports = {
         user: { name, username, email, password },
       } = args
 
+      if (password.length < MIN_PASSWORD_LENGTH) {
+        throw new GraphQLError('Password too short!', {
+          extensions: {
+            code: 'USER_CREATE_FAILED',
+            invalidArgs: args.password,
+          },
+        })
+      }
       const user = await usersModel.findUserByUsername(username)
       if (user) {
         logger.error('Username taken', user)
@@ -92,6 +102,15 @@ module.exports = {
       logger.info('Change password arguments', args)
       checkUser(currentUser, 'Changing password failed!')
       const { oldPassword, newPassword } = args
+
+      if (newPassword.length < MIN_PASSWORD_LENGTH) {
+        throw new GraphQLError('Password too short!', {
+          extensions: {
+            code: 'USER_CREATE_FAILED',
+            invalidArgs: args.password,
+          },
+        })
+      }
 
       const correctPW = await usersModel.compUserPWWithHash(
         currentUser.id,

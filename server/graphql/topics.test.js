@@ -28,7 +28,11 @@ describe('topic test', () => {
     // Create test user for all the tests
     userData = await createTestUser()
 
-    groupData = await createGroup('test_group', userData.token)
+    groupData = await createGroup(
+      'test_group',
+      'test description',
+      userData.token
+    )
   })
 
   it('creating a topic works with appropriate token', async () => {

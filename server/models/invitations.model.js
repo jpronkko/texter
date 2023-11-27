@@ -36,6 +36,7 @@ const getSentInvitations = async (userId) => {
 const getReceivedInvitations = async (userId) => {
   const invitations = await Invitation.find({ toUserId: userId })
   if (!invitations) {
+    logger.error(`Invitations to user ${userId} not found!`)
     throw new Error(`Invitations to user ${userId} not found!`)
   }
   return invitations.map((item) => item.toJSON())
