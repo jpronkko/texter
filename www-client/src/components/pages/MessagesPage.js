@@ -7,6 +7,7 @@ import {
   Divider,
   //Divider,
   Drawer,
+  Grid,
   Toolbar,
   Typography,
 } from '@mui/material'
@@ -76,7 +77,14 @@ const MessagesPage = () => {
   }
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        backgroundColor: 'red',
+        height: '800px',
+      }}
+    >
       <InputTextDlg
         ref={topicDlgRef}
         title="Create Topic"
@@ -140,10 +148,33 @@ const MessagesPage = () => {
           </Button>
         </Box>
       </Drawer>
-      <Box sx={{ flexGrow: 1, bgcolor: '#f0f0f0', py: 1, px: 2 }}>
-        <MessageList />
-        <CreateMessage />
-      </Box>
+      <Grid
+        container
+        direction="column"
+      >
+        {/* <Box
+        sx={{
+          flexGrow: 1,
+          flexDirection: 'column',
+          bgcolor: '#f0f0f0',
+          py: 1,
+          px: 2,
+        }}
+      > */}
+        <Grid
+          item
+          xs={10}
+        >
+          <MessageList />
+        </Grid>
+        <Grid
+          item
+          xs={2}
+        >
+          <CreateMessage />
+        </Grid>
+        {/* </Box> */}
+      </Grid>
     </Box>
   )
 }

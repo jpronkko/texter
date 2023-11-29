@@ -41,12 +41,12 @@ const GroupMembersTable = ({ groupId }) => {
           />
         ),
     },
-    {
+    /*  {
       field: 'status',
       headerName: 'Status',
       width: 130,
       //valueGetter: (params) => `${params.row.age || ''}`,
-    },
+    }, */
     {
       field: 'remove',
       headerName: 'Remove',
@@ -64,9 +64,6 @@ const GroupMembersTable = ({ groupId }) => {
     },
   ]
 
-  const handleFormSubmit = (data) => {
-    console.log('Create group form submitted', data)
-  }
   /* if (loading) {
     return <div>Loading...</div>
   }*/
@@ -87,7 +84,6 @@ const GroupMembersTable = ({ groupId }) => {
 
   return (
     <Container>
-      <GroupForm handleFormSubmit={handleFormSubmit} />
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={rows}
@@ -131,19 +127,32 @@ const GroupAdminPage = () => {
     return <div>Loading...</div>
   }
 
+  const handleFormSubmit = (data) => {
+    console.log('Create group form submitted', data)
+  }
+
   return (
     <Container>
-      <TitleBox title={'Group Admin' + group.name} />
-      <Typography variant="h4">Group {group.name} Admin</Typography>
-      <Button variant="contained">Add Topic</Button>
-      {topics.map((item) => (
-        <GroupItem
-          key={item.id}
-          topic={item}
-        />
-      ))}
-      <TitleBox title={'Group Members'} />
-      <Paper elevation={2}>
+      <TitleBox title={'Group Profile for ' + group.name} />
+      <GroupForm handleFormSubmit={handleFormSubmit} />
+      <TitleBox title={'Group Topics'}>
+        <Button variant="contained">Add Topic</Button>
+      </TitleBox>
+      <Paper
+        elevation={3}
+        sx={{ p: 2 }}
+      >
+        {topics.map((item) => (
+          <GroupItem
+            key={item.id}
+            topic={item}
+          />
+        ))}
+      </Paper>
+      <TitleBox title={'Group Members'}>
+        <Button variant="contained">Add Member</Button>
+      </TitleBox>
+      <Paper elevation={3}>
         <GroupMembersTable groupId={group.id} />
       </Paper>
     </Container>

@@ -5,7 +5,8 @@ import { Button, Container, Grid } from '@mui/material'
 
 import TitleBox from '../TitleBox'
 import GroupCard from '../GroupCard'
-import InputTextDlg from '../dialogs/InputTextDlg'
+import CreateGroupDlg from '../dialogs/CreateGroupDlg'
+//import InputTextDlg from '../dialogs/InputTextDlg'
 import ConfirmMessage from '../dialogs/ConfirmMessage'
 
 import useGetUserGroups from '../../hooks/useGetGroups'
@@ -45,8 +46,9 @@ const GroupSelectPage = () => {
     navigate('/messages')
   }
 
-  const handleCreateGroup = async (groupName) => {
-    const groupData = await createGroup(groupName)
+  const handleCreateGroup = async (name, description) => {
+    console.log('Create group I:', name, description)
+    const groupData = await createGroup(name, description)
     console.log(groupData)
     groupDlgRef.current.close()
   }
@@ -75,7 +77,6 @@ const GroupSelectPage = () => {
     >
       <GroupCard
         group={group}
-        description={'Lorem upsum kumsum' /* item.description */}
         ownGroup
         handleSelectGroup={handleSelectGroup}
         handleManageGroup={handleManageGroup}
@@ -104,17 +105,15 @@ const GroupSelectPage = () => {
   // <CssBaseline />
   return (
     <Container sx={{ mb: 2 }}>
-      <InputTextDlg
+      <CreateGroupDlg
         ref={groupDlgRef}
-        title="Create Group"
-        label="Name"
         handleInput={handleCreateGroup}
       />
 
       <ConfirmMessage
         ref={confirmDlgRef}
-        title="Confirm Leave Group"
-        message="Are you sure?"
+        title="Leave Group"
+        message="Are you sure you want to leave this group?"
         onOK={() => leaveGroup(selectedGroup.name)}
       />
 
@@ -150,7 +149,7 @@ const GroupSelectPage = () => {
           item
           xs={12}
         >
-          <TitleBox title={'Joined Groups'}></TitleBox>
+          <TitleBox title={'Other Joined Groups'}></TitleBox>
         </Grid>
         <Grid
           container
@@ -166,7 +165,15 @@ const GroupSelectPage = () => {
 
 export default GroupSelectPage
 
-/*
+{
+  /* <InputTextDlg
+        ref={groupDlgRef}
+        title="Create Group"
+        label="Name"
+        handleInput={handleCreateGroup}
+      />
+ */
+} /*
 <Grid
           item
           xs={12}

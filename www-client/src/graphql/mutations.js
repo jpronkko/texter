@@ -29,8 +29,8 @@ export const CHANGE_EMAIL = gql`
 `
 
 export const CREATE_GROUP = gql`
-  mutation createGroup($name: String!) {
-    createGroup(name: $name) {
+  mutation createGroup($name: String!, $description: String!) {
+    createGroup(name: $name, description: $description) {
       id
       name
       ownerId

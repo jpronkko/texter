@@ -34,28 +34,6 @@ const themeOptions = {
     },
   },
   components: {
-    MuiAccordion: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#1a2d6b',
-        },
-      },
-    },
-    MuiAccordionSummary: {
-      styleOverrides: {
-        root: {
-          color: 'yellow',
-        },
-      },
-    },
-    MuiAccordionDetails: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '40408c',
-          color: 'white',
-        },
-      },
-    },
     MuiButton: {
       styleOverrides: {
         root: {
@@ -72,20 +50,21 @@ const themeOptions = {
         },
       },
     },
-    /*MuiDialogContent: {
-      styleOverrides: {
-        root: {
-          backgroundColor: 'white',
-          color: '#101010',
-        },
-      },
-    },*/
-
     MuiDialogContentText: {
       styleOverrides: {
         root: {
-          paddingTop: '15px',
-          color: darkBlue,
+          /* color: darkBlue, */
+          marginTop: 12,
+        },
+      },
+    },
+    MuiMenu: {
+      styleOverrides: {
+        list: {
+          '&[role="menu"]': {
+            backgroundColor: deepPurple[900],
+            color: 'white',
+          },
         },
       },
     },
@@ -94,7 +73,7 @@ const themeOptions = {
     styleOverrides: {
       root: {
         padding: '10px',
-        color: '#3030a0',
+        backgroundColor: deepPurple[900],
       },
     },
   },

@@ -1,14 +1,27 @@
-import React, { useRef } from 'react'
-import { Button, Divider, Drawer, Grid, Paper, Typography } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
+import {
+  Box,
+  Button,
+  Divider,
+  Drawer,
+  Grid,
+  Paper,
+  Toolbar,
+  Typography,
+} from '@mui/material'
+//import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import useChangePassword from '../../hooks/useChangePassword'
 import useChangeEmail from '../../hooks/useChangeEmail'
 import NewPasswordDlg from '../dialogs/NewPasswordDlg'
 import NewEmailDlg from '../dialogs/NewEmailDlg'
 
-const Profile = () => {
-  const navigate = useNavigate()
+const drawerWidth = 400
+
+const ProfileDrawer = forwardRef((props, ref) => {
+  const [profileOpen, setProfileOpen] = useState(false)
+
+  //const navigate = useNavigate()
   const user = useSelector((state) => state.user.userData)
 
   const [changePassword] = useChangePassword()
@@ -17,18 +30,29 @@ const Profile = () => {
   const newPasswordDlg = useRef()
   const newEmailDlg = useRef()
 
+  useImperativeHandle(ref, () => {
+    return {
+      toggleProfile,
+    }
+  })
+
+  const toggleProfile = (open) => {
+    setProfileOpen(open)
+  }
+
   const handleChangePassword = async (password) => {
     console.log('New password', password)
     await changePassword(password)
   }
 
+  console.log('WTF')
   const handleChangeEmail = async (email) => {
     console.log('New email', email)
     await changeEmail(email)
   }
 
   return (
-    <div>
+    <Box sx={{ display: 'flex' }}>
       <NewPasswordDlg
         ref={newPasswordDlg}
         handleInput={handleChangePassword}
@@ -37,45 +61,57 @@ const Profile = () => {
         ref={newEmailDlg}
         handleInput={handleChangeEmail}
       />
-      <Drawer>
+      <Drawer
+        sx={{
+          margin: '0px',
+          width: drawerWidth,
+          flexShrink: 0,
+          ['& .MuiDrawer-paper']: {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+            backgroundColor: 'background.drawer',
+          },
+        }}
+        /* variant="permanent" */
+        open={profileOpen}
+        onClose={() => toggleProfile(false)}
+        anchor="right"
+      >
+        <Toolbar />
         <Grid
           container
           alignContent="left"
-          spacing={-1}
+          spacing={0}
           direction="column"
         >
           <Paper
-            elevation={2}
+            elevation={3}
             style={{
               display: 'grid',
-              width: '800px',
+              /* width: drawerWidth - 5, */
               gridRowGap: '20px',
-              padding: '20px',
-              margin: '10px 10px',
+              /* padding: '10px',
+              margin: '10px 10px', */
+              margin: '12px',
+              padding: '25px',
             }}
           >
-            <Typography variant="h4"> Account details</Typography>
-            <Grid
-              container
-              direction="row"
-              padding="10px"
-              justifyContent="start"
-              alignItems="stretch"
-            >
-              <Grid
-                item
-                xs={6}
-              >
-                <Typography variant="h5">Name</Typography>
-                <Typography variant="body1">{user.name}</Typography>
-              </Grid>
-              <Grid>
-                <Typography variant="h5">Username</Typography>
-                <Typography variant="body1">{user.username}</Typography>
-              </Grid>
+            <Typography variant="h5"> Account details</Typography>
+            <Grid item>
+              <Typography variant="h6">Name</Typography>
+              <Typography variant="body1">{user.name}</Typography>
             </Grid>
             <Divider />
-            <Typography variant="h5">E-mail</Typography>
+            <Grid
+              item
+              xs={12}
+            >
+              <Typography variant="h6">Username</Typography>
+              <Typography variant="body1">{user.username}</Typography>
+            </Grid>
+
+            <Divider />
+
             <Grid
               container
               direction="row"
@@ -86,6 +122,7 @@ const Profile = () => {
                 xs={9}
                 alignItems="stretch"
               >
+                <Typography variant="h6">E-mail</Typography>
                 <Typography variant="body1">{user.email}</Typography>
               </Grid>
               <Grid
@@ -110,7 +147,8 @@ const Profile = () => {
                 item
                 xs={9}
               >
-                <Typography variant="h5">Password *******</Typography>
+                <Typography variant="h6">Password</Typography>
+                <Typography variant="body1">**************</Typography>
               </Grid>
               <Grid
                 item
@@ -128,15 +166,18 @@ const Profile = () => {
             <Divider />
             <Button
               variant={'contained'}
-              onClick={() => navigate('/')}
+              onClick={() => toggleProfile(false)}
             >
               Done
             </Button>
           </Paper>
         </Grid>
       </Drawer>
-    </div>
+    </Box>
   )
-}
+})
 
-export default Profile
+ProfileDrawer.displayName = 'ProfileDrawer'
+
+export default ProfileDrawer
+// onClick={() => navigate('/')}

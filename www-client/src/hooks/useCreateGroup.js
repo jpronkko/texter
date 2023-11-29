@@ -33,6 +33,7 @@ const useCreateGroup = () => {
                 __typename: 'JoinedGroup',
                 groupId: newGroup.id,
                 groupName: newGroup.name,
+                description: newGroup.description,
                 role: 'OWNER',
               },
             ],
@@ -46,9 +47,9 @@ const useCreateGroup = () => {
     },
   })
 
-  const createGroup = async (name) => {
-    logger.info('create group object:', name)
-    const createResult = await mutation({ variables: { name } }) //var_object)
+  const createGroup = async (name, description) => {
+    logger.info('create group:', name, description)
+    const createResult = await mutation({ variables: { name, description } }) //var_object)
     logger.info('Create group result:', createResult)
     return createResult.data?.createGroup
   }

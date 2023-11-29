@@ -11,8 +11,8 @@ import Container from '@mui/material/Container'
 import { BorderColor } from '@mui/icons-material'
 import { useSelector /*useDispatch*/ } from 'react-redux'
 
-import InvitationMenu from './InvitationMenu'
-import UserMenu from './UserMenu'
+import InvitationMenu from './menus/InvitationMenu'
+import UserMenu from './menus/UserMenu'
 
 const TopBar = () => {
   const user = useSelector((state) => state.user.userData)
@@ -47,7 +47,8 @@ const TopBar = () => {
             TEXTER
           </Typography>
           <Typography>
-            group: {group?.name} topic: {topic?.name}
+            group: {group?.name} description: {group.description} topic:{' '}
+            {topic?.name}
           </Typography>
           <Box
             sx={{

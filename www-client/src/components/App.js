@@ -9,7 +9,6 @@ import { logIn } from '../app/userSlice'
 
 import CreateUserPage from './pages/CreateUserPage'
 import LoginPage from './pages/LoginPage'
-import ProfilePage from './pages/ProfilePage'
 import GroupAdminPage from './pages/GroupAdminPage'
 
 import GroupSelectPage from './pages/GroupSelectPage'
@@ -74,10 +73,6 @@ const App = () => {
           <Route
             path="/users"
             element={<UserListPage />}
-          />
-          <Route
-            path="/profile"
-            element={<ProfilePage />}
           />
         </Routes>
       </Router>

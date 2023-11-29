@@ -35,7 +35,7 @@ const GroupCard = ({
             variant="body2"
             color="text.primary"
           >
-            Turinaa groupista: {group.description}
+            {group.description}
           </Typography>
         </CardContent>
       </CardActionArea>

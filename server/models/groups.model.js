@@ -38,6 +38,7 @@ const createGroup = async (user, name, description) => {
   const userToUpdate = await User.findById(user.id)
   userToUpdate.joinedGroups = userToUpdate.joinedGroups.concat({
     group: savedGroup._id,
+    description: savedGroup.description,
     role: 'OWNER',
   })
 

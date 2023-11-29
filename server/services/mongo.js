@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const config = require('../utils/config')
 const logger = require('../utils/logger')
 
-console.log('connecting to', config.MONGODB_URI)
+logger.info('connecting to', config.MONGODB_URI)
 
 let db = null
 
@@ -15,8 +15,9 @@ const mongoConnect = () => {
       logger.info('Waiting connections...\n')
       db = dbConnection
     })
-    .catch((error) => {
-      console.log('Error in connection to MongoDB:', error.message)
+    .catch(async (error) => {
+      logger.error('Error in connection to MongoDB:', error.message)
+      await new Promise((resolve) => setTimeout(resolve, 5000))
     })
 }
 

@@ -4,6 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material'
 import FormTextInput from '../forms/FormTextInput'
+import { useSelector } from 'react-redux'
 
 const schema = yup.object({
   password: yup.string().required(),
@@ -15,11 +16,13 @@ const EmailDlg = forwardRef((props, ref) => {
   const { handleInput } = props
   const [visible, setVisible] = useState(false)
 
+  const user = useSelector((state) => state.user.userData)
+
   const { control, reset, handleSubmit } = useForm({
     defaultValues: {
       password: '',
-      email: '',
-      email_repeat: '',
+      email: user.email,
+      email_repeat: user.email,
     },
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -65,7 +68,7 @@ const EmailDlg = forwardRef((props, ref) => {
             id="email"
             name="email"
             control={control}
-            label="E-mail"
+            label="New E-mail"
             type="email"
           />
           <FormTextInput

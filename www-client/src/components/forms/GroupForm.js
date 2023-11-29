@@ -1,70 +1,120 @@
-import React from 'react'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+import React, { useRef } from 'react'
 
-import { Button, Paper, Typography } from '@mui/material'
+import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 
-import FormTextInput from './FormTextInput'
+import InputTextDlg from '../dialogs/InputTextDlg'
+import { useSelector } from 'react-redux'
 
-const schema = yup.object({
-  name: yup.string().required(),
-  description: yup.string().required(),
-})
+const GroupForm = () => {
+  const selectedGroup = useSelector((state) => state.selection.group)
+  const nameDlgRef = useRef()
+  const descriptionDlgRef = useRef()
 
-const GroupForm = ({ title, handleFormSubmit }) => {
-  const { control, reset, handleSubmit } = useForm({
-    defaultValues: {
-      name: '',
-      description: '',
-    },
-    resolver: yupResolver(schema),
-    mode: 'onChange',
-  })
+  const handleChangeName = async (name) => {
+    console.log('Change name', name)
+    nameDlgRef.current.close()
+  }
 
-  const onSubmit = (data) => {
-    console.log('Submiting create group', data)
-    handleFormSubmit(data)
+  const handleChangeDescription = async (description) => {
+    console.log('Change description', description)
   }
 
   return (
-    <div>
+    <Box sx={{ display: 'flex' }}>
+      <InputTextDlg
+        ref={nameDlgRef}
+        title="Change Name"
+        label="Name"
+        handleInput={handleChangeName}
+      />
+      <InputTextDlg
+        ref={descriptionDlgRef}
+        title="Change Description"
+        label="Description"
+        handleInput={handleChangeDescription}
+      />
       <Paper
+        elevation={3}
         style={{
           display: 'grid',
-          gridRowGap: '20px',
+          flexGrow: 1,
+          /* gridRowGap: '20px', */
           padding: '20px',
-          margin: '10px 200px',
+          margin: '1px 0px',
         }}
       >
-        <Typography variant="h4">{title}</Typography>
-        <FormTextInput
-          id="name"
-          name="name"
-          control={control}
-          label="Name"
-        />
-        <FormTextInput
-          id="description"
-          name="description"
-          control={control}
-          label="Description"
-        />
-        <Button
-          id="create-button"
-          onClick={handleSubmit(onSubmit)}
-          variant={'contained'}
-        >
-          Submit
-        </Button>
-        <Button
-          onClick={() => reset()}
-          variant={'outlined'}
-        >
-          Reset
-        </Button>
+        <Grid container>
+          <Grid
+            container
+            direction={'row'}
+            sx={{ mb: 1.5 }}
+          >
+            <Grid
+              item
+              xs={12}
+              alignItems="stretch"
+            >
+              <Typography variant="h6">Name</Typography>
+            </Grid>
+            <Grid
+              item
+              xs={11}
+            >
+              <Typography variant="body1">{selectedGroup.name}</Typography>
+            </Grid>
+            <Grid
+              item
+              xs={1}
+            >
+              <Button
+                variant="contained"
+                onClick={() => nameDlgRef.current.open()}
+              >
+                Change
+              </Button>
+            </Grid>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+          >
+            <Divider />
+          </Grid>
+          <Grid
+            container
+            direction={'row'}
+            sx={{ mt: 1.5 }}
+          >
+            <Grid
+              item
+              xs={12}
+            >
+              <Typography variant="h6">Description</Typography>
+            </Grid>
+            <Grid
+              item
+              xs={11}
+            >
+              <Typography variant="body1">
+                {selectedGroup.description}
+              </Typography>
+            </Grid>
+            <Grid
+              container
+              item
+              xs={1}
+            >
+              <Button
+                variant="contained"
+                onClick={() => descriptionDlgRef.current.open()}
+              >
+                Change
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
       </Paper>
-    </div>
+    </Box>
   )
 }
 

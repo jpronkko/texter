@@ -12,9 +12,9 @@ import {
 } from '@mui/material'
 
 //import useSentInvitations from '../hooks/useSentInvitations'
-import useRecvInvitations from '../hooks/useRecvInvitations'
+import useRecvInvitations from '../../hooks/useRecvInvitations'
 //import useModifySentInv from '../hooks/useModifySentInv'
-import useModifyRecvInv from '../hooks/useModifyRecvInv'
+import useModifyRecvInv from '../../hooks/useModifyRecvInv'
 import { Email } from '@mui/icons-material'
 
 const RecvInvItem = ({ invitation }) => {
@@ -82,7 +82,7 @@ const InvitationMenu = () => {
   console.log('foo', foo)
 
   const renderInvitations = () => {
-    if (rInvitations) {
+    if (rInvitations && rInvitations.length > 0) {
       return rInvitations.map((item) => (
         <RecvInvItem
           key={item.id}
@@ -90,6 +90,7 @@ const InvitationMenu = () => {
         />
       ))
     } else {
+      console.log('No invitations')
       return (
         <MenuItem>
           <Typography>No invitations</Typography>
@@ -102,11 +103,11 @@ const InvitationMenu = () => {
       <Tooltip title={username}>
         <IconButton
           onClick={handleOpenInvitationMenu}
-          sx={{ p: 1 }}
+          sx={{ p: 1, mx: 1 }}
         >
-          <Email sx={{ color: 'white' }} />
+          <Email sx={{ mx: 1, color: 'white' }} />
           <Typography
-            variant="subtitle2"
+            variant="body1"
             color={'primary.contrastText'}
           >
             {rInvitations?.length === 0
@@ -131,7 +132,6 @@ const InvitationMenu = () => {
         open={Boolean(anchorElUser)}
         onClose={handleCloseInvitationMenu}
       >
-        <Typography variant="subtitle2">Received inviations</Typography>
         {renderInvitations()}
         {/*         {sentInvitations?.map((item) => (
           <SentInvItem

@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { logOut } from './userSlice'
 
-const emptyGroup = { id: '', name: '' }
+const emptyGroup = { id: '', name: '', description: '' }
 const emptyTopic = { id: '', name: '', groupId: '' }
 
 export const selectionSlice = createSlice({
@@ -16,6 +16,7 @@ export const selectionSlice = createSlice({
       state.group = {
         id: action.payload.id,
         name: action.payload.name,
+        description: action.payload.description,
       }
       state.topic = emptyTopic
     },

@@ -1,20 +1,22 @@
 import React, { useRef, useState } from 'react'
 import Menu from '@mui/material/Menu'
-import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import { useSelector } from 'react-redux'
-import ConfirmMessage from './dialogs/ConfirmMessage'
+import ConfirmMessage from '../dialogs/ConfirmMessage'
+import ProfileDrawer from './ProfileDrawer'
 
 import { useNavigate } from 'react-router-dom'
-import useLogInOut from '../hooks/useLogInOut'
+import useLogInOut from '../../hooks/useLogInOut'
+import { AccountCircle } from '@mui/icons-material'
 
 const UserMenu = () => {
   const username = useSelector((state) => state.user.userData.username)
   const [anchorElUser, setAnchorElUser] = useState(null)
   const confirmDlgRef = useRef()
+  const profileDlgRef = useRef()
 
   const navigate = useNavigate()
   const [, logout] = useLogInOut()
@@ -24,7 +26,10 @@ const UserMenu = () => {
   }
 
   const userMenuItems = [
-    { name: 'Profile', callback: () => navigate('/profile') },
+    {
+      name: 'Profile',
+      callback: () => profileDlgRef.current.toggleProfile(true),
+    },
     { name: 'Group Admin', callback: () => navigate('/group_admin') },
     { name: 'All Users', callback: () => navigate('/users') },
     { name: 'Logout', callback: showLogout },
@@ -47,18 +52,19 @@ const UserMenu = () => {
     <>
       <ConfirmMessage
         ref={confirmDlgRef}
-        title="Are you sure you want to logout?"
+        title="Logout"
+        message="Are you sure you want to logout?"
         onOk={() => logout()}
       />
+      <ProfileDrawer ref={profileDlgRef} />
+
       <Tooltip title={username}>
         <IconButton
           onClick={handleOpenUserMenu}
-          sx={{ p: 0 }}
+          sx={{ p: 1 }}
         >
-          <Avatar
-            alt="Remy Sharp"
-            src="/static/images/avatar/2.jpg"
-          />
+          <AccountCircle sx={{ color: 'white' }} />
+
           <Typography
             variant="body1"
             color={'primary.contrastText'}
@@ -88,7 +94,7 @@ const UserMenu = () => {
           <MenuItem
             key={item.name}
             onClick={() => callItemCallback(item)}
-            sx={{ backgroundColor: 'background.drawer' }}
+            /*  sx={{ backgroundColor: 'background.drawer' }} */
           >
             <Typography
               textAlign="center"

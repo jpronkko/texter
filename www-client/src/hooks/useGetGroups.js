@@ -4,10 +4,18 @@ import { useQuery, useSubscription } from '@apollo/client'
 import { GET_USER_JOINED_GROUPS } from '../graphql/queries'
 import { USER_ADDED_TO_GROUP } from '../graphql/subscriptions'
 import logger from '../utils/logger'
+import useError from './useErrorMessage'
 
 const useGetUserGroups = (userId) => {
+  const [showError] = useError()
   const { data, error, loading, refetch, ...result } = useQuery(
-    GET_USER_JOINED_GROUPS
+    GET_USER_JOINED_GROUPS,
+    {
+      onError: (error) => {
+        showError(`Get user groups failed ${error.toString()}`)
+        logger.error('error', error)
+      },
+    }
   )
 
   useSubscription(USER_ADDED_TO_GROUP, {
@@ -24,6 +32,7 @@ const useGetUserGroups = (userId) => {
     groups.map((g) => ({
       id: g.groupId,
       name: g.groupName,
+      description: g.description,
     }))
 
   const ownedGroups = () => {
