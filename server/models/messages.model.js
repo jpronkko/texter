@@ -38,7 +38,10 @@ const createMessage = async (user, topicId, body) => {
     logger.error('Topic save failed:', topic)
     throw new Error(`Topic save failed! ${topic}`)
   }
-  return { ...savedMessage.toJSON(), fromUser: { id: user.id, name: user.name } }
+  return {
+    ...savedMessage.toJSON(),
+    fromUser: { id: user.id, name: user.name },
+  }
 }
 
 module.exports = {

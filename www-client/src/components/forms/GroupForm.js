@@ -1,9 +1,9 @@
 import React, { useRef } from 'react'
 
+import { useSelector } from 'react-redux'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 
 import InputTextDlg from '../dialogs/InputTextDlg'
-import { useSelector } from 'react-redux'
 
 const GroupForm = () => {
   const selectedGroup = useSelector((state) => state.selection.group)
@@ -17,6 +17,7 @@ const GroupForm = () => {
 
   const handleChangeDescription = async (description) => {
     console.log('Change description', description)
+    descriptionDlgRef.current.close()
   }
 
   return (

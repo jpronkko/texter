@@ -50,6 +50,7 @@ const getReceivedInvitations = async (userId) => {
 }
 
 const createInvitation = async (fromUserId, toUser, groupId) => {
+  console.log('trying to find username', toUser)
   const userToInvite = await User.findOne({ username: toUser })
   if (!userToInvite) {
     throw new Error('User to invite not found!')

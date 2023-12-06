@@ -1,10 +1,10 @@
-//* eslint-disable no-unused-vars */
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import { Toolbar } from '@mui/material'
+
 import { logIn } from '../app/userSlice'
 
 import CreateUserPage from './pages/CreateUserPage'
@@ -49,6 +49,7 @@ const App = () => {
         <ErrorDlg />
         <TopBar />
         <Toolbar />
+
         <Routes>
           <Route
             path="/"

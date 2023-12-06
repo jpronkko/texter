@@ -1,123 +1,62 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { Button, Container, Paper, Typography } from '@mui/material'
-import { DataGrid } from '@mui/x-data-grid'
-import { PersonRemove, DoNotTouch } from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom'
 
-import useGetGroupMembers from '../../hooks/useGetGroupMembers'
-import useGetTopics from '../../hooks/useGetTopics'
+import { Box, Button, Container, Paper, Typography } from '@mui/material'
 
-import SelectionPopup from '../forms/SelectionPopup'
-import TitleBox from '../TitleBox'
+import useCreateInvitation from '../../hooks/mutations/useCreateInvitation'
+import useCreateTopic from '../../hooks/mutations/useCreateTopic'
+import useGetTopics from '../../hooks/queries/useGetTopics'
+import useGetUsersNotInGroup from '../../hooks/queries/useGetUsersNotInGroup'
+import useSentInvitations from '../../hooks/queries/useSentInvitations'
+
 import GroupForm from '../forms/GroupForm'
+import GroupMembersTable from '../GroupMembersTable'
+import InputTextDlg from '../dialogs/InputTextDlg'
+import InvitationsTable from '../InvitationsTable'
+import SelectUsersDlg from '../dialogs/SelectUsersDlg'
 
-const GroupMembersTable = ({ groupId }) => {
-  const { members, loading, error } = useGetGroupMembers(groupId)
+import TitleBox from '../TitleBox'
 
-  const columns = [
-    { field: 'username', headerName: 'Username', width: 100 },
-    {
-      field: 'fullName',
-      headerName: 'Full name',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
-      width: 150,
-      //valueGetter: (params) =>
-      //  `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-    },
-    { field: 'email', headerName: 'Email', width: 150 },
-    {
-      field: 'role',
-      headerName: 'Role',
-      width: 130,
-      renderCell: (params) =>
-        params.row.role === 'OWNER' ? (
-          params.row.role
-        ) : (
-          <SelectionPopup
-            defaultValue={params.row.role}
-            selectionValues={['ADMIN', 'MEMBER']}
-            handleSelectionChange={(value) => console.log(value)}
-          />
-        ),
-    },
-    /*  {
-      field: 'status',
-      headerName: 'Status',
-      width: 130,
-      //valueGetter: (params) => `${params.row.age || ''}`,
-    }, */
-    {
-      field: 'remove',
-      headerName: 'Remove',
-      width: 150,
-      sortable: false,
-      renderCell: (params) => (
-        <Button
-          variant="contained"
-          disabled={params.row.role === 'OWNER'}
-          onClick={() => console.log('Remove ', params.row.username)}
-        >
-          {params.row.role !== 'OWNER' ? <PersonRemove /> : <DoNotTouch />}
-        </Button>
-      ),
-    },
-  ]
-
-  /* if (loading) {
-    return <div>Loading...</div>
-  }*/
-
-  if (error) {
-    return <div>Error: {error.message}</div>
-  }
-
-  const rows = members
-    ? members.map((item) => ({
-        id: item.id,
-        username: item.username,
-        fullName: item.name,
-        email: item.email,
-        role: item.role,
-      }))
-    : []
-
+const GroupItem = ({ topic, handleRemoveTopic }) => {
   return (
-    <Container>
-      <div style={{ height: 400, width: '100%' }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          onSelectionModelChange={(newSelection) => {
-            console.log(newSelection)
-            // Perform any desired actions with the selected rows
-          }}
-          loading={loading}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 5 },
-            },
-          }}
-          pageSizeOptions={[5, 10]}
-          footer
-        />
-      </div>
-    </Container>
-  )
-}
-const GroupItem = ({ topic }) => {
-  return (
-    <div style={{ flexDirection: 'row' }}>
+    <Box
+      key={topic.id}
+      display="flex"
+      sx={{ mt: 1, flexDirection: 'row', justifyContent: 'space-between' }}
+    >
       <Typography variant="h6">{topic.name}</Typography>
-      <Button variant="contained">Remove Topic</Button>
-    </div>
+      <Button
+        variant="contained"
+        onClick={() => handleRemoveTopic(topic.id)}
+      >
+        Remove Topic
+      </Button>
+    </Box>
   )
 }
 
 const GroupAdminPage = () => {
-  const group = useSelector((state) => state.selection.group)
-  const { topics, error, loading } = useGetTopics(group?.id)
-  console.log('group', group, 'topics', topics)
+  const navigate = useNavigate()
+  const selectedGroup = useSelector((state) => state.selection.group)
+  const { topics, error, loading } = useGetTopics(selectedGroup?.id)
+  const [createTopic, result] = useCreateTopic()
+  const { sentInvitations } = useSentInvitations()
+  const { users /*error: _error loading*/ } = useGetUsersNotInGroup(
+    selectedGroup?.id
+  )
+  const currentUser = useSelector((state) => state.user.userData)
+  const [createInvitation] = useCreateInvitation()
+  useEffect(() => {
+    console.log('selectedGroup', selectedGroup.id)
+    if (!selectedGroup.id) navigate('/')
+  }, [selectedGroup])
+
+  const topicDlgRef = useRef()
+  const selectUsersDlgRef = useRef()
+
+  console.log('sentInvitations', sentInvitations)
+  console.log('group', selectedGroup, 'topics', topics, 'result', result)
 
   if (error) {
     return <div>Error: {error.message}</div>
@@ -131,12 +70,50 @@ const GroupAdminPage = () => {
     console.log('Create group form submitted', data)
   }
 
+  const handleCreateTopic = async (name) => {
+    const topic = await createTopic(selectedGroup.id, name)
+    console.log('Handle Create Topic', topic)
+    topicDlgRef.current.close()
+  }
+
+  const handleCreateInvitation = async (users) => {
+    console.log('Handle Create Invitation', users)
+    const allInvites = []
+    users.forEach(async (user) => {
+      const invitation = await createInvitation(
+        currentUser.id,
+        selectedGroup.id,
+        user.username
+      )
+      allInvites.push(invitation)
+    })
+
+    await Promise.all(allInvites)
+  }
+
   return (
     <Container>
-      <TitleBox title={'Group Profile for ' + group.name} />
+      <InputTextDlg
+        ref={topicDlgRef}
+        title="Create Topic"
+        label="Name"
+        handleInput={handleCreateTopic}
+      />
+      <SelectUsersDlg
+        ref={selectUsersDlgRef}
+        title="Add Member"
+        users={users}
+        handleUsers={handleCreateInvitation}
+      />
+      <TitleBox title={selectedGroup.name + ' profile'} />
       <GroupForm handleFormSubmit={handleFormSubmit} />
-      <TitleBox title={'Group Topics'}>
-        <Button variant="contained">Add Topic</Button>
+      <TitleBox title={selectedGroup.name + ' topics'}>
+        <Button
+          variant="contained"
+          onClick={() => topicDlgRef.current.open()}
+        >
+          Add Topic
+        </Button>
       </TitleBox>
       <Paper
         elevation={3}
@@ -149,11 +126,26 @@ const GroupAdminPage = () => {
           />
         ))}
       </Paper>
-      <TitleBox title={'Group Members'}>
-        <Button variant="contained">Add Member</Button>
+      <TitleBox title={selectedGroup.name + ' members'} />
+      <Paper
+        elevation={3}
+        sx={{ pt: 2, pb: 2 }}
+      >
+        <GroupMembersTable groupId={selectedGroup.id} />
+      </Paper>
+      <TitleBox title={'Invitations to ' + selectedGroup.name}>
+        <Button
+          variant="contained"
+          onClick={() => selectUsersDlgRef.current.open()}
+        >
+          Add Invitation
+        </Button>
       </TitleBox>
-      <Paper elevation={3}>
-        <GroupMembersTable groupId={group.id} />
+      <Paper
+        elevation={3}
+        sx={{ pt: 2, pb: 2 }}
+      >
+        <InvitationsTable />
       </Paper>
     </Container>
   )

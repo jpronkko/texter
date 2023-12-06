@@ -1,9 +1,12 @@
 /* eslint-disable no-unused-vars */
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+
 import {
   Box,
   Button,
+  Container,
   Divider,
   //Divider,
   Drawer,
@@ -14,20 +17,16 @@ import {
 import { AddBox, ArrowBack } from '@mui/icons-material'
 
 import { setTopic } from '../../app/selectionSlice'
-import useCreateTopic from '../../hooks/useCreateTopic'
-import useGetTopics from '../../hooks/useGetTopics'
+import useCreateTopic from '../../hooks/mutations/useCreateTopic'
+import useGetTopics from '../../hooks/queries/useGetTopics'
 
-import InputTextDlg from '../dialogs/InputTextDlg'
-import TitleBox from '../TitleBox'
-import MessageList from '../MessageList'
 import CreateMessage from '../CreateMessage'
-import theme from '../../theme'
-import { useNavigate } from 'react-router-dom'
+import InputTextDlg from '../dialogs/InputTextDlg'
+import MessageList from '../MessageList'
 
 const drawerWidth = 250
 
 const MessagesPage = () => {
-  //  const user = useSelector((state) => state.user.userData)
   const selectedGroup = useSelector((state) => state.selection.group)
   const selectedTopic = useSelector((state) => state.selection.topic)
 
@@ -36,6 +35,13 @@ const MessagesPage = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const topicDlgRef = useRef()
+
+  useEffect(() => {
+    console.log('topics', topics, 'selectedTopic', selectedTopic)
+    if (!selectedTopic.name && topics && topics.length > 0) {
+      dispatch(setTopic(topics[0]))
+    }
+  }, [topics])
 
   const handleCreateTopic = async (name) => {
     const topic = await createTopic(selectedGroup.id, name)
@@ -80,9 +86,12 @@ const MessagesPage = () => {
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
+
+        flex: '1',
+        height: '120%',
         backgroundColor: 'red',
-        height: '800px',
+        position: 'relative',
       }}
     >
       <InputTextDlg
@@ -119,7 +128,7 @@ const MessagesPage = () => {
             flex: 1,
             flexDirection: 'column',
             justifyContent: 'flex-end',
-            py: 2,
+            py: 1,
           }}
         >
           <Button
@@ -148,36 +157,27 @@ const MessagesPage = () => {
           </Button>
         </Box>
       </Drawer>
-      <Grid
-        container
-        direction="column"
-      >
-        {/* <Box
-        sx={{
-          flexGrow: 1,
+
+      <Box
+        style={{
+          display: 'flex',
           flexDirection: 'column',
-          bgcolor: '#f0f0f0',
-          py: 1,
-          px: 2,
+          position: 'absolute',
+          left: drawerWidth + 5,
+          top: 5,
+          height: '100vh', //`calc(100% - 10px)`,
+          width: `calc(100% - ${drawerWidth + 50}px)`,
+          backgroundColor: 'red',
+          margin: '0px',
+          padding: '2px',
         }}
-      > */}
-        <Grid
-          item
-          xs={10}
-        >
-          <MessageList />
-        </Grid>
-        <Grid
-          item
-          xs={2}
-        >
-          <CreateMessage />
-        </Grid>
-        {/* </Box> */}
-      </Grid>
+      >
+        <MessageList />
+
+        <CreateMessage />
+      </Box>
     </Box>
   )
 }
 
-// sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
 export default MessagesPage

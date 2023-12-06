@@ -1,6 +1,7 @@
 import React from 'react'
-
 import { useSelector } from 'react-redux'
+
+import useError from '../../hooks/ui/useErrorMessage'
 
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -8,8 +9,6 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
-
-import useError from '../../hooks/useErrorMessage'
 
 const ErrorDlg = () => {
   const errorMessage = useSelector((state) => state.error.message)

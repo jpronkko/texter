@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 
-import { GET_GROUP_MEMBERS } from '../graphql/queries'
+import { GET_GROUP_MEMBERS } from '../../graphql/queries'
 
 const useGetGroupMembers = (groupId) => {
   const { data, error, loading, refetch, ...result } = useQuery(

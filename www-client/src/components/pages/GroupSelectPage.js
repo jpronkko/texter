@@ -1,18 +1,19 @@
 import React, { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+
 import { Button, Container, Grid } from '@mui/material'
 
-import TitleBox from '../TitleBox'
-import GroupCard from '../GroupCard'
-import CreateGroupDlg from '../dialogs/CreateGroupDlg'
-//import InputTextDlg from '../dialogs/InputTextDlg'
 import ConfirmMessage from '../dialogs/ConfirmMessage'
+import CreateGroupDlg from '../dialogs/CreateGroupDlg'
+import GroupCard from '../GroupCard'
+import TitleBox from '../TitleBox'
 
-import useGetUserGroups from '../../hooks/useGetGroups'
+import useCreateGroup from '../../hooks/mutations/useCreateGroup'
+import useRemoveUserFromGroup from '../../hooks/mutations/useRemoveUserFromGroup'
+import useGetUserGroups from '../../hooks/queries/useGetGroups'
+
 import { clearGroup, setGroup } from '../../app/selectionSlice'
-import useCreateGroup from '../../hooks/useCreateGroup'
-import useRemoveUserFromGroup from '../../hooks/useRemoveUserFromGroup'
 
 const GroupSelectPage = () => {
   const navigate = useNavigate()
@@ -36,11 +37,16 @@ const GroupSelectPage = () => {
     }
   }, [user.username])
 
+  useEffect(() => {
+    console.log('Selecting this page', selectedGroup)
+    dispatch(clearGroup())
+  }, [])
+
   const handleSelectGroup = async (newGroup) => {
     console.log('Selecting group:', newGroup, selectedGroup)
-    if (selectedGroup && newGroup.id === selectedGroup.id) return
+    /* if (selectedGroup && newGroup.id === selectedGroup.id) return
     console.log('Selecting group II:', newGroup)
-
+ */
     if (newGroup) dispatch(setGroup(newGroup))
     else dispatch(clearGroup(newGroup))
     navigate('/messages')
@@ -61,6 +67,7 @@ const GroupSelectPage = () => {
   const leaveGroup = async (group) => {
     await removeUserFromGroup(user.id, group.id)
     console.log('Leaving group', group.id)
+    confirmDlgRef.current.close()
   }
 
   const handleManageGroup = async (group) => {
@@ -77,7 +84,7 @@ const GroupSelectPage = () => {
     >
       <GroupCard
         group={group}
-        ownGroup
+        ownGroup={true}
         handleSelectGroup={handleSelectGroup}
         handleManageGroup={handleManageGroup}
         handleLeaveGroup={handleLeaveGroup}
@@ -93,6 +100,7 @@ const GroupSelectPage = () => {
     >
       <GroupCard
         group={group}
+        ownGroup={false}
         handleSelectGroup={handleSelectGroup}
         handleLeaveGroup={handleLeaveGroup}
       />
@@ -164,51 +172,3 @@ const GroupSelectPage = () => {
 }
 
 export default GroupSelectPage
-
-{
-  /* <InputTextDlg
-        ref={groupDlgRef}
-        title="Create Group"
-        label="Name"
-        handleInput={handleCreateGroup}
-      />
- */
-} /*
-<Grid
-          item
-          xs={12}
-        >
-          <Paper
-            elevation={2}
-            sx={{ my: 2 }}
-          >
-            <Typography variant="h4">Joined groups</Typography>
-          </Paper>
-        </Grid>
-
-        <Grid
-          container
-          direction={'row'}
-        >
-          {renderedOtherJoinedGroups}
-        </Grid>
-        <Grid
-          item
-          xs={12}
-        >
-          <Button variant="contained">Create Group</Button>
-        </Grid> */
-/*
-
-<GroupList />
-        <Box
-          component="main"
-          sx={{ flexGrow: 1, margin: '10px', p: 2, backgroundColor: '#f0f0f0' }}
-        >
-          {topic?.name ? (
-            <MessageList />
-          ) : (
-            <Typography>No topic selected</Typography>
-          )}
-        </Box>
-          */

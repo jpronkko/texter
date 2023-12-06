@@ -1,5 +1,10 @@
-import { setQuery, clearInput as setClearMessage, setInput } from '../app/inputSlice'
 import { useDispatch } from 'react-redux'
+
+import {
+  setQuery,
+  clearInput as setClearMessage,
+  setInput,
+} from '../../app/inputSlice'
 
 const useTextInput = () => {
   const dispatch = useDispatch()

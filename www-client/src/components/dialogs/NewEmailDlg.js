@@ -1,10 +1,12 @@
 import React, { forwardRef, useState, useImperativeHandle } from 'react'
+
 import { useForm } from 'react-hook-form'
+import { useSelector } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+
 import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material'
 import FormTextInput from '../forms/FormTextInput'
-import { useSelector } from 'react-redux'
 
 const schema = yup.object({
   password: yup.string().required(),
@@ -30,8 +32,9 @@ const EmailDlg = forwardRef((props, ref) => {
 
   const onSubmit = (data) => {
     console.log('Submiting input:', data)
-    handleInput(data)
+    handleInput(data.password, data.email)
   }
+
   const open = () => {
     setVisible(true)
   }

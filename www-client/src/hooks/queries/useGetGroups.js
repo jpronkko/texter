@@ -1,12 +1,12 @@
 //import { useLazyQuery } from '@apollo/client'
 
-import { useQuery, useSubscription } from '@apollo/client'
-import { GET_USER_JOINED_GROUPS } from '../graphql/queries'
-import { USER_ADDED_TO_GROUP } from '../graphql/subscriptions'
-import logger from '../utils/logger'
-import useError from './useErrorMessage'
+import { useQuery } from '@apollo/client'
 
-const useGetUserGroups = (userId) => {
+import { GET_USER_JOINED_GROUPS } from '../../graphql/queries'
+import logger from '../../utils/logger'
+import useError from '../ui/useErrorMessage'
+
+const useGetUserGroups = () => {
   const [showError] = useError()
   const { data, error, loading, refetch, ...result } = useQuery(
     GET_USER_JOINED_GROUPS,
@@ -17,16 +17,6 @@ const useGetUserGroups = (userId) => {
       },
     }
   )
-
-  useSubscription(USER_ADDED_TO_GROUP, {
-    variables: {
-      userId: userId,
-    },
-    onData: ({ data }) => {
-      console.log('_______________________')
-      logger.info(data)
-    },
-  })
 
   const getIdAndName = (groups) =>
     groups.map((g) => ({

@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Typography } from '@mui/material'
 import React from 'react'
-import useModifyRecvInv from '../hooks/useModifyRecvInv'
+import useModifyRecvInv from '../hooks/mutations/useModifyRecvInv'
 
 const RecvInvItem = ({ invitation }) => {
   const [acceptInvitation, rejectInvitation] = useModifyRecvInv()
@@ -10,8 +10,8 @@ const RecvInvItem = ({ invitation }) => {
     console.log('retval', retval)
   }
 
-  const handleReject = () => {
-    rejectInvitation(invitation.id)
+  const handleReject = async () => {
+    await rejectInvitation(invitation.id)
   }
 
   return (

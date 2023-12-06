@@ -2,35 +2,13 @@ import React from 'react'
 
 import { Box, Divider, /*ListItemButton */ Typography } from '@mui/material'
 
-const pad = (number) => ('0' + number).slice(-2)
-
-const getDate = (month, day) => {
-  return `${pad(day)}/${pad(month)}`
-}
+import { getDateFromString } from '../utils/parsedate'
 
 const MessageListItem = ({ sender, sentTime, body /* onClick */ }) => {
-  const date = new Date(parseInt(sentTime))
-  const dateNow = new Date(Date.now())
-
-  const dayOfMonth = date.getDay()
-  const month = date.getMonth()
-  const year = date.getFullYear()
-
-  const hrsMin = `${pad(date.getHours())}:${pad(date.getMinutes())}`
-  let dateString = ` ${hrsMin}`
-
-  if (year !== dateNow.getFullYear()) {
-    dateString = year + getDate(month, dayOfMonth) + dateString
-  }
-
-  if (month !== dateNow.getMonth() || dayOfMonth !== dateNow.getDay()) {
-    dateString = getDate(month, dayOfMonth) + dateString
-  }
-
   return (
     <Box sx={{ p: 0.75 }}>
       <Divider>
-        {sender.name} {dateString}
+        {sender.name} {getDateFromString(sentTime)}
       </Divider>
       <Box sx={{ py: 0.25 }}>
         <Typography>{body}</Typography>

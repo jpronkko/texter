@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { Box, Paper, Typography } from '@mui/material'
 
 const TitleBox = ({ title, children }) => {
@@ -15,7 +16,7 @@ const TitleBox = ({ title, children }) => {
           py: 1,
           my: 2,
           px: 1.5,
-          backgroundColor: 'background.drawer', // 'primary.main',
+          backgroundColor: 'background.drawer',
           borderRadius: 1.5,
         }}
       >

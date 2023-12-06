@@ -1,8 +1,9 @@
 import { useApolloClient, useSubscription } from '@apollo/client'
-import { MESSAGE_ADDED_TO_TOPIC } from '../graphql/subscriptions'
-import { GET_MESSAGES } from '../graphql/queries'
 
-const useMsgSubsription = (topicId) => {
+import { MESSAGE_ADDED_TO_TOPIC } from '../../graphql/subscriptions'
+import { GET_MESSAGES } from '../../graphql/queries'
+
+const useMessageSubsription = (topicId) => {
   const apolloClient = useApolloClient()
   const { data, error, loading } = useSubscription(MESSAGE_ADDED_TO_TOPIC, {
     variables: {
@@ -119,4 +120,4 @@ const useMsgSubsription = (topicId) => {
   }
 }
 
-export default useMsgSubsription
+export default useMessageSubsription

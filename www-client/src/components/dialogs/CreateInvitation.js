@@ -1,4 +1,4 @@
-import React,{ useState, useImperativeHandle, forwardRef } from 'react'
+import React, { useState, useImperativeHandle, forwardRef } from 'react'
 
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -25,7 +25,7 @@ const CreateInvitation = forwardRef((props, ref) => {
       input: '',
     },
     resolver: yupResolver(schema),
-    mode: 'onChange'
+    mode: 'onChange',
   })
 
   const onSubmit = (data) => {
@@ -39,15 +39,16 @@ const CreateInvitation = forwardRef((props, ref) => {
   }
   const close = () => {
     setVisible(false)
+    reset() // Clear form fields
   }
 
   useImperativeHandle(ref, () => {
     return {
       open,
-      close
+      close,
     }
   })
-  return(
+  return (
     <div>
       <Dialog
         open={visible}
@@ -55,21 +56,29 @@ const CreateInvitation = forwardRef((props, ref) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          Invite to Group
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">Invite to Group</DialogTitle>
         <DialogContent sx={{ margin: '5px' }}>
           <FormTextInput
-            id='input'
-            name='input'
+            id="input"
+            name="input"
             control={control}
-            label='User name'
+            label="User name"
           />
-          <Button sx={{ marginLeft: '5px' }} onClick={() => reset()} variant={'outlined'}>x</Button>
+          <Button
+            sx={{ marginLeft: '5px' }}
+            onClick={() => reset()}
+            variant={'outlined'}
+          >
+            x
+          </Button>
         </DialogContent>
         <DialogActions>
-          <Button id='create-button' onClick={handleSubmit(onSubmit)} variant={'contained'}>
-          Submit
+          <Button
+            id="create-button"
+            onClick={handleSubmit(onSubmit)}
+            variant={'contained'}
+          >
+            Submit
           </Button>
 
           <Button onClick={close}>Cancel</Button>

@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 
 import {
   Button,
-  //  Divider,
   IconButton,
   Menu,
   MenuItem,
@@ -11,11 +10,10 @@ import {
   Typography,
 } from '@mui/material'
 
-//import useSentInvitations from '../hooks/useSentInvitations'
-import useRecvInvitations from '../../hooks/useRecvInvitations'
-//import useModifySentInv from '../hooks/useModifySentInv'
-import useModifyRecvInv from '../../hooks/useModifyRecvInv'
 import { Email } from '@mui/icons-material'
+
+import useRecvInvitations from '../../hooks/queries/useRecvInvitations'
+import useModifyRecvInv from '../../hooks/mutations/useModifyRecvInv'
 
 const RecvInvItem = ({ invitation }) => {
   const [acceptInvitation, rejectInvitation] = useModifyRecvInv()
@@ -41,29 +39,13 @@ const RecvInvItem = ({ invitation }) => {
   )
 }
 
-/* const SentInvItem = ({ invitation }) => {
-  //const [cancelInvitation] = useModifySentInv()
-
-  const handleCancel = () => {
-    cancelInvitation(invitation.id)
-  }
-
-  return (
-    <MenuItem>
-      <Typography>
-        You invited {invitation.toUser.username} to join {invitation.group.name}
-      </Typography>
-      <Button onClick={handleCancel}>Cancel</Button>
-    </MenuItem>
-  )
-}
- */
 const InvitationMenu = () => {
   const username = useSelector((state) => state.user.userData.username)
   const userId = useSelector((state) => state.user.userData.id)
 
-  const { recvInvitations, foo /* refetch */ } = useRecvInvitations(userId)
-  //const { sentInvitations } = useSentInvitations(userId)
+  const { recvInvitations /* fetchMore, loading, error, refetch */ } =
+    useRecvInvitations(userId)
+
   const rInvitations = recvInvitations?.filter(
     (inv) => inv.status === 'PENDING'
   )
@@ -78,8 +60,6 @@ const InvitationMenu = () => {
   }
 
   console.log('recvInvitations', recvInvitations)
-  //console.log('sentInvitations', sentInvitations)
-  console.log('foo', foo)
 
   const renderInvitations = () => {
     if (rInvitations && rInvitations.length > 0) {
@@ -133,13 +113,6 @@ const InvitationMenu = () => {
         onClose={handleCloseInvitationMenu}
       >
         {renderInvitations()}
-        {/*         {sentInvitations?.map((item) => (
-          <SentInvItem
-            key={item.id}
-            invitation={item}
-          />
-        ))}
- */}{' '}
       </Menu>
     </>
   )

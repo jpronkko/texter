@@ -1,7 +1,8 @@
 import { useMutation } from '@apollo/client'
-import { GET_USER_JOINED_GROUPS } from '../graphql/queries'
-import { CHANGE_INVITATION_STATUS } from '../graphql/mutations'
-import useError from './useErrorMessage'
+
+import { GET_USER_JOINED_GROUPS } from '../../graphql/queries'
+import { CHANGE_INVITATION_STATUS } from '../../graphql/mutations'
+import useError from '../ui/useErrorMessage'
 
 const useModifyRecvInv = (/* refetchGroups */) => {
   const [showError] = useError()

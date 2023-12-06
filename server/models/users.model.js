@@ -73,6 +73,18 @@ const getAllUsers = async () => {
   return allUsersJSON
 }
 
+const getUsersNotInGroup = async (groupId) => {
+  const usersNotInGroup = await User.find({
+    'joinedGroups.group': { $ne: groupId },
+  })
+  return usersNotInGroup.map((user) => ({
+    id: user._id.toString(),
+    username: user.username,
+    email: user.email,
+    name: user.name,
+  }))
+}
+
 const createUser = async (name, username, email, passwordHash) => {
   const user = new User({ name, username, email, passwordHash })
   const savedUser = (await user.save()).toJSON()
@@ -308,6 +320,7 @@ module.exports = {
   findUserWithId,
   findUserWithGroups,
   getAllUsers,
+  getUsersNotInGroup,
   createUser,
   login,
   compUserPWWithHash,

@@ -11,15 +11,15 @@ import {
 import FormTextInput from '../forms/FormTextInput'
 
 const schema = yup.object({
-  old_password: yup.string().required(),
-  new_password: yup
+  oldPassword: yup.string().required(),
+  newPassword: yup
     .string()
     .min(5, ({ min }) => `Password must be at least ${min} characters.`)
     .max(50, ({ max }) => `Password must be no more than ${max} characters.`)
     .required('Password is required'),
   password_repeat: yup
     .string()
-    .equals([yup.ref('new_password')], 'Passwords must match'),
+    .equals([yup.ref('newPassword')], 'Passwords must match'),
 })
 
 const PasswordDlg = forwardRef((props, ref) => {
@@ -28,8 +28,8 @@ const PasswordDlg = forwardRef((props, ref) => {
 
   const { control, reset, handleSubmit } = useForm({
     defaultValues: {
-      old_password: '',
-      new_password: '',
+      oldPassword: '',
+      newPassword: '',
       password_repeat: '',
     },
     resolver: yupResolver(schema),
@@ -38,7 +38,7 @@ const PasswordDlg = forwardRef((props, ref) => {
 
   const onSubmit = (data) => {
     console.log('Submiting input:', data)
-    handleInput(data)
+    handleInput(data.oldPassword, data.newPassword)
   }
   const open = () => {
     setVisible(true)
@@ -66,15 +66,15 @@ const PasswordDlg = forwardRef((props, ref) => {
         <DialogTitle id="alert-dialog-title">Change password</DialogTitle>
         <DialogContent sx={{ margin: '5px' }}>
           <FormTextInput
-            id="old_password"
-            name="old_password"
+            id="oldPassword"
+            name="oldPassword"
             control={control}
             label="Old Password"
             type="password"
           />
           <FormTextInput
-            id="new_password"
-            name="new_password"
+            id="newPassword"
+            name="newPassword"
             control={control}
             label="New Password"
             type="password"

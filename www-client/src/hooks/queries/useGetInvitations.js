@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 
-import { GET_SENT_INVITATIONS } from '../graphql/queries'
+import { GET_SENT_INVITATIONS } from '../../graphql/queries'
 
 const useSentInvitations = () => {
   const { data, error, loading, fetchMore, refetch, ...result } =
@@ -15,7 +15,7 @@ const useSentInvitations = () => {
   }
 
   return {
-    sentInvitations: data?.getSentInvitations,
+    invitations: data?.getSentInvitations,
     fetchMore: handleFetchMore,
     loading,
     error,

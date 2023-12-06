@@ -1,7 +1,8 @@
 import { useMutation } from '@apollo/client'
-import { GET_SENT_INVITATIONS } from '../graphql/queries'
-import { CHANGE_INVITATION_STATUS } from '../graphql/mutations'
-import useError from './useErrorMessage'
+
+import { GET_SENT_INVITATIONS } from '../../graphql/queries'
+import { CHANGE_INVITATION_STATUS } from '../../graphql/mutations'
+import useError from '../ui/useErrorMessage'
 
 const useModifySentInv = () => {
   const [showError] = useError()

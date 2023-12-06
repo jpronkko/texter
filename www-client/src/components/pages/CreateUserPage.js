@@ -1,13 +1,13 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 import { logIn } from '../../app/userSlice'
+import useCreateUser from '../../hooks/mutations/useCreateUser'
 
 import CreateUserForm from '../forms/CreateUserForm'
-import useCreateUser from '../../hooks/useCreateUser'
 
 import logger from '../../utils/logger'
-import { useNavigate } from 'react-router-dom'
 
 const CreateUserPage = () => {
   const [createUser] = useCreateUser()

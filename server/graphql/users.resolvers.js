@@ -41,6 +41,12 @@ module.exports = {
       console.log('Users resolver get user joined groups:', joinedGroups)
       return { userId: currentUser.id, joinedGroups }
     },
+    getUsersNotInGroup: async (root, args, { currentUser }) => {
+      checkUser(currentUser, 'Getting users not in group failed!')
+      const { groupId } = args
+      const usersNotInGroup = await usersModel.getUsersNotInGroup(groupId)
+      return usersNotInGroup
+    },
   },
 
   Mutation: {

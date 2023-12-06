@@ -24,7 +24,7 @@ const GreateGroupDlg = forwardRef((props, ref) => {
   const { handleInput } = props
   const [visible, setVisible] = useState(false)
 
-  const { control, handleSubmit } = useForm({
+  const { control, reset, handleSubmit } = useForm({
     defaultValues: {
       name: '',
       description: '',
@@ -42,8 +42,10 @@ const GreateGroupDlg = forwardRef((props, ref) => {
   const open = () => {
     setVisible(true)
   }
+
   const close = () => {
     setVisible(false)
+    reset() // Clear form fields
   }
 
   useImperativeHandle(ref, () => {

@@ -43,6 +43,17 @@ export const GET_ALL_USERS = gql`
   }
 `
 
+export const GET_USERS_NOT_IN_GROUP = gql`
+  query GetUsersNotInGroup($groupId: ID!) {
+    getUsersNotInGroup(groupId: $groupId) {
+      email
+      id
+      name
+      username
+    }
+  }
+`
+
 export const GET_ALL_GROUPS = gql`
   query GetAllGroups {
     allGroups {

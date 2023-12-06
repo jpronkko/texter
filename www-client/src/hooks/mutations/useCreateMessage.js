@@ -1,10 +1,19 @@
 import { useMutation } from '@apollo/client'
-import { CREATE_MESSAGE } from '../graphql/mutations'
-import logger from '../utils/logger'
-import { GET_MESSAGES } from '../graphql/queries'
+
+import { CREATE_MESSAGE } from '../../graphql/mutations'
+import { GET_MESSAGES } from '../../graphql/queries'
+
+import useError from '../ui/useErrorMessage'
+import logger from '../../utils/logger'
 
 const useCreateMessage = () => {
+  const [showError] = useError()
+
   const [mutation, result] = useMutation(CREATE_MESSAGE, {
+    onError: (error) => {
+      showError(`Create message failed ${error.toString()}`)
+      logger.error('Create message error:', error)
+    },
     update: (store, response) => {
       const newMessage = response.data.createMessage
       const messagesInStore = store.readQuery({
@@ -55,8 +64,13 @@ const useCreateMessage = () => {
     console.log(`group id ${topicId}, body: ${body}`)
     const createResult = await mutation({
       variables: { messageInput: { topicId, body } },
-    }) //var_object)
+    })
     logger.info('Create message result:', createResult)
+
+    if (!createResult.data?.createMessage) {
+      return null
+    }
+
     return {
       id: createResult.data.createMessage.id,
       fromUser: createResult.data.createMessage.fromUser,

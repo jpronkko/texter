@@ -1,18 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit'
 
-import userReducer from './userSlice'
 import errorReducer from './errorSlice'
+import notifyReducer from './notifySlice'
 import selectionReducer from './selectionSlice'
-
+import userReducer from './userSlice'
 
 const reducer = {
-  user: userReducer,
-  //input: inputReducer,
   error: errorReducer,
-  //confirm: confirmReducer,
-  selection: selectionReducer
+  notify: notifyReducer,
+  selection: selectionReducer,
+  user: userReducer,
 }
 
 export default configureStore({
-  reducer
+  reducer,
 })

@@ -1,10 +1,10 @@
 import { useMutation } from '@apollo/client'
 
-import { CREATE_TOPIC } from '../graphql/mutations'
-import { GET_TOPICS } from '../graphql/queries'
+import { CREATE_TOPIC } from '../../graphql/mutations'
+import { GET_TOPICS } from '../../graphql/queries'
 
-import logger from '../utils/logger'
-import useError from './useErrorMessage'
+import logger from '../../utils/logger'
+import useError from '../ui/useErrorMessage'
 
 const useCreateTopic = () => {
   const [showError] = useError()

@@ -1,16 +1,19 @@
 import React, { useRef, useState } from 'react'
+
+import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+
 import Menu from '@mui/material/Menu'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import { useSelector } from 'react-redux'
+import { AccountCircle } from '@mui/icons-material'
+
+import useLogInOut from '../../hooks/mutations/useLogInOut'
+
 import ConfirmMessage from '../dialogs/ConfirmMessage'
 import ProfileDrawer from './ProfileDrawer'
-
-import { useNavigate } from 'react-router-dom'
-import useLogInOut from '../../hooks/useLogInOut'
-import { AccountCircle } from '@mui/icons-material'
 
 const UserMenu = () => {
   const username = useSelector((state) => state.user.userData.username)
@@ -54,7 +57,7 @@ const UserMenu = () => {
         ref={confirmDlgRef}
         title="Logout"
         message="Are you sure you want to logout?"
-        onOk={() => logout()}
+        onOk={async () => await logout()}
       />
       <ProfileDrawer ref={profileDlgRef} />
 

@@ -82,9 +82,11 @@ module.exports = {
         }
 
         console.log(
-          'Prep creazte. Creating invitation',
+          'Prep creazte. Creating invitation current user',
           currentUser.id,
+          'to user',
           toUser,
+          'to grop',
           groupId
         )
         const invitation = await invitationsModel.createInvitation(

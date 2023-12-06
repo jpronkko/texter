@@ -1,9 +1,10 @@
 import { useMutation } from '@apollo/client'
 
-import { CREATE_GROUP } from '../graphql/mutations'
-import { GET_USER_JOINED_GROUPS } from '../graphql/queries'
-import logger from '../utils/logger'
-import useError from './useErrorMessage'
+import { CREATE_GROUP } from '../../graphql/mutations'
+import { GET_USER_JOINED_GROUPS } from '../../graphql/queries'
+
+import useError from '../ui/useErrorMessage'
+import logger from '../../utils/logger'
 
 const useCreateGroup = () => {
   const [showError] = useError()

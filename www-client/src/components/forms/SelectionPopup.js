@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 // import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
@@ -11,7 +11,7 @@ const SelectionPopup = ({
 }) => {
   const [selected, setSelected] = useState('')
 
-  React.useEffect(() => {
+  useEffect(() => {
     setSelected(defaultValue)
   }, [defaultValue])
 

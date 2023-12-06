@@ -1,5 +1,6 @@
-import { setError, clearError as setErrorNone } from '../app/errorSlice'
 import { useDispatch } from 'react-redux'
+
+import { setError, clearError as setErrorNone } from '../../app/errorSlice'
 
 const useError = () => {
   const dispatch = useDispatch()
@@ -12,7 +13,6 @@ const useError = () => {
   const clearError = () => {
     dispatch(setErrorNone())
   }
-
 
   return [showError, clearError]
 }

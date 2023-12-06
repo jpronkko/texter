@@ -44,8 +44,10 @@ module.exports = {
         )
         return message
       } catch (error) {
-        logger.error('Error:', error)
-        throw new GraphQLError('Message error!')
+        logger.error('Error at create message resolver:', error)
+        throw new GraphQLError('Message error resolver!', {
+          extensions: { code: 'MESSAGE_ERROR', invalidArgs: args.name, error },
+        })
       }
     },
   },

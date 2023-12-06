@@ -1,4 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
+
 import {
   Box,
   Button,
@@ -9,10 +11,10 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material'
-//import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import useChangePassword from '../../hooks/useChangePassword'
-import useChangeEmail from '../../hooks/useChangeEmail'
+
+import useChangePassword from '../../hooks/mutations/useChangePassword'
+import useChangeEmail from '../../hooks/mutations/useChangeEmail'
+
 import NewPasswordDlg from '../dialogs/NewPasswordDlg'
 import NewEmailDlg from '../dialogs/NewEmailDlg'
 
@@ -21,7 +23,6 @@ const drawerWidth = 400
 const ProfileDrawer = forwardRef((props, ref) => {
   const [profileOpen, setProfileOpen] = useState(false)
 
-  //const navigate = useNavigate()
   const user = useSelector((state) => state.user.userData)
 
   const [changePassword] = useChangePassword()
@@ -40,15 +41,20 @@ const ProfileDrawer = forwardRef((props, ref) => {
     setProfileOpen(open)
   }
 
-  const handleChangePassword = async (password) => {
-    console.log('New password', password)
-    await changePassword(password)
+  const handleChangePassword = async (oldPassword, newPassword) => {
+    console.log('New password', newPassword)
+    const result = await changePassword(oldPassword, newPassword)
+    if (result) {
+      newPasswordDlg.current.close()
+    }
   }
 
-  console.log('WTF')
-  const handleChangeEmail = async (email) => {
-    console.log('New email', email)
-    await changeEmail(email)
+  const handleChangeEmail = async (password, newEmail) => {
+    console.log('Password', password, 'email', newEmail)
+    const result = await changeEmail(password, newEmail)
+    if (result) {
+      newEmailDlg.current.close()
+    }
   }
 
   return (
@@ -180,4 +186,3 @@ const ProfileDrawer = forwardRef((props, ref) => {
 ProfileDrawer.displayName = 'ProfileDrawer'
 
 export default ProfileDrawer
-// onClick={() => navigate('/')}

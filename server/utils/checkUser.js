@@ -6,7 +6,7 @@ const checkUser = (currentUser, errorMessage) => {
   if (!currentUser) {
     logger.error('No user in header!')
     throw new GraphQLError(errorMessage, {
-      extensions: { code: 'BAD_USER_INPUT' },
+      extensions: { code: 'BAD_USER_INPUT', invalidArgs: currentUser },
     })
   }
 }
@@ -25,14 +25,9 @@ const checkUserInGroup = (user, groupId) => {
 }
 
 const checkUserInTopicGroup = async (user, topicId) => {
-  try {
-    const group = await Group.findOne({ topics: topicId }).toJSON()
-    return checkUserInGroup(user, group.id)
-    //if(!group) {
-    //  throw new Error('No group with such a topic')
-  } catch (error) {
-    return null
-  }
+  const group = await Group.findOne({ topics: topicId })
+  if (!group) return false
+  return checkUserInGroup(user, group._id)
 }
 
 const checkUserOwnsGroup = (user, groupId) => {

@@ -5,10 +5,10 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
 import { Button } from '@mui/material'
+
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
-//import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import FormTextInput from '../forms/FormTextInput'
 
@@ -20,7 +20,7 @@ const InputTextDlg = forwardRef((props, ref) => {
   const { title, label, handleInput } = props
   const [visible, setVisible] = useState(false)
 
-  const { control, handleSubmit } = useForm({
+  const { control, reset, handleSubmit } = useForm({
     defaultValues: {
       input: '',
     },
@@ -30,15 +30,16 @@ const InputTextDlg = forwardRef((props, ref) => {
 
   const onSubmit = (data) => {
     console.log('Submiting input:', data)
-    //setTextInput(data.name)
     handleInput(data.input)
   }
 
   const open = () => {
     setVisible(true)
   }
+
   const close = () => {
     setVisible(false)
+    reset() // Clear form fields
   }
 
   useImperativeHandle(ref, () => {
@@ -62,7 +63,7 @@ const InputTextDlg = forwardRef((props, ref) => {
         >
           {title}
         </DialogTitle>
-        <DialogContent sx={{ margin: '5px' }}>
+        <DialogContent sx={{ m: 1, mt: 2, pb: 0.5 }}>
           <FormTextInput
             id="input"
             name="input"
@@ -79,7 +80,12 @@ const InputTextDlg = forwardRef((props, ref) => {
             Submit
           </Button>
 
-          <Button onClick={close}>Cancel</Button>
+          <Button
+            variant="outlined"
+            onClick={close}
+          >
+            Cancel
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

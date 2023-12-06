@@ -1,13 +1,24 @@
 // Based on: https://blog.logrocket.com/using-material-ui-with-react-hook-form/
 import React from 'react'
 
+import { useController } from 'react-hook-form'
+
 import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
-import { useController } from 'react-hook-form'
 import { InputAdornment } from '@mui/material'
 import { HighlightOff } from '@mui/icons-material'
 
-function Input({ control, id, testId, name, label, type }) {
+function Input({
+  control,
+  id,
+  testId,
+  name,
+  label,
+  type,
+  multiline,
+  rows,
+  maxRows,
+}) {
   const {
     field,
     fieldState: { error },
@@ -38,6 +49,9 @@ function Input({ control, id, testId, name, label, type }) {
   return (
     <TextField
       id={id}
+      multiline={multiline}
+      rows={rows}
+      maxRows={maxRows}
       helperText={error ? error.message : null}
       error={!!error}
       onChange={field.onChange} // send value to hook form
@@ -52,7 +66,7 @@ function Input({ control, id, testId, name, label, type }) {
       fullWidth
       inputRef={field.ref} // send input ref, so we can focus on input when error appear
       InputProps={inputProps}
-      sx={{ p: 0.3 }}
+      sx={{ p: 0 }}
     />
   )
 }

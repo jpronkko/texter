@@ -1,16 +1,18 @@
 // Original: https://mui.com/material-ui/react-app-bar/, starting mods from there.
 import React from 'react'
+import { useSelector } from 'react-redux'
 
-import AppBar from '@mui/material/AppBar'
-import Box from '@mui/material/Box'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
-
-//import MenuIcon from '@mui/icons-material/Menu'
-import Container from '@mui/material/Container'
+import {
+  AppBar,
+  Box,
+  Button,
+  Container,
+  Toolbar,
+  Typography,
+} from '@mui/material'
 import { BorderColor } from '@mui/icons-material'
-import { useSelector /*useDispatch*/ } from 'react-redux'
 
+import NotifyMessage from './dialogs/NotifyMessage'
 import InvitationMenu from './menus/InvitationMenu'
 import UserMenu from './menus/UserMenu'
 
@@ -46,10 +48,18 @@ const TopBar = () => {
           >
             TEXTER
           </Typography>
+          <NotifyMessage />
+          <Button
+            variant="contained"
+            href="/"
+          >
+            Select Group
+          </Button>
           <Typography>
             group: {group?.name} description: {group.description} topic:{' '}
             {topic?.name}
           </Typography>
+
           <Box
             sx={{
               display: 'flex',
@@ -66,28 +76,5 @@ const TopBar = () => {
     </AppBar>
   )
 }
-/*
-<Box sx={{ flexGrow: 1 }}>
-            </Box>
-            <Box sx={{ flexGrow: 1 }}></Box>
-*/
+
 export default TopBar
-
-/*
-  const loggedInPages = [
-    { name: 'Invitations', path: '/' },
-    //   { name: 'Groups', path: '/groups' },
-  ]
-
- <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages().map((page) => (
-              <Button
-                key={page.name}
-                onClick={() => navigate(page.path)}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page.name}
-              </Button>
-            ))}
-          </Box>
-        */

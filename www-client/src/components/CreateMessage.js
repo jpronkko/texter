@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 
 import CreateMessageForm from './forms/CreateMessageForm'
-import useCreateMessage from '../hooks/useCreateMessage'
+import useCreateMessage from '../hooks/mutations/useCreateMessage'
 
 const CreateMessage = () => {
   const [createMessage, result] = useCreateMessage()
@@ -12,7 +12,6 @@ const CreateMessage = () => {
     console.log(data, result)
     const message = await createMessage(topic.id, data)
     console.log('Message created', message)
-    //dispatch(addMessage(message))
   }
 
   return <CreateMessageForm handleCreate={handleCreate} />

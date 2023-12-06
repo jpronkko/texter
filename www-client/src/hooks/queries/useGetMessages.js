@@ -1,6 +1,6 @@
 import { useQuery /* useSubscription */ } from '@apollo/client'
 
-import { GET_MESSAGES } from '../graphql/queries'
+import { GET_MESSAGES } from '../../graphql/queries'
 //import { MESSAGE_ADDED_TO_TOPIC } from '../graphql/subscriptions'
 
 const useMessages = (topicId) => {

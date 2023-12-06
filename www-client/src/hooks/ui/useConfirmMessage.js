@@ -1,5 +1,9 @@
-import { setMessage, clearMessage as setClearMessage } from '../app/confirmSlice'
 import { useDispatch } from 'react-redux'
+
+import {
+  setMessage,
+  clearMessage as setClearMessage,
+} from '../../app/confirmSlice'
 
 const useConfirmMessage = () => {
   const dispatch = useDispatch()

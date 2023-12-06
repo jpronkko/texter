@@ -1,10 +1,11 @@
 import React from 'react'
+import { useDispatch /* useSelector */ } from 'react-redux'
+
 import { Button, Typography } from '@mui/material'
 import { AddBox } from '@mui/icons-material'
 
-import useGetTopics from '../hooks/useGetTopics'
 import { setTopic } from '../app/selectionSlice'
-import { useDispatch /* useSelector */ } from 'react-redux'
+import useGetTopics from '../hooks/queries/useGetTopics'
 
 import AccordionDetails from './AccordionDetails'
 

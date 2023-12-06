@@ -13,8 +13,8 @@ export const CREATE_USER = gql`
 `
 
 export const CHANGE_PASSWORD = gql`
-  mutation changePassword($password: String!, $newPassword: String!) {
-    changePassword(password: $password, newPassword: $newPassword) {
+  mutation changePassword($oldPassword: String!, $newPassword: String!) {
+    changePassword(oldPassword: $oldPassword, newPassword: $newPassword) {
       id
     }
   }
@@ -22,7 +22,7 @@ export const CHANGE_PASSWORD = gql`
 
 export const CHANGE_EMAIL = gql`
   mutation changeEmail($password: String!, $newEmail: String!) {
-    changePassword(password: $password, newEmail: $newEmail) {
+    changeEmail(password: $password, newEmail: $newEmail) {
       id
     }
   }
@@ -33,6 +33,7 @@ export const CREATE_GROUP = gql`
     createGroup(name: $name, description: $description) {
       id
       name
+      description
       ownerId
     }
   }
