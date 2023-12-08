@@ -5,21 +5,21 @@ export const confirmSlice = createSlice({
   initialState: {
     title: 'rapea',
     message: '321',
-    callback: null
+    targetIds: [],
   },
   reducers: {
     setMessage: (state, action) => {
       state.title = action.payload.title
       state.message = action.payload.message
-      state.callback = action.payload.callback
+      state.targetIds = action.payload.targetIds
       console.log(state.confirm)
     },
-    clearMessage: state => {
+    clearMessage: (state) => {
       state.title = ''
       state.message = ''
-      state.callback = null
-    }
-  }
+      state.targetIds = []
+    },
+  },
 })
 
 export const { setMessage, clearMessage } = confirmSlice.actions

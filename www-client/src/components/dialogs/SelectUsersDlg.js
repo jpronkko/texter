@@ -9,6 +9,7 @@ import {
   FormGroup,
   FormControlLabel,
   FormLabel,
+  Typography,
 } from '@mui/material'
 import React, { forwardRef, useState, useImperativeHandle } from 'react'
 
@@ -66,6 +67,21 @@ const SelectUsersDlg = forwardRef((props, ref) => {
     close()
   }
 
+  const renderUsers = () => {
+    if (!users || users.length === 0)
+      return (
+        <Typography>
+          No users available or everybody invited already!
+        </Typography>
+      )
+    return users.map((user) => (
+      <UserItem
+        key={user.id}
+        user={user}
+        selectUser={selectUser}
+      />
+    ))
+  }
   return (
     <Dialog
       open={visible}
@@ -81,15 +97,7 @@ const SelectUsersDlg = forwardRef((props, ref) => {
           variant="standard"
         >
           <FormLabel component="legend">Select users to invite</FormLabel>
-          <FormGroup>
-            {users.map((user) => (
-              <UserItem
-                key={user.id}
-                user={user}
-                selectUser={selectUser}
-              />
-            ))}
-          </FormGroup>
+          <FormGroup>{renderUsers()}</FormGroup>
         </FormControl>
       </DialogContent>
       <DialogActions>

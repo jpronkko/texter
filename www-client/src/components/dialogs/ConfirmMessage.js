@@ -13,7 +13,11 @@ const ConfirmMessage = forwardRef((props, ref) => {
 
   const handleOk = () => {
     setVisible(false)
-    if (onOk) onOk()
+    console.log('handleOk', onOk)
+    if (onOk) {
+      console.log('onOk')
+      onOk()
+    }
   }
 
   const open = () => {

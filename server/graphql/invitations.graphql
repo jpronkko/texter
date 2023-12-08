@@ -33,5 +33,5 @@ type Mutation {
 
 type Subscription {
   invitationAdded(toUserId: ID!): Invitation
-  invitationStatusChanged(userId: ID!, invitationId: ID!): Invitation
+  invitationStatusChanged(userId: ID!): Invitation
 }

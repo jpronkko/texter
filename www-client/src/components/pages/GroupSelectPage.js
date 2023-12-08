@@ -12,6 +12,8 @@ import TitleBox from '../TitleBox'
 import useCreateGroup from '../../hooks/mutations/useCreateGroup'
 import useRemoveUserFromGroup from '../../hooks/mutations/useRemoveUserFromGroup'
 import useGetUserGroups from '../../hooks/queries/useGetGroups'
+import useUserAddSubsription from '../../hooks/subscriptions/useUserAddSubscription'
+import useUserRemoveSubscription from '../../hooks/subscriptions/useUserRemoveSubscription'
 
 import { clearGroup, setGroup } from '../../app/selectionSlice'
 
@@ -28,6 +30,8 @@ const GroupSelectPage = () => {
 
   const { ownedGroups, joinedGroups, loading, error } = useGetUserGroups()
   const [removeUserFromGroup] = useRemoveUserFromGroup()
+  const userAdded = useUserAddSubsription(user.id)
+  const userRemoved = useUserRemoveSubscription(user.id)
 
   useEffect(() => {
     if (user.username === '') {
@@ -42,6 +46,7 @@ const GroupSelectPage = () => {
     dispatch(clearGroup())
   }, [])
 
+  console.log('subs result', userAdded, userRemoved)
   const handleSelectGroup = async (newGroup) => {
     console.log('Selecting group:', newGroup, selectedGroup)
     /* if (selectedGroup && newGroup.id === selectedGroup.id) return
@@ -52,6 +57,8 @@ const GroupSelectPage = () => {
     navigate('/messages')
   }
 
+  let groupToLeave = undefined
+
   const handleCreateGroup = async (name, description) => {
     console.log('Create group I:', name, description)
     const groupData = await createGroup(name, description)
@@ -60,13 +67,14 @@ const GroupSelectPage = () => {
   }
 
   const handleLeaveGroup = async (group) => {
+    groupToLeave = group
     confirmDlgRef.current.open()
     console.log('Leave group', group.name)
   }
 
-  const leaveGroup = async (group) => {
-    await removeUserFromGroup(user.id, group.id)
-    console.log('Leaving group', group.id)
+  const leaveGroup = async () => {
+    console.log('Leaving group', groupToLeave)
+    await removeUserFromGroup(user.id, groupToLeave.id)
     confirmDlgRef.current.close()
   }
 
@@ -122,7 +130,7 @@ const GroupSelectPage = () => {
         ref={confirmDlgRef}
         title="Leave Group"
         message="Are you sure you want to leave this group?"
-        onOK={() => leaveGroup(selectedGroup.name)}
+        onOk={leaveGroup}
       />
 
       <Grid

@@ -1,15 +1,28 @@
 import React from 'react'
+
 import { Button, Container } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
-import { PersonRemove, DoNotTouch } from '@mui/icons-material'
+import { PersonRemove } from '@mui/icons-material'
 import SelectionPopup from './forms/SelectionPopup'
 
 import useGetGroupMembers from '../hooks/queries/useGetGroupMembers'
+import useUpdateUserRole from '../hooks/mutations/updateUserRole'
 
 const GroupMembersTable = ({ groupId }) => {
   const { members, loading, error } = useGetGroupMembers(groupId)
+  const [updateUserRole] = useUpdateUserRole()
 
-  const role = {
+  const handleUserRoleChange = async (userId, roleTitle) => {
+    console.log('handleUserRoleChange', userId, roleTitle)
+    const role = Object.keys(roleToTitle).find(
+      (key) => roleToTitle[key] === roleTitle
+    )
+    console.log(Object.keys(roleToTitle), roleTitle, role)
+    console.log('handleUserRoleChange', userId, groupId, role)
+    await updateUserRole(userId, groupId, role)
+  }
+
+  const roleToTitle = {
     ADMIN: 'Admin',
     MEMBER: 'Member',
     OWNER: 'Owner',
@@ -30,13 +43,15 @@ const GroupMembersTable = ({ groupId }) => {
       headerName: 'Role',
       width: 150,
       renderCell: (params) =>
-        params.row.role === role['OWNER'] ? (
-          params.row.role
+        params.row.role === 'OWNER' ? (
+          roleToTitle[params.row.role]
         ) : (
           <SelectionPopup
-            defaultValue={params.row.role}
-            selectionValues={['ADMIN', 'MEMBER']}
-            handleSelectionChange={(value) => console.log(value)}
+            defaultValue={roleToTitle[params.row.role]}
+            selectionValues={[roleToTitle['ADMIN'], roleToTitle['MEMBER']]}
+            handleSelectionChange={(value) =>
+              handleUserRoleChange(params.row.id, value)
+            }
           />
         ),
     },
@@ -48,10 +63,10 @@ const GroupMembersTable = ({ groupId }) => {
       renderCell: (params) => (
         <Button
           variant="contained"
-          disabled={params.row.role === role['OWNER']}
+          disabled={params.row.role === 'OWNER'}
           onClick={() => console.log('Remove ', params.row.username)}
         >
-          {params.row.role !== 'OWNER' ? <PersonRemove /> : <DoNotTouch />}
+          <PersonRemove />
         </Button>
       ),
     },
@@ -71,7 +86,7 @@ const GroupMembersTable = ({ groupId }) => {
         username: item.username,
         fullName: item.name,
         email: item.email,
-        role: role[item.role],
+        role: item.role,
       }))
     : []
 

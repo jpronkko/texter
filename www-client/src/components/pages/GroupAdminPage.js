@@ -8,10 +8,14 @@ import useCreateInvitation from '../../hooks/mutations/useCreateInvitation'
 import useCreateTopic from '../../hooks/mutations/useCreateTopic'
 import useGetTopics from '../../hooks/queries/useGetTopics'
 import useGetUsersNotInGroup from '../../hooks/queries/useGetUsersNotInGroup'
+import useRemoveTopic from '../../hooks/mutations/useRemoveTopic'
 import useSentInvitations from '../../hooks/queries/useSentInvitations'
+import useTopicsAddedSubscription from '../../hooks/subscriptions/useTopicsAddedSubscriptions'
+import useTopicRemovedSubscription from '../../hooks/subscriptions/useTopicRemovedSubscription'
 
 import GroupForm from '../forms/GroupForm'
 import GroupMembersTable from '../GroupMembersTable'
+import ConfirmMessage from '../dialogs/ConfirmMessage'
 import InputTextDlg from '../dialogs/InputTextDlg'
 import InvitationsTable from '../InvitationsTable'
 import SelectUsersDlg from '../dialogs/SelectUsersDlg'
@@ -30,7 +34,7 @@ const GroupItem = ({ topic, handleRemoveTopic }) => {
         variant="contained"
         onClick={() => handleRemoveTopic(topic.id)}
       >
-        Remove Topic
+        Remove
       </Button>
     </Box>
   )
@@ -38,7 +42,9 @@ const GroupItem = ({ topic, handleRemoveTopic }) => {
 
 const GroupAdminPage = () => {
   const navigate = useNavigate()
+
   const selectedGroup = useSelector((state) => state.selection.group)
+
   const { topics, error, loading } = useGetTopics(selectedGroup?.id)
   const [createTopic, result] = useCreateTopic()
   const { sentInvitations } = useSentInvitations()
@@ -47,13 +53,21 @@ const GroupAdminPage = () => {
   )
   const currentUser = useSelector((state) => state.user.userData)
   const [createInvitation] = useCreateInvitation()
+  const [removeTopic] = useRemoveTopic()
+
+  const newTopics = useTopicsAddedSubscription(selectedGroup.id)
+  const removedTopics = useTopicRemovedSubscription(selectedGroup.id)
+
   useEffect(() => {
     console.log('selectedGroup', selectedGroup.id)
     if (!selectedGroup.id) navigate('/')
   }, [selectedGroup])
 
+  console.log('newTopics', newTopics, 'removedTopics', removedTopics)
+  const confirmDlgRef = useRef()
   const topicDlgRef = useRef()
   const selectUsersDlgRef = useRef()
+  let topicIdToRemove = undefined
 
   console.log('sentInvitations', sentInvitations)
   console.log('group', selectedGroup, 'topics', topics, 'result', result)
@@ -91,8 +105,25 @@ const GroupAdminPage = () => {
     await Promise.all(allInvites)
   }
 
+  const handleRemoveTopic = (topicId) => {
+    console.log('Remove topic', topicId)
+    topicIdToRemove = topicId
+    confirmDlgRef.current.open()
+  }
+
+  const onOkRemoveTopic = async () => {
+    console.log('onOkRemoveTopic')
+    await removeTopic(selectedGroup.id, topicIdToRemove)
+  }
+
   return (
     <Container>
+      <ConfirmMessage
+        ref={confirmDlgRef}
+        title="Confirm"
+        message="Are you sure you want to remove this topic and its contents?"
+        onOk={onOkRemoveTopic}
+      />
       <InputTextDlg
         ref={topicDlgRef}
         title="Create Topic"
@@ -105,9 +136,9 @@ const GroupAdminPage = () => {
         users={users}
         handleUsers={handleCreateInvitation}
       />
-      <TitleBox title={selectedGroup.name + ' profile'} />
+      <TitleBox title={'Profile of ' + selectedGroup.name} />
       <GroupForm handleFormSubmit={handleFormSubmit} />
-      <TitleBox title={selectedGroup.name + ' topics'}>
+      <TitleBox title={'Topics of ' + selectedGroup.name}>
         <Button
           variant="contained"
           onClick={() => topicDlgRef.current.open()}
@@ -123,10 +154,11 @@ const GroupAdminPage = () => {
           <GroupItem
             key={item.id}
             topic={item}
+            handleRemoveTopic={handleRemoveTopic}
           />
         ))}
       </Paper>
-      <TitleBox title={selectedGroup.name + ' members'} />
+      <TitleBox title={'Members of ' + selectedGroup.name} />
       <Paper
         elevation={3}
         sx={{ pt: 2, pb: 2 }}

@@ -1,8 +1,9 @@
-const logger = require('../utils/logger')
+const { Types } = require('mongoose')
 
 const Invitation = require('./invitations.mongo')
 const User = require('./users.mongo')
 const { addUserToGroup } = require('./users.model')
+const logger = require('../utils/logger')
 
 const getAllInvitations = async () => {
   const invitations = await Invitation.find({})
@@ -57,16 +58,15 @@ const createInvitation = async (fromUserId, toUser, groupId) => {
   }
 
   const toUserId = userToInvite._id
-  const invitatiton = await Invitation.findOne({
-    fromUserId,
-    toUserId,
-    groupId,
+  const invitations = await Invitation.find({
+    fromUserId: new Types.ObjectId(fromUserId),
+    toUserId: new Types.ObjectId(toUserId),
+    groupId: new Types.ObjectId(groupId),
   })
 
-  if (invitatiton) {
+  if (invitations && invitations.find((inv) => inv.status !== 'CANCELLED')) {
     logger.error(
-      'There is already an invitation!',
-      invitatiton,
+      'There is already a pending or rejected invitation!',
       fromUserId,
       toUserId,
       groupId
@@ -100,7 +100,9 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
     if (invitationJSON.toUserId !== userId) {
       logger.error(
         'Not authorizded to accept invitation!',
+        'to user',
         invitation.toUserId,
+        'current user',
         userId
       )
       throw new Error('Not authorized to accept invitation!')

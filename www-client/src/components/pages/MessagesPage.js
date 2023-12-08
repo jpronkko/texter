@@ -23,6 +23,8 @@ import useGetTopics from '../../hooks/queries/useGetTopics'
 import CreateMessage from '../CreateMessage'
 import InputTextDlg from '../dialogs/InputTextDlg'
 import MessageList from '../MessageList'
+import useTopicsAddedSubscription from '../../hooks/subscriptions/useTopicsAddedSubscriptions'
+import useTopicRemovedSubscription from '../../hooks/subscriptions/useTopicRemovedSubscription'
 
 const drawerWidth = 250
 
@@ -31,7 +33,10 @@ const MessagesPage = () => {
   const selectedTopic = useSelector((state) => state.selection.topic)
 
   const { topics, error, loading } = useGetTopics(selectedGroup.id)
+  const newTopics = useTopicsAddedSubscription(selectedGroup.id)
+  const removedTopics = useTopicRemovedSubscription(selectedGroup.id)
   const [createTopic] = useCreateTopic()
+
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const topicDlgRef = useRef()
@@ -43,6 +48,7 @@ const MessagesPage = () => {
     }
   }, [topics])
 
+  console.log('subs topics result', newTopics, removedTopics)
   const handleCreateTopic = async (name) => {
     const topic = await createTopic(selectedGroup.id, name)
     console.log('Handle Create Topic', topic)

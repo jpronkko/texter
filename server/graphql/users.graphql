@@ -87,4 +87,5 @@ type Mutation {
 
 type Subscription {
   userAddedToGroup(userId: ID): UserGroupRole
+  userRemovedFromGroup(userId: ID): JoinedGroupInfo
 }

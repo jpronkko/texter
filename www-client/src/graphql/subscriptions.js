@@ -12,9 +12,33 @@ export const USER_ADDED_TO_GROUP = gql`
   ${USER_DETAILS}
 `
 
+export const USER_REMOVED_FROM_GROUP = gql`
+  subscription userRemovedFromGroup($userId: ID!) {
+    userRemovedFromGroup(userId: $userId) {
+      userId
+      joinedGroups {
+        description
+        groupId
+        groupName
+        role
+      }
+    }
+  }
+`
+
 export const TOPIC_ADDED_TO_GROUP = gql`
   subscription topicAddedToGroup($groupId: ID!) {
-    topicAddedToGroup(groupId: groupId) {
+    topicAddedToGroup(groupId: $groupId) {
+      id
+      groupId
+      name
+    }
+  }
+`
+
+export const TOPIC_REMOVED = gql`
+  subscription topicRemoved($groupId: ID!) {
+    topicRemoved(groupId: $groupId) {
       id
       groupId
       name
@@ -51,6 +75,32 @@ export const INVITATION_ADDED = gql`
       group {
         id
         name
+        ownerId
+      }
+      toUser {
+        id
+        name
+        username
+      }
+    }
+  }
+`
+
+export const INVITATION_STATUS_CHANGED = gql`
+  subscription invitationStatusChanged($userId: ID!) {
+    invitationStatusChanged(userId: $userId) {
+      id
+      sentTime
+      status
+      fromUser {
+        id
+        name
+        username
+      }
+      group {
+        id
+        name
+        ownerId
       }
       toUser {
         id

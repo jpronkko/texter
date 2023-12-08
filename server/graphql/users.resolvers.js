@@ -13,6 +13,7 @@ const {
 } = require('../utils/checkUser')
 
 const { MIN_PASSWORD_LENGTH } = require('../utils/config')
+const { findOrCreateCommonGroup } = require('../models/groups.model')
 
 const pubsub = new PubSub()
 
@@ -83,6 +84,19 @@ module.exports = {
         pubsub.publish('USER_ADDED', { userAdded: newUser })
 
         const tokenAndUser = await usersModel.login(username, password)
+
+        const commonGroup = await findOrCreateCommonGroup()
+        const groupId = commonGroup._id
+
+        const userGroupRole = await usersModel.addUserToGroup(
+          tokenAndUser.userId,
+          groupId,
+          'MEMBER'
+        )
+
+        if (!userGroupRole) {
+          throw new GraphQLError('Adding user to common group failed!')
+        }
         return tokenAndUser
       } catch (error) {
         throw new GraphQLError('Creating user failed', {
@@ -204,6 +218,13 @@ module.exports = {
           userId,
           groupId
         )
+        pubsub.publish('USER_REMOVED_FROM_GROUP', {
+          userId,
+          userRemovedFromGroup: {
+            userId,
+            joinedGroups,
+          },
+        })
         return { userId: currentUser.id, joinedGroups }
       } catch (error) {
         throw new GraphQLError('User removal did not work', error.message)
@@ -238,6 +259,15 @@ module.exports = {
         (payload, variables) => {
           console.log('payload', payload)
           return payload.userAddedToGroup.userId === variables.userId
+        }
+      ),
+    },
+    userRemovedFromGroup: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(['USER_REMOVED_FROM_GROUP']),
+        (payload, variables) => {
+          console.log('payload', payload)
+          return payload.userRemovedFromGroup.userId === variables.userId
         }
       ),
     },

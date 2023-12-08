@@ -8,9 +8,9 @@ import {
 const useConfirmMessage = () => {
   const dispatch = useDispatch()
 
-  const showMessage = (title, message, callback) => {
+  const showMessage = (title, message, targetIds) => {
     console.log('Setting message', message)
-    dispatch(setMessage({ title, message, callback }))
+    dispatch(setMessage({ title, message, targetIds }))
   }
 
   const clearMessage = () => {

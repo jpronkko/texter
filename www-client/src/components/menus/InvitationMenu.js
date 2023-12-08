@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import {
+  Box,
   Button,
   IconButton,
   Menu,
@@ -14,6 +15,8 @@ import { Email } from '@mui/icons-material'
 
 import useRecvInvitations from '../../hooks/queries/useRecvInvitations'
 import useModifyRecvInv from '../../hooks/mutations/useModifyRecvInv'
+import useRecvInvSubscription from '../../hooks/subscriptions/useRecvInvSubscription'
+import useInvStatusSubscription from '../../hooks/subscriptions/useInvStatusSubscriptions'
 
 const RecvInvItem = ({ invitation }) => {
   const [acceptInvitation, rejectInvitation] = useModifyRecvInv()
@@ -29,12 +32,32 @@ const RecvInvItem = ({ invitation }) => {
 
   return (
     <MenuItem>
-      <Typography>
-        {invitation.fromUser.username} invited you to {invitation.group.name},
-        status is {invitation.status}
-      </Typography>
-      <Button onClick={handleAccept}>Accept</Button>
-      <Button onClick={handleReject}>Reject</Button>
+      <Box
+        display="flex"
+        flexDirection="row"
+        alignItems={'center'}
+        justifyContent={'space-between'}
+        sx={{ flex: 1, p: 1 }}
+      >
+        <Typography>
+          Invite to {invitation.group.name} from {invitation.fromUser.username}
+        </Typography>
+        <Box sx={{ ml: 2 }}>
+          <Button
+            variant="contained"
+            onClick={handleAccept}
+          >
+            Accept
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ ml: 1 }}
+            onClick={handleReject}
+          >
+            Reject
+          </Button>
+        </Box>
+      </Box>
     </MenuItem>
   )
 }
@@ -46,6 +69,15 @@ const InvitationMenu = () => {
   const { recvInvitations /* fetchMore, loading, error, refetch */ } =
     useRecvInvitations(userId)
 
+  const newInvitations = useRecvInvSubscription(userId)
+  const newInvStatus = useInvStatusSubscription(userId)
+
+  console.log(
+    'Inv menu: newInvitations and status',
+    newInvitations,
+    'newInvStatus',
+    newInvStatus
+  )
   const rInvitations = recvInvitations?.filter(
     (inv) => inv.status === 'PENDING'
   )
@@ -58,8 +90,6 @@ const InvitationMenu = () => {
   const handleCloseInvitationMenu = () => {
     setAnchorElUser(null)
   }
-
-  console.log('recvInvitations', recvInvitations)
 
   const renderInvitations = () => {
     if (rInvitations && rInvitations.length > 0) {
@@ -90,9 +120,7 @@ const InvitationMenu = () => {
             variant="body1"
             color={'primary.contrastText'}
           >
-            {rInvitations?.length === 0
-              ? 'No invitations'
-              : 'New invitations' + rInvitations?.length}
+            {rInvitations?.length === 0 ? 'No invitations' : 'New invitations!'}
           </Typography>
         </IconButton>
       </Tooltip>

@@ -4,19 +4,31 @@ import { useSelector } from 'react-redux'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 
 import InputTextDlg from '../dialogs/InputTextDlg'
+import useModifyGroup from '../../hooks/mutations/useModifyGroup'
+import { setGroup } from '../../app/selectionSlice'
+import { useDispatch } from 'react-redux'
 
 const GroupForm = () => {
+  const dispatch = useDispatch()
+
+  const user = useSelector((state) => state.user.userData)
   const selectedGroup = useSelector((state) => state.selection.group)
+  const [modifyGroup] = useModifyGroup(user.id)
+
   const nameDlgRef = useRef()
   const descriptionDlgRef = useRef()
 
   const handleChangeName = async (name) => {
     console.log('Change name', name)
+    await modifyGroup(selectedGroup.id, name, selectedGroup.description)
+    dispatch(setGroup({ ...selectedGroup, name }))
     nameDlgRef.current.close()
   }
 
   const handleChangeDescription = async (description) => {
     console.log('Change description', description)
+    await modifyGroup(selectedGroup.id, selectedGroup.name, description)
+    dispatch(setGroup({ ...selectedGroup, description }))
     descriptionDlgRef.current.close()
   }
 

@@ -1,6 +1,9 @@
 import { useMutation } from '@apollo/client'
 
-import { GET_SENT_INVITATIONS } from '../../graphql/queries'
+import {
+  GET_SENT_INVITATIONS,
+  GET_USERS_NOT_IN_GROUP,
+} from '../../graphql/queries'
 import { CHANGE_INVITATION_STATUS } from '../../graphql/mutations'
 import useError from '../ui/useErrorMessage'
 
@@ -39,6 +42,7 @@ const useModifySentInv = () => {
         },
       }) */
     },
+    refetchQueries: [{ query: GET_USERS_NOT_IN_GROUP }],
   })
 
   const cancelInvitation = async (invitationId) => {

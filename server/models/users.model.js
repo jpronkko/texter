@@ -1,7 +1,8 @@
-const logger = require('../utils/logger')
-
+const Invitation = require('./invitations.mongo')
 const User = require('./users.mongo')
 const { getHash, pwCompare, tokenFromUser } = require('../utils/pwtoken')
+const logger = require('../utils/logger')
+const { Types } = require('mongoose')
 
 const findUserWithId = async (userId) => {
   const user = await User.findById(userId)
@@ -71,18 +72,6 @@ const getAllUsers = async () => {
     }))
   })
   return allUsersJSON
-}
-
-const getUsersNotInGroup = async (groupId) => {
-  const usersNotInGroup = await User.find({
-    'joinedGroups.group': { $ne: groupId },
-  })
-  return usersNotInGroup.map((user) => ({
-    id: user._id.toString(),
-    username: user.username,
-    email: user.email,
-    name: user.name,
-  }))
 }
 
 const createUser = async (name, username, email, passwordHash) => {
@@ -278,27 +267,12 @@ const getUserJoinedGroups = async (userId) => {
     },
   })
 
-  console.log('-------------------')
-  console.log('getUserJoinedGroups user:', JSON.stringify(user, null, 4))
-  console.log('-------------------')
   if (!user) {
     logger.error(`No user with ${userId} found!`)
     throw new Error('No such user!')
   }
 
   const jsonedUser = user.toJSON()
-  console.log(
-    'getUserJoinedGroups jsonedUser',
-    jsonedUser,
-    'joined groups',
-    jsonedUser.joinedGroups
-  )
-
-  console.log('foreachitys')
-  jsonedUser.joinedGroups.forEach((item) => {
-    console.log('item', item)
-  })
-
   const retVal = jsonedUser.joinedGroups.map((item) => ({
     groupId: item.group.id,
     groupName: item.group.name,
@@ -308,11 +282,38 @@ const getUserJoinedGroups = async (userId) => {
 
   console.log('retVal', retVal)
   return retVal
-  // if (jsonedUser.joinedGroups) {
-  //   return groupsToJoinedGroups(jsonedUser.joinedGroups)
-  // }
-  // return []
-  // //return groupsToJoinedGroups(jsonedUser.groups)
+}
+
+const getUsersNotInGroup = async (groupId) => {
+  // gather users that are not in the group and have no pending invitation
+  // to the group
+  const groupObjectId = new Types.ObjectId(groupId)
+  const hasInvitationToGroup = await Invitation.find(
+    { $and: [{ groupId: groupObjectId }, { status: 'PENDING' }] },
+    'toUserId'
+  )
+
+  logger.info(
+    'hasInvitationToGroup',
+    hasInvitationToGroup,
+    hasInvitationToGroup.toUserId
+  )
+
+  const usersNotInGroup = await User.find({
+    $and: [
+      { 'joinedGroups.group': { $ne: groupObjectId } },
+      { _id: { $nin: hasInvitationToGroup.map((item) => item.toUserId) } },
+    ],
+  })
+  //)
+
+  logger.info('usersNotInGroup', usersNotInGroup)
+  return usersNotInGroup.map((user) => ({
+    id: user._id.toString(),
+    username: user.username,
+    email: user.email,
+    name: user.name,
+  }))
 }
 
 module.exports = {

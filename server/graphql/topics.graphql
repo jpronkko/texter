@@ -12,8 +12,10 @@ type Query {
 
 type Mutation {
   createTopic(groupId: ID!, name: String!): Topic
+  removeTopic(groupId: ID!, topicId: ID!): Topic
 }
 
 type Subscription {
   topicAddedToGroup(groupId: ID!): Topic
+  topicRemoved(groupId: ID!): Topic
 }

@@ -33,7 +33,6 @@ const UserMenu = () => {
       name: 'Profile',
       callback: () => profileDlgRef.current.toggleProfile(true),
     },
-    { name: 'Group Admin', callback: () => navigate('/group_admin') },
     { name: 'All Users', callback: () => navigate('/users') },
     { name: 'Logout', callback: showLogout },
   ]

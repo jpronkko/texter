@@ -23,7 +23,7 @@ const useCreateTopic = () => {
       console.log('topics in store', topicsInStore)
       console.log('new topic', newTopic)
 
-      store.writeQuery({
+      /*   store.writeQuery({
         query: GET_TOPICS,
         variables: { groupId: newTopic.groupId },
         data: {
@@ -37,11 +37,7 @@ const useCreateTopic = () => {
             },
           ],
         },
-        // data: {
-        //   //...topicsInStore,
-        //   getTopics: [...topicsInStore.getTopics, newTopic],
-        // },
-      })
+      })*/
     },
     //refetchQueries: [{ query: GET_TOPICS }],
     /*update: (cache, response) => {

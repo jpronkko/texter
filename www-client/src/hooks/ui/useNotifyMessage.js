@@ -6,11 +6,7 @@ const useNotifyMessage = () => {
   const dispatch = useDispatch()
 
   const showMessage = (message) => {
-    console.log('Setting notify', message)
     dispatch(setMessage(message))
-    /*  setTimeout(() => {
-      dispatch(setClearMessage())
-    }, 5000) */
   }
 
   const clearMessage = () => {

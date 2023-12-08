@@ -13,23 +13,25 @@ const useCreateGroup = () => {
       showError(error.toString())
     },
     update: (store, response) => {
+      // There is only one JoinedGroupInfo per userId in the store.
+      // Update that object with the new group.
       const newGroup = response.data.createGroup
-      const groupsInStore = store.readQuery({
+      const joinedGroupInfo = store.readQuery({
         query: GET_USER_JOINED_GROUPS,
         variables: { userId: newGroup.ownerId },
       })
       console.log('useCreateGroup: new group', newGroup)
-      console.log('useCreateGroup: groups in store', groupsInStore)
+      console.log('useCreateGroup: groups in store', joinedGroupInfo)
 
       store.writeQuery({
         query: GET_USER_JOINED_GROUPS,
         data: {
-          //...groupsInStore,
           variables: { userId: newGroup.ownerId },
           getUserJoinedGroups: {
+            __typename: 'JoinedGroupInfo',
             userId: newGroup.ownerId,
             joinedGroups: [
-              ...groupsInStore.getUserJoinedGroups.joinedGroups,
+              ...joinedGroupInfo.getUserJoinedGroups.joinedGroups,
               {
                 __typename: 'JoinedGroup',
                 groupId: newGroup.id,
@@ -39,10 +41,6 @@ const useCreateGroup = () => {
               },
             ],
           },
-          // getUserJoinedGroups: [
-          //   ...groupsInStore.getUserJoinedGroups.joinedGroups,
-          //   newGroup,
-          // ],
         },
       })
     },

@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField'
 import { InputAdornment } from '@mui/material'
 import { HighlightOff } from '@mui/icons-material'
 
-function Input({
+const FormTextInput = ({
   control,
   id,
   testId,
@@ -18,7 +18,7 @@ function Input({
   multiline,
   rows,
   maxRows,
-}) {
+}) => {
   const {
     field,
     fieldState: { error },
@@ -71,4 +71,4 @@ function Input({
   )
 }
 
-export default Input
+export default FormTextInput

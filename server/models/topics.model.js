@@ -1,5 +1,6 @@
-const Topic = require('./topics.mongo')
 const Group = require('./groups.mongo')
+const Message = require('./messages.mongo')
+const Topic = require('./topics.mongo')
 const logger = require('../utils/logger')
 
 const getAllTopics = async () => {
@@ -66,9 +67,19 @@ const createTopic = async (groupId, name) => {
   return savedTopic.toJSON()
 }
 
+const removeTopic = async (topicId) => {
+  const topicToRemove = await Topic.findByIdAndDelete(topicId)
+  if (!topicToRemove) {
+    throw new Error('Topic remove failed, topic not found!')
+  }
+  await Message.deleteMany({ topicId })
+  return topicToRemove.toJSON()
+}
+
 module.exports = {
   getAllTopics,
   findTopic,
   getMessages,
   createTopic,
+  removeTopic,
 }

@@ -39,7 +39,7 @@ const InvitationsTable = () => {
 
   const onCancelInvitation = async () => {
     console.log('cancelInvitation', invitationToCancel)
-    const cancelledInvitation = await cancelInvitation(invitationToCancel.id)
+    const cancelledInvitation = await cancelInvitation(invitationToCancel)
     console.log('cancelledInvitation', cancelledInvitation)
     //confirmDlgRef.current.close()
   }
@@ -74,7 +74,10 @@ const InvitationsTable = () => {
       renderCell: (params) => (
         <Button
           variant="contained"
-          disabled={params.row.status === Status['CANCELLED']}
+          disabled={
+            params.row.status === Status['CANCELLED'] ||
+            params.row.status === Status['ACCEPTED']
+          }
           onClick={() => prepareCancelInvitation(params.id)}
         >
           {params.row.role !== 'OWNER' ? <PersonRemove /> : <DoNotTouch />}

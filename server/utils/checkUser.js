@@ -31,23 +31,27 @@ const checkUserInTopicGroup = async (user, topicId) => {
 }
 
 const checkUserOwnsGroup = (user, groupId) => {
-  console.log(
-    'check user owns group user:',
-    JSON.stringify(user, null, 4),
-    ' group',
-    groupId
-  )
-  //const joinedGroup = User.findById(user.id).
-  user.joinedGroups.forEach((element) => {
-    console.log('element', element)
-  })
-
-  console.log('trying to find group', groupId, typeof groupId)
-
   const joinedGroup = user.joinedGroups.find(
     (item) => item.group.toString() === groupId
   )
   if (joinedGroup && joinedGroup.role === 'OWNER') return true
+
+  logger.error(
+    `User ${user.username} does not own group ${groupId}!`,
+    joinedGroup
+  )
+  return false
+}
+
+const checkUserOwnsOrIsAdminInGroup = (user, groupId) => {
+  const joinedGroup = user.joinedGroups.find(
+    (item) => item.group.toString() === groupId
+  )
+  if (
+    joinedGroup &&
+    (joinedGroup.role === 'OWNER' || joinedGroup.role === 'ADMIN')
+  )
+    return true
 
   logger.error(
     `User ${user.username} does not own group ${groupId}!`,
@@ -61,4 +65,5 @@ module.exports = {
   checkUserInGroup,
   checkUserInTopicGroup,
   checkUserOwnsGroup,
+  checkUserOwnsOrIsAdminInGroup,
 }

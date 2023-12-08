@@ -53,7 +53,7 @@ module.exports = {
       console.log('-------------')
       console.log('Parent user args', parent)
       const user = await usersModel.findUserWithId(parent.toUserId)
-      console.log('to user', user)
+      console.log('to user from foffa conversion', user)
       return { id: user.id, username: user.username, name: user.name }
     },
     /*fromUser: async (parent) => {
@@ -118,8 +118,7 @@ module.exports = {
 
       pubsub.publish('INVITATION_STATUS_CHANGED', {
         invitationStatusChanged: {
-          userId: currentUser.id,
-          invitationId: id,
+          ...updatedInvitation,
         },
       })
       return updatedInvitation

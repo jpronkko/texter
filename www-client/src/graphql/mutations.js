@@ -28,6 +28,16 @@ export const CHANGE_EMAIL = gql`
   }
 `
 
+export const UPDATE_USER_ROLE = gql`
+  mutation updateUserRole($userId: ID!, $groupId: ID!, $role: Role!) {
+    updateUserRole(userId: $userId, groupId: $groupId, role: $role) {
+      user
+      group
+      role
+    }
+  }
+`
+
 export const CREATE_GROUP = gql`
   mutation createGroup($name: String!, $description: String!) {
     createGroup(name: $name, description: $description) {
@@ -39,7 +49,17 @@ export const CREATE_GROUP = gql`
   }
 `
 
-// createTopic(groupId: ID!, name: String!): T
+export const MODIFY_GROUP = gql`
+  mutation modifyGroup($groupId: ID!, $name: String!, $description: String!) {
+    modifyGroup(groupId: $groupId, name: $name, description: $description) {
+      id
+      name
+      description
+      ownerId
+    }
+  }
+`
+
 export const CREATE_TOPIC = gql`
   mutation createTopic($groupId: ID!, $name: String!) {
     createTopic(groupId: $groupId, name: $name) {
@@ -117,6 +137,14 @@ export const CHANGE_INVITATION_STATUS = gql`
 export const REMOVE_USER_FROM_GROUP = gql`
   mutation RemoveUserFromGroup($userId: ID!, $groupId: ID!) {
     removeUserFromGroup(userId: $userId, groupId: $groupId) {
+      userId
+    }
+  }
+`
+
+export const REMOVE_TOPIC = gql`
+  mutation RemoveTopic($groupId: ID!, $topicId: ID!) {
+    removeTopic(groupId: $groupId, topicId: $topicId) {
       id
     }
   }
