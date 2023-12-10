@@ -18,8 +18,10 @@ const CreateUserPage = () => {
     logger.info('Create user input data:', data)
     const user = await createUser(data)
     logger.info('Create user on handlecreate, user object', user)
-    dispatch(logIn(user))
-    navigate('/')
+    if (user) {
+      dispatch(logIn(user))
+      navigate('/')
+    }
   }
 
   return <CreateUserForm handleCreate={handleCreate} />

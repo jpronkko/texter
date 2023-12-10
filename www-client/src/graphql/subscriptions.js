@@ -1,5 +1,4 @@
 import { gql } from '@apollo/client'
-import { USER_DETAILS } from './fragments'
 
 export const USER_ADDED_TO_GROUP = gql`
   subscription userAddedToGroup($userId: ID!) {
@@ -9,7 +8,6 @@ export const USER_ADDED_TO_GROUP = gql`
       role
     }
   }
-  ${USER_DETAILS}
 `
 
 export const USER_REMOVED_FROM_GROUP = gql`

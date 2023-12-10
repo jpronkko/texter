@@ -46,7 +46,13 @@ const GroupSelectPage = () => {
     dispatch(clearGroup())
   }, [])
 
-  console.log('subs result', userAdded, userRemoved)
+  console.log(
+    `Group select page subs result useradd: ${JSON.stringify(
+      userAdded,
+      null,
+      4
+    )}, userremoved: ${JSON.stringify(userRemoved, null, 4)}`
+  )
   const handleSelectGroup = async (newGroup) => {
     console.log('Selecting group:', newGroup, selectedGroup)
     /* if (selectedGroup && newGroup.id === selectedGroup.id) return
@@ -117,7 +123,10 @@ const GroupSelectPage = () => {
 
   if (loading) return <div>Loading...</div>
 
-  if (error) return <div>Error: {error.message}</div>
+  if (error) {
+    navigate('/login')
+    //return <div>Error: {error.message}</div>
+  }
   // <CssBaseline />
   return (
     <Container sx={{ mb: 2 }}>

@@ -17,12 +17,11 @@ const Login = () => {
 
   const handleLogin = async (credentials) => {
     logger.info('Login user input data:', credentials)
-    try {
-      const user = await login(credentials.username, credentials.password)
-      logger.info('Login result:', user)
+
+    const user = await login(credentials.username, credentials.password)
+    logger.info('Login result:', user)
+    if (user) {
       navigate('/')
-    } catch (error) {
-      showError(error.toString())
     }
   }
 

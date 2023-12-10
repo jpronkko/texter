@@ -1,9 +1,17 @@
 import { useMutation } from '@apollo/client'
 import { CREATE_USER } from '../../graphql/mutations'
+import useError from '../ui/useErrorMessage'
+import { parseError } from '../../utils/parseError'
 import logger from '../../utils/logger'
 
 const useCreateUser = () => {
-  const [mutation, result] = useMutation(CREATE_USER)
+  const [showError] = useError()
+  const [mutation, result] = useMutation(CREATE_USER, {
+    onError: (error) => {
+      logger.error('create user error:', error)
+      showError(`Create user failed: ${parseError(error)}`)
+    },
+  })
 
   const createUser = async (user) => {
     logger.info('create user params', user)
@@ -18,7 +26,7 @@ const useCreateUser = () => {
       },
     })
     logger.info('Create user result:', createResult)
-    return { ...user, ...createResult.data.createUser }
+    return createResult.data?.createUser
   }
 
   return [createUser, result]

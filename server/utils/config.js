@@ -2,7 +2,7 @@ require('dotenv').config()
 
 const JWT_SECRET = process.env.SECRET
 const PORT = process.env.PORT
-const MIN_PASSWORD_LENGTH = 10
+const MIN_PASSWORD_LENGTH = 8
 
 let MONGODB_URI = process.env.DEV_MONGODB_URI
 console.log(`ENV is ${process.env.NODE_ENV}`)

@@ -12,7 +12,6 @@ const NotifyMessage = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    console.log('NotifyMessage: message', message)
     setTimeout(() => {
       dispatch(setClearMessage())
     }, 4000)

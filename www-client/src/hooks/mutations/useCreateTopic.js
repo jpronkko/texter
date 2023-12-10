@@ -11,6 +11,7 @@ const useCreateTopic = () => {
   const [mutation, result] = useMutation(CREATE_TOPIC, {
     onError: (error) => {
       showError(error.toString())
+      logger.error('create topic error:', error)
     },
     update: (store, response) => {
       const newTopic = response.data.createTopic

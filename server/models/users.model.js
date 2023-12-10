@@ -75,6 +75,10 @@ const getAllUsers = async () => {
 }
 
 const createUser = async (name, username, email, passwordHash) => {
+  const existingUser = await findUserByUsername(username)
+  if (existingUser) {
+    throw new Error('Username taken')
+  }
   const user = new User({ name, username, email, passwordHash })
   const savedUser = (await user.save()).toJSON()
   if (!savedUser) {
@@ -89,7 +93,7 @@ const createUser = async (name, username, email, passwordHash) => {
 }
 
 const login = async (username, password) => {
-  logger.info('Login with username', username, 'password', password)
+  logger.info('Login user', username)
   const user = await User.findOne({ username })
 
   if (!user) {
@@ -97,7 +101,6 @@ const login = async (username, password) => {
   }
 
   const passwordCorrect = await pwCompare(password, user.passwordHash)
-  logger.info('Login password correct', passwordCorrect)
 
   if (!passwordCorrect) {
     throw new Error('Wrong credentials')
@@ -177,6 +180,10 @@ const changeEmail = async (userId, newEmail) => {
 }
 
 const addUserToGroup = async (userId, groupId, role) => {
+  logger.info(
+    `Add user to group userId: ${userId}, groupId: ${groupId}, role: ${role}`
+  )
+
   const user = await User.findById(userId)
   if (!user) {
     logger.error(`User with id: ${userId} not found!`)
@@ -194,53 +201,71 @@ const addUserToGroup = async (userId, groupId, role) => {
     role,
   })
 
-  try {
-    const updatedUser = await user.save()
-    if (!updatedUser) {
-      logger.error('User save failed in addUserToGroup')
-      throw new Error('Saving user failed!')
-    }
-
-    return { user: updatedUser.id, group: groupId, role }
-  } catch (error) {
+  const updatedUser = await user.save()
+  if (!updatedUser) {
+    logger.error('User save to db failed in addUserToGroup', updatedUser)
     throw new Error('Saving user failed!')
   }
+
+  return { user: updatedUser.id, group: groupId, role }
 }
 
 const removeUserFromGroup = async (userId, groupId) => {
-  const user = await User.findById(userId)
+  logger.info('Remove user from group', userId, groupId)
+
+  const user = await User.findById(userId).populate({
+    path: 'joinedGroups',
+    model: 'JoinedGroup',
+    populate: {
+      path: 'group',
+      model: 'Group',
+      select: 'id name description',
+    },
+  })
+
   if (!user) {
     logger.error(`User with id: ${userId} not found!`)
     throw new Error('No such user!')
   }
 
+  logger.info('User in remove user from group', JSON.stringify(user, null, 2))
+
+  const group = user.joinedGroups.find(
+    (item) => item.group._id.toString() === groupId
+  )
+  if (!group) {
+    logger.error(`Group with id: ${groupId} not found!`)
+    throw new Error(`No such group ${groupId} in joined groups!`)
+  }
+
   user.joinedGroups = user.joinedGroups.filter(
-    (joinedGroup) => joinedGroup.group.toString() !== groupId
+    (joinedGroup) => joinedGroup.group._id.toString() !== groupId
   )
 
-  try {
-    const updatedUser = await user.save()
-    if (!updatedUser) {
-      logger.error('User save failed in addUserToGroup')
-      throw new Error('Saving user failed!')
-    }
-
-    const jsonedUser = updatedUser.toJSON()
-    const retVal = jsonedUser.joinedGroups.map((item) => ({
-      groupId: item.group.id,
-      groupName: item.group.name,
-      description: item.group.description,
-      role: item.role,
-    }))
-
-    console.log('ret from model', retVal)
-    return retVal
-  } catch (error) {
+  const updatedUser = await user.save()
+  if (!updatedUser) {
+    logger.error('User save failed in addUserToGroup')
     throw new Error('Saving user failed!')
+  }
+
+  const jsonedUser = updatedUser.toJSON()
+  const joinedGroups = jsonedUser.joinedGroups.map((item) => ({
+    groupId: item.group.id,
+    groupName: item.group.name,
+    description: item.group.description,
+    role: item.role,
+  }))
+
+  logger.info('Remove user group, ret from model', joinedGroups)
+  return {
+    joinedGroups,
+    userGroupRole: { user: userId, group: groupId, role: group.role },
   }
 }
 
 const updateRoleInGroup = async (userId, groupId, role) => {
+  logger.info('Update user role in group', userId, groupId, role)
+
   const user = await User.findById(userId)
 
   if (!user) {
@@ -257,6 +282,7 @@ const updateRoleInGroup = async (userId, groupId, role) => {
 }
 
 const getUserJoinedGroups = async (userId) => {
+  logger.info('Get user joined groups', userId)
   const user = await User.findById(userId).populate({
     path: 'joinedGroups',
     model: 'JoinedGroup',
@@ -273,15 +299,14 @@ const getUserJoinedGroups = async (userId) => {
   }
 
   const jsonedUser = user.toJSON()
-  const retVal = jsonedUser.joinedGroups.map((item) => ({
+  const joinedGroups = jsonedUser.joinedGroups.map((item) => ({
     groupId: item.group.id,
     groupName: item.group.name,
     description: item.group.description,
     role: item.role,
   }))
 
-  console.log('retVal', retVal)
-  return retVal
+  return joinedGroups
 }
 
 const getUsersNotInGroup = async (groupId) => {
@@ -305,7 +330,6 @@ const getUsersNotInGroup = async (groupId) => {
       { _id: { $nin: hasInvitationToGroup.map((item) => item.toUserId) } },
     ],
   })
-  //)
 
   logger.info('usersNotInGroup', usersNotInGroup)
   return usersNotInGroup.map((user) => ({

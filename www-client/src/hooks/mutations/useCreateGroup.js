@@ -11,6 +11,7 @@ const useCreateGroup = () => {
   const [mutation, result] = useMutation(CREATE_GROUP, {
     onError: (error) => {
       showError(error.toString())
+      logger.error('create group error:', error)
     },
     update: (store, response) => {
       // There is only one JoinedGroupInfo per userId in the store.

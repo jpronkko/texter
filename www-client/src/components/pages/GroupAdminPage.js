@@ -4,12 +4,14 @@ import { useNavigate } from 'react-router-dom'
 
 import { Box, Button, Container, Paper, Typography } from '@mui/material'
 
-import useCreateInvitation from '../../hooks/mutations/useCreateInvitation'
-import useCreateTopic from '../../hooks/mutations/useCreateTopic'
 import useGetTopics from '../../hooks/queries/useGetTopics'
 import useGetUsersNotInGroup from '../../hooks/queries/useGetUsersNotInGroup'
-import useRemoveTopic from '../../hooks/mutations/useRemoveTopic'
 import useSentInvitations from '../../hooks/queries/useSentInvitations'
+
+import useCreateInvitation from '../../hooks/mutations/useCreateInvitation'
+import useCreateTopic from '../../hooks/mutations/useCreateTopic'
+import useRemoveTopic from '../../hooks/mutations/useRemoveTopic'
+
 import useTopicsAddedSubscription from '../../hooks/subscriptions/useTopicsAddedSubscriptions'
 import useTopicRemovedSubscription from '../../hooks/subscriptions/useTopicRemovedSubscription'
 
@@ -19,7 +21,6 @@ import ConfirmMessage from '../dialogs/ConfirmMessage'
 import InputTextDlg from '../dialogs/InputTextDlg'
 import InvitationsTable from '../InvitationsTable'
 import SelectUsersDlg from '../dialogs/SelectUsersDlg'
-
 import TitleBox from '../TitleBox'
 
 const GroupItem = ({ topic, handleRemoveTopic }) => {

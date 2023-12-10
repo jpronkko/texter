@@ -7,10 +7,12 @@ import SelectionPopup from './forms/SelectionPopup'
 
 import useGetGroupMembers from '../hooks/queries/useGetGroupMembers'
 import useUpdateUserRole from '../hooks/mutations/updateUserRole'
+import useRemoveUserFromGroup from '../hooks/mutations/useRemoveUserFromGroup'
 
 const GroupMembersTable = ({ groupId }) => {
   const { members, loading, error } = useGetGroupMembers(groupId)
   const [updateUserRole] = useUpdateUserRole()
+  const [removeUserFromGroup] = useRemoveUserFromGroup()
 
   const handleUserRoleChange = async (userId, roleTitle) => {
     console.log('handleUserRoleChange', userId, roleTitle)
@@ -20,6 +22,11 @@ const GroupMembersTable = ({ groupId }) => {
     console.log(Object.keys(roleToTitle), roleTitle, role)
     console.log('handleUserRoleChange', userId, groupId, role)
     await updateUserRole(userId, groupId, role)
+  }
+
+  const handleRemoveUserFromGroup = async (userId) => {
+    console.log('handkeRemoveUserFromGroup', userId, groupId)
+    await removeUserFromGroup(userId, groupId)
   }
 
   const roleToTitle = {
@@ -64,7 +71,7 @@ const GroupMembersTable = ({ groupId }) => {
         <Button
           variant="contained"
           disabled={params.row.role === 'OWNER'}
-          onClick={() => console.log('Remove ', params.row.username)}
+          onClick={() => handleRemoveUserFromGroup(params.row.id)}
         >
           <PersonRemove />
         </Button>

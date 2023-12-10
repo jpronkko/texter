@@ -12,6 +12,7 @@ const useUserRemoveSubsription = (userId) => {
     },
     onData: ({ data }) => {
       console.log('_______________________')
+      console.log('user removed from group')
       console.log(data)
       const removedUserFromGroup = data.data.userRemovedFromGroup
       apolloClient.cache.updateQuery(

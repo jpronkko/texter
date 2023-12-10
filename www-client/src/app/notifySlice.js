@@ -8,7 +8,6 @@ export const notifySlice = createSlice({
   },
   reducers: {
     setMessage: (state, action) => {
-      console.log('Action payload', action.payload)
       state.message = action.payload
     },
     setClearMessage: (state) => {

@@ -73,9 +73,9 @@ const InvitationMenu = () => {
   const newInvStatus = useInvStatusSubscription(userId)
 
   console.log(
-    'Inv menu: newInvitations and status',
+    'Invitation menu: newInvitations and status',
     newInvitations,
-    'newInvStatus',
+    'subscription: newInvStatus',
     newInvStatus
   )
   const rInvitations = recvInvitations?.filter(

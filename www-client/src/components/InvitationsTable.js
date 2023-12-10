@@ -23,7 +23,7 @@ const InvitationsTable = () => {
     selectedGroup?.id
   )
   const groupInvitations = sentInvitations?.filter(
-    (inv) => inv.group.id === selectedGroup.id
+    (inv) => inv.group.id === selectedGroup.id && inv.status !== 'ACCEPTED'
   )
 
   console.log('users', users, 'error', _error)

@@ -18,7 +18,7 @@ const schema = yup.object({
   email: yup.string().email().required(),
   password: yup
     .string()
-    .min(5, ({ min }) => `Password must be at least ${min} characters.`)
+    .min(8, ({ min }) => `Password must be at least ${min} characters.`)
     .max(50, ({ max }) => `Password must be no more than ${max} characters.`)
     .required('Password is required'),
 })
@@ -33,17 +33,23 @@ const CreateUserForm = ({ handleCreate }) => {
       password: '',
     },
     resolver: yupResolver(schema),
-    mode: 'onChange'
+    mode: 'onChange',
   })
 
   const onSubmit = (data) => {
     handleCreate(data)
   }
 
-  return(
+  return (
     <div>
-      <Grid container alignContent="center" spacing={-1} direction='column'>
-        <Paper elevation={0}
+      <Grid
+        container
+        alignContent="center"
+        spacing={-1}
+        direction="column"
+      >
+        <Paper
+          elevation={0}
           style={{
             display: 'grid',
             width: '400px',
@@ -54,40 +60,50 @@ const CreateUserForm = ({ handleCreate }) => {
         >
           <Typography variant="h4"> Create a new account</Typography>
           <FormTextInput
-            id='name'
-            name='name'
+            id="name"
+            name="name"
             control={control}
-            label='Name'
+            label="Name"
           />
           <FormTextInput
-            id='email'
-            name='email'
+            id="email"
+            name="email"
             control={control}
-            label='E-mail'
+            label="E-mail"
           />
           <FormTextInput
-            id='username'
-            name='username'
+            id="username"
+            name="username"
             control={control}
-            label='Username'
+            label="Username"
           />
           <FormTextInput
-            id='password'
-            testId='password'
-            name='password'
+            id="password"
+            testId="password"
+            name="password"
             control={control}
-            label='Password'
-            type='password'
+            label="Password"
+            type="password"
           />
-          <Button id='create-button' onClick={handleSubmit(onSubmit)} variant={'contained'}>
-          Submit
+          <Button
+            id="create-button"
+            onClick={handleSubmit(onSubmit)}
+            variant={'contained'}
+          >
+            Submit
           </Button>
-          <Button onClick={() => reset()} variant={'outlined'}>
-          Reset
+          <Button
+            onClick={() => reset()}
+            variant={'outlined'}
+          >
+            Reset
           </Button>
           <Divider />
           Already have an account?
-          <Button variant={'contained'} onClick={() => navigate('/login')}>
+          <Button
+            variant={'contained'}
+            onClick={() => navigate('/login')}
+          >
             Login
           </Button>
         </Paper>

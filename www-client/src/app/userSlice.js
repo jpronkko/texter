@@ -5,7 +5,6 @@ const emptyUser = {
   name: '',
   username: '',
   email: '',
-  //groups: [],
 }
 
 export const userSlice = createSlice({
@@ -16,7 +15,6 @@ export const userSlice = createSlice({
   },
   reducers: {
     logIn: (state, action) => {
-      console.log('Login action payload:', action.payload)
       state.token = action.payload.token
 
       state.userData = {

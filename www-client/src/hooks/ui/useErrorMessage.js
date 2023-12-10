@@ -6,7 +6,6 @@ const useError = () => {
   const dispatch = useDispatch()
 
   const showError = (message) => {
-    console.log('Setting error', message)
     dispatch(setError(message))
   }
 

@@ -57,6 +57,14 @@ const createInvitation = async (fromUserId, toUser, groupId) => {
     throw new Error('User to invite not found!')
   }
 
+  const isInGroup = userToInvite.joinedGroups.find(
+    (item) => item.group.toString() === groupId
+  )
+  if (isInGroup) {
+    logger.error('User is already in group!')
+    throw new Error('User is already in group!')
+  }
+
   const toUserId = userToInvite._id
   const invitations = await Invitation.find({
     fromUserId: new Types.ObjectId(fromUserId),
@@ -64,14 +72,16 @@ const createInvitation = async (fromUserId, toUser, groupId) => {
     groupId: new Types.ObjectId(groupId),
   })
 
-  if (invitations && invitations.find((inv) => inv.status !== 'CANCELLED')) {
+  logger.info('Invitations', invitations)
+
+  if (invitations && invitations.length > 0) {
     logger.error(
       'There is already a pending or rejected invitation!',
       fromUserId,
       toUserId,
       groupId
     )
-    throw new Error('There is already an invitation!')
+    throw new Error(`There is already an invitation! ${invitations}`)
   }
   const newInvitation = new Invitation({
     groupId,
@@ -117,6 +127,35 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
       logger.error('No user group found!')
       throw new Error('No user group found!')
     }
+
+    await Invitation.deleteOne({ _id: invitation._id })
+    return invitationJSON
+  } else if (status === 'REJECTED') {
+    if (invitationJSON.toUserId !== userId) {
+      logger.error(
+        'Not authorizded to reject invitation!',
+        'to user',
+        invitation.toUserId,
+        'current user',
+        userId
+      )
+      throw new Error('Not authorized to reject invitation!')
+    }
+    await Invitation.deleteOne({ _id: invitationId })
+    return invitationJSON
+  } else if (status === 'CANCELLED') {
+    if (invitationJSON.fromUserId !== userId) {
+      logger.error(
+        'Not authorizded to cancel invitation!',
+        'from user',
+        invitation.fromUserId,
+        'current user',
+        userId
+      )
+      throw new Error('Not authorized to cancel invitation!')
+    }
+    await Invitation.deleteOne({ _id: invitation._id })
+    return invitationJSON
   }
 
   invitation.status = status

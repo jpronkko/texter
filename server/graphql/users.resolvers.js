@@ -57,49 +57,43 @@ module.exports = {
       } = args
 
       if (password.length < MIN_PASSWORD_LENGTH) {
+        logger.error('Create user: password too short')
         throw new GraphQLError('Password too short!', {
           extensions: {
             code: 'USER_CREATE_FAILED',
-            invalidArgs: args.password,
+            invalidArgs: args.user.password,
           },
         })
       }
-      const user = await usersModel.findUserByUsername(username)
-      if (user) {
-        logger.error('Username taken', user)
-        throw new GraphQLError('Username taken', {
-          extensions: { code: 'USERNAME_TAKEN' },
-        })
-      }
 
-      const passwordHash = await getHash(password)
       try {
+        const passwordHash = await getHash(password)
+
         const newUser = await usersModel.createUser(
           name,
           username,
           email,
           passwordHash
         )
-        console.log('newuser', newUser)
-        pubsub.publish('USER_ADDED', { userAdded: newUser })
 
         const tokenAndUser = await usersModel.login(username, password)
-
         const commonGroup = await findOrCreateCommonGroup()
-        const groupId = commonGroup._id
 
         const userGroupRole = await usersModel.addUserToGroup(
           tokenAndUser.userId,
-          groupId,
+          commonGroup.id,
           'MEMBER'
         )
 
         if (!userGroupRole) {
           throw new GraphQLError('Adding user to common group failed!')
         }
+        pubsub.publish('USER_ADDED', { userAdded: newUser })
+
         return tokenAndUser
       } catch (error) {
-        throw new GraphQLError('Creating user failed', {
+        logger.error('Creating user failed', error, error.message)
+        throw new GraphQLError(error.message, {
           extensions: {
             code: 'USER_CREATE_FAILED',
             invalidArgs: args.name,
@@ -110,12 +104,24 @@ module.exports = {
     },
 
     login: async (root, args) => {
-      logger.info('Login arguments', args, args.username, args.password)
+      logger.info('Login with arguments', args)
       const {
         credentials: { username, password },
       } = args
-      const tokenAndUser = await usersModel.login(username, password)
-      return tokenAndUser
+
+      try {
+        const tokenAndUser = await usersModel.login(username, password)
+        return tokenAndUser
+      } catch (error) {
+        logger.error('Login failed', error)
+        throw new GraphQLError(error.message, {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args,
+            error,
+          },
+        })
+      }
     },
 
     changePassword: async (root, args, { currentUser }) => {
@@ -198,35 +204,35 @@ module.exports = {
     removeUserFromGroup: async (root, args, { currentUser }) => {
       checkUser(currentUser, 'Removing user from group failed!')
 
-      const { groupId, userId } = args
-
-      const userIsInGroup = checkUserInGroup(currentUser, groupId)
-      if (!userIsInGroup) {
-        throw new GraphQLError('User is not in group!')
-      }
-
-      const userOwnsGroup = checkUserOwnsGroup(currentUser, groupId)
-
-      // If user is group owner one can remove other users from the group
-      // If user is deleting him/herself from the group, it is allowed
-      if (!userOwnsGroup && currentUser.id !== userId) {
-        throw new GraphQLError('No permission to remove user from group!')
-      }
+      const { userId, groupId } = args
 
       try {
-        const joinedGroups = await usersModel.removeUserFromGroup(
-          userId,
-          groupId
-        )
+        const userIsInGroup = checkUserInGroup(currentUser, groupId)
+        if (!userIsInGroup) {
+          throw new GraphQLError('User is not in group!')
+        }
+
+        const userOwnsGroup = checkUserOwnsGroup(currentUser, groupId)
+
+        // If user is group owner one can remove other users from the group
+        // If user is deleting him/herself from the group, it is allowed
+        if (!userOwnsGroup && currentUser.id !== userId) {
+          throw new GraphQLError('No permission to remove user from group!')
+        }
+
+        const result = await usersModel.removeUserFromGroup(userId, groupId)
+        console.log('---- Result of user removal from group', result)
+
         pubsub.publish('USER_REMOVED_FROM_GROUP', {
           userId,
           userRemovedFromGroup: {
             userId,
-            joinedGroups,
+            joinedGroups: result.joinedGroups,
           },
         })
-        return { userId: currentUser.id, joinedGroups }
+        return result.userGroupRole
       } catch (error) {
+        logger.error('Removing user from group failed', error)
         throw new GraphQLError('User removal did not work', error.message)
       }
     },

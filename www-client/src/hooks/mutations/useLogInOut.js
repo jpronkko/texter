@@ -5,22 +5,20 @@ import { logIn, logOut } from '../../app/userSlice'
 
 import { LOGIN } from '../../graphql/mutations'
 import useNotifyMessage from '../ui/useNotifyMessage'
+import useError from '../ui/useErrorMessage'
+import { parseError } from '../../utils/parseError'
 import logger from '../../utils/logger'
 
 const useLogInOut = () => {
   const client = useApolloClient()
   const dispatch = useDispatch()
   const [showMessage] = useNotifyMessage()
+  const [showError] = useError()
 
   const [loginMutation, result] = useMutation(LOGIN, {
     onError: (error) => {
-      const err = error.toString()
-      console.log('Login error', error)
-      if (err.includes('Wrong credentials')) {
-        throw new Error('Could not login, check your username and password! ')
-      } else {
-        throw new Error(`Unknown error ${err}`)
-      }
+      showError(`Login failed: ${parseError(error)}`)
+      logger.error('Login error:', error)
     },
     onCompleted: (data) => {
       showMessage(`User ${data.login.username} logged in!`)
@@ -34,11 +32,12 @@ const useLogInOut = () => {
       variables: { credentials: { username, password } },
     })
 
-    const loginData = loginResult.data.login
-
-    logger.info('Login: setting login data', loginData)
+    const loginData = loginResult.data?.login
+    if (!loginData) {
+      logger.error('Login failed')
+      return null
+    }
     localStorage.setItem('texter-login', JSON.stringify(loginData))
-    logger.info('Login: setting token', loginData.token)
     localStorage.setItem('texter-token', loginData.token)
 
     dispatch(logIn(loginData))

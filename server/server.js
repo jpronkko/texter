@@ -36,6 +36,10 @@ const startServer = async () => {
     app.use('/test', testRouter)
   }
 
+  if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('build'))
+  }
+
   app.use(
     '/',
     express.json(),
