@@ -38,7 +38,7 @@ const authLink = setContext((_, { headers }) => {
 
 const API_ENDPOINT =
   process.env.REACT_APP_API_ENDPOINT ||
-  'https://fullstacktexter.azurewebsites.net:8080'
+  'https://fullstacktexter.azurewebsites.net'
 
 const APOLLO_ENDPOINT = `https://fullstacktexter.azurewebsites.net/graphql`
 

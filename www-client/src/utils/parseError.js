@@ -1,7 +1,7 @@
 export const parseError = (error) => {
-  if (error.graphQLErrors) {
+  if (error.graphQLErrors && error.graphQLErrors.length > 0) {
     console.log(error.graphQLErrors[0])
-    return error.graphQLErrors[0].message
+    return error.graphQLErrors.map((err) => err.message).join(', ')
   }
   return error.message
 }
