@@ -40,9 +40,11 @@ const API_ENDPOINT =
   process.env.REACT_APP_API_ENDPOINT ||
   'https://fullstacktexter.azurewebsites.net:8080'
 
+const APOLLO_ENDPOINT = `${API_ENDPOINT}/graphql`
+
 const WS_ENDPOINT =
   process.env.REACT_APP_WS_ENDPOINT ||
-  'wss://fullstacktexter.azurewebsites.net:8080'
+  'wss://fullstacktexter.azurewebsites.net:8080/graphql'
 
 const httpLink = createHttpLink({ uri: `${API_ENDPOINT}` })
 const wsLink = new GraphQLWsLink(
@@ -65,7 +67,7 @@ const splitLink = split(
 )
 
 const client = new ApolloClient({
-  //uri: 'http://localhost:4000',
+  uri: `${APOLLO_ENDPOINT}`,
   connectToDevTools: true,
   cache: new InMemoryCache(),
   link: splitLink,

@@ -45,26 +45,17 @@ const startServer = async () => {
     express.json(),
     expressMiddleware(apolloServer, {
       context: async ({ req }) => {
-        /*
-        const anniId = '64ec7c31d770cca4eb314561'
-        const currentUser = await usersModel.findUserWithId(anniId)
-        return { currentUser }
-        */
-
         const auth = req ? req.headers.authorization : null
         if (auth && auth.toLocaleLowerCase().startsWith('bearer ')) {
-          //console.log('middleware: Auth header', auth)
           try {
             const decodedToken = jwt.verify(
               auth.substring(7),
               config.JWT_SECRET
             )
 
-            //console.log('Decoced token:', decodedToken)
             const currentUser = await usersModel.findUserWithId(
               decodedToken.userId
             )
-            //console.log('Current user:', currentUser)
             return { currentUser }
           } catch (error) {
             logger.error('Middleware: Token decode failed', error)
