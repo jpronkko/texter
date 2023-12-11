@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const config = require('../utils/config')
 const logger = require('../utils/logger')
 
-logger.info('connecting to', config.MONGODB_URI)
+logger.info('Connecting to MongoDB')
 
 let db = null
 let disconnected = false
@@ -15,7 +15,7 @@ const connect = async () => {
     .connect(config.MONGODB_URI)
     .then((dbConnection) => {
       db = dbConnection
-      logger.info('Connected to MongoDB.', config.MONGODB_URI)
+      logger.info('Connected to MongoDB.')
     })
     .catch((error) => {
       logger.error('Error in connection to MongoDB:', error.message)

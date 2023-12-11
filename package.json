@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "npm run build --prefix server",
     "install-server": "npm install --prefix server",
     "install-client": "npm install --prefix www-client",
     "install": "npm run install-server && npm run install-client",
@@ -12,6 +13,7 @@
     "dev": "npm run dev-server & npm run client",
     "deploy": "npm run build --prefix client && npm start --prefix server",
     "deploy-cluster": "npm run build --prefix client && npm run cluster --prefix server",
+    "start": "npm start --prefix server",
     "test": "npm test --prefix server && npm test --prefix client"
   },
   "keywords": [],

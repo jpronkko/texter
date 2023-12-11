@@ -18,7 +18,7 @@ const startServer = async () => {
   const app = express()
   const httpServer = http.createServer(app)
 
-  mongoConnect()
+  await mongoConnect()
   const apolloServer = await startApolloServer(httpServer)
 
   app.use(cors())
@@ -76,7 +76,9 @@ const startServer = async () => {
   )
 
   httpServer.listen(config.PORT, () =>
-    logger.info(`Server is now running on http://localhost:${config.PORT}`)
+    logger.info(
+      `Server is now running on http://localhost:${config.PORT} and waiting for connections...`
+    )
   )
   return { httpServer, apolloServer }
 }
