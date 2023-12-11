@@ -36,10 +36,11 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
-const httpLink = createHttpLink({ uri: 'http://localhost:4000' })
+const PORT = 8080
+const httpLink = createHttpLink({ uri: `http://localhost:${PORT}` })
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: 'ws://localhost:4000',
+    url: `ws://localhost:${PORT}`,
   })
 )
 

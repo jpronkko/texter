@@ -2,9 +2,9 @@ import React from 'react'
 
 import { useNavigate } from 'react-router-dom'
 
-import { Button } from '@mui/material'
+//import { Button } from '@mui/material'
 
-import useError from '../../hooks/ui/useErrorMessage'
+//import useError from '../../hooks/ui/useErrorMessage'
 import useLogInOut from '../../hooks/mutations/useLogInOut'
 
 import LoginForm from '../forms/LoginForm'
@@ -13,7 +13,7 @@ import logger from '../../utils/logger'
 const Login = () => {
   const navigate = useNavigate()
   const [login /*result*/, ,] = useLogInOut()
-  const [showError /*clearError*/] = useError()
+  //const [showError] = useError()
 
   const handleLogin = async (credentials) => {
     logger.info('Login user input data:', credentials)
@@ -25,7 +25,7 @@ const Login = () => {
     }
   }
 
-  const fastLogin = async (username, password) => {
+  /* const fastLogin = async (username, password) => {
     try {
       await login(username, password)
       navigate('/')
@@ -33,13 +33,14 @@ const Login = () => {
       showError(error.toString())
     }
   }
+   */
   return (
     <div>
-      <Button onClick={() => fastLogin('anni', 'klonksahtava')}>Anni</Button>
+      {/* <Button onClick={() => fastLogin('anni', 'klonksahtava')}>Anni</Button>
       <Button onClick={() => fastLogin('sonja', 'eyeofsauron')}>Sonja</Button>
       <Button onClick={() => fastLogin('raikku', 'hilpatihalpati')}>
         Raimo
-      </Button>
+      </Button> */}
       <LoginForm handleLogin={handleLogin} />
     </div>
   )
