@@ -36,11 +36,18 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
-const PORT = 8080
-const httpLink = createHttpLink({ uri: `http://localhost:${PORT}` })
+const API_ENDPOINT =
+  process.env.REACT_APP_API_ENDPOINT ||
+  'https://fullstacktexter.azurewebsites.net:8080'
+
+const WS_ENDPOINT =
+  process.env.REACT_APP_WS_ENDPOINT ||
+  'wss://fullstacktexter.azurewebsites.net:8080'
+
+const httpLink = createHttpLink({ uri: `${API_ENDPOINT}` })
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: `ws://localhost:${PORT}`,
+    url: `${WS_ENDPOINT}`,
   })
 )
 
