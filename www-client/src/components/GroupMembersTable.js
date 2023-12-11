@@ -6,7 +6,7 @@ import { PersonRemove } from '@mui/icons-material'
 import SelectionPopup from './forms/SelectionPopup'
 
 import useGetGroupMembers from '../hooks/queries/useGetGroupMembers'
-import useUpdateUserRole from '../hooks/mutations/updateUserRole'
+import useUpdateUserRole from '../hooks/mutations/useUpdateUserRole'
 import useRemoveUserFromGroup from '../hooks/mutations/useRemoveUserFromGroup'
 
 const GroupMembersTable = ({ groupId }) => {
