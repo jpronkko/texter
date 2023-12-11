@@ -40,11 +40,11 @@ const API_ENDPOINT =
   process.env.REACT_APP_API_ENDPOINT ||
   'https://fullstacktexter.azurewebsites.net:8080'
 
-const APOLLO_ENDPOINT = `${API_ENDPOINT}/graphql`
+const APOLLO_ENDPOINT = `https://fullstacktexter.azurewebsites.net/graphql`
 
 const WS_ENDPOINT =
   process.env.REACT_APP_WS_ENDPOINT ||
-  'wss://fullstacktexter.azurewebsites.net:8080/graphql'
+  'wss://fullstacktexter.azurewebsites.net/graphql'
 
 const httpLink = createHttpLink({ uri: `${API_ENDPOINT}` })
 const wsLink = new GraphQLWsLink(
