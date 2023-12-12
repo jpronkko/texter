@@ -62,5 +62,5 @@ jobs:
         with:
           app-name: "fullstacktexter"
           slot-name: "Production"
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3786C78054854144B2308994849259A1 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E0EAFB1527F7414CBC36DF7107BBFF4B1 }}
           package: .
