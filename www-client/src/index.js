@@ -39,10 +39,10 @@ const authLink = setContext((_, { headers }) => {
 
 const API_ENDPOINT =
   process.env.REACT_APP_API_ENDPOINT ||
-  'https://fullstacktexter.azurewebsites.net/api'
+  'https://fstacktexter.azurewebsites.net/api'
 
 const WS_ENDPOINT =
-  process.env.REACT_APP_WS_ENDPOINT || 'wss://fullstacktexter.azurewebsites.net'
+  process.env.REACT_APP_WS_ENDPOINT || 'wss://fstacktexter.azurewebsites.net'
 
 const httpLink = createHttpLink({ uri: `${API_ENDPOINT}` })
 const wsLink = new GraphQLWsLink(
