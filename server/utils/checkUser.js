@@ -1,13 +1,10 @@
-const { GraphQLError } = require('graphql')
 const Group = require('../models/groups.mongo')
 const logger = require('../utils/logger')
 
 const checkUser = (currentUser, errorMessage) => {
   if (!currentUser) {
-    logger.error('No user in header!')
-    throw new GraphQLError(errorMessage, {
-      extensions: { code: 'BAD_USER_INPUT', invalidArgs: currentUser },
-    })
+    logger.error('Not authorized, no user in header!')
+    throw new Error(errorMessage)
   }
 }
 

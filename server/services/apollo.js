@@ -20,7 +20,7 @@ const resolversArray = loadFilesSync('**/*', {
 const startApolloServer = async (httpServer) => {
   const wsServer = new WebSocketServer({
     server: httpServer,
-    path: '/graphql',
+    path: '/',
   })
 
   const schema = makeExecutableSchema({

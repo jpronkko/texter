@@ -18,15 +18,16 @@ import { setContext } from '@apollo/client/link/context'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { createClient } from 'graphql-ws'
-
-import store from './app/store'
-import logger from './utils/logger'
-import theme from './theme'
 import { ThemeProvider } from '@emotion/react'
 
+import store from './app/store'
+import theme from './theme'
+import { getStoredToken } from './utils/loginData'
+import logger from './utils/logger'
+
 const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('texter-token')
-  logger.info('AuthLink: setting token to', token)
+  const token = getStoredToken()
+  logger.info('AuthLink setContext: setting token to', token)
 
   return {
     headers: {
@@ -38,13 +39,10 @@ const authLink = setContext((_, { headers }) => {
 
 const API_ENDPOINT =
   process.env.REACT_APP_API_ENDPOINT ||
-  'https://fullstacktexter.azurewebsites.net'
-
-const APOLLO_ENDPOINT = `https://fullstacktexter.azurewebsites.net/graphql`
+  'https://fullstacktexter.azurewebsites.net/api'
 
 const WS_ENDPOINT =
-  process.env.REACT_APP_WS_ENDPOINT ||
-  'wss://fullstacktexter.azurewebsites.net/graphql'
+  process.env.REACT_APP_WS_ENDPOINT || 'wss://fullstacktexter.azurewebsites.net'
 
 const httpLink = createHttpLink({ uri: `${API_ENDPOINT}` })
 const wsLink = new GraphQLWsLink(
@@ -52,6 +50,9 @@ const wsLink = new GraphQLWsLink(
     url: `${WS_ENDPOINT}`,
   })
 )
+
+logger.info('API_ENDPOINT', API_ENDPOINT)
+logger.info('WS_ENDPOINT', WS_ENDPOINT)
 
 const splitLink = split(
   ({ query }) => {
@@ -67,7 +68,7 @@ const splitLink = split(
 )
 
 const client = new ApolloClient({
-  uri: `${APOLLO_ENDPOINT}`,
+  uri: `${API_ENDPOINT}`,
   connectToDevTools: true,
   cache: new InMemoryCache(),
   link: splitLink,

@@ -37,16 +37,34 @@ module.exports = {
     allUsers: async () => await usersModel.getAllUsers(),
 
     getUserJoinedGroups: async (root, args, { currentUser }) => {
-      checkUser(currentUser, 'Getting user groups failed!')
-      const joinedGroups = await usersModel.getUserJoinedGroups(currentUser.id)
-      console.log('Users resolver get user joined groups:', joinedGroups)
-      return { userId: currentUser.id, joinedGroups }
+      try {
+        checkUser(currentUser, 'Getting user groups failed, not authorized!')
+        const joinedGroups = await usersModel.getUserJoinedGroups(
+          currentUser.id
+        )
+        return { userId: currentUser.id, joinedGroups }
+      } catch (error) {
+        logger.error('Getting user joined groups failed', error)
+        throw new GraphQLError(
+          'Getting user joined groups failed',
+          error.message
+        )
+      }
     },
+
     getUsersNotInGroup: async (root, args, { currentUser }) => {
-      checkUser(currentUser, 'Getting users not in group failed!')
-      const { groupId } = args
-      const usersNotInGroup = await usersModel.getUsersNotInGroup(groupId)
-      return usersNotInGroup
+      try {
+        checkUser(currentUser, 'Getting users not in group failed!')
+        const { groupId } = args
+        const usersNotInGroup = await usersModel.getUsersNotInGroup(groupId)
+        return usersNotInGroup
+      } catch (error) {
+        logger.error('Getting users not in group failed', error)
+        throw new GraphQLError(
+          'Getting users not in group failed',
+          error.message
+        )
+      }
     },
   },
 
@@ -56,6 +74,7 @@ module.exports = {
         user: { name, username, email, password },
       } = args
 
+      // Password length can't be validated by mongoose as only hash is stored
       if (password.length < MIN_PASSWORD_LENGTH) {
         logger.error('Create user: password too short')
         throw new GraphQLError('Password too short!', {
@@ -142,7 +161,6 @@ module.exports = {
         currentUser.id,
         oldPassword
       )
-      console.log('Correct pw', correctPW)
 
       if (!correctPW) {
         logger.error('Wrong password', currentUser, oldPassword)
@@ -184,13 +202,12 @@ module.exports = {
       if (currentUser.id === userId) {
         throw new GraphQLError('Trying to add oneself to a group')
       }
-      // should return without pw hash
+      // Return user information without pw hash
       const userGroupRole = await usersModel.addUserToGroup(
         userId,
         groupId,
         'MEMBER'
       )
-      console.log('addusertog', userGroupRole)
 
       pubsub.publish('USER_ADDED_TO_GROUP', {
         userId,
@@ -221,7 +238,6 @@ module.exports = {
         }
 
         const result = await usersModel.removeUserFromGroup(userId, groupId)
-        console.log('---- Result of user removal from group', result)
 
         pubsub.publish('USER_REMOVED_FROM_GROUP', {
           userId,

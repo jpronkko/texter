@@ -15,7 +15,11 @@ const schema = yup.object({
     .min(4, ({ min }) => `Username must be at least ${min} characters.`)
     .max(30, ({ max }) => `Username must be no more than ${max} characters.`)
     .required('Username is required'),
-  email: yup.string().email().required(),
+  email: yup
+    .string()
+    .email()
+    .required()
+    .max(40, ({ max }) => `E-mail must be no more than ${max} characters.`),
   password: yup
     .string()
     .min(8, ({ min }) => `Password must be at least ${min} characters.`)
@@ -38,6 +42,7 @@ const CreateUserForm = ({ handleCreate }) => {
 
   const onSubmit = (data) => {
     handleCreate(data)
+    reset()
   }
 
   return (

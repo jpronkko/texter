@@ -1,10 +1,17 @@
 import { useMutation } from '@apollo/client'
+import { useDispatch } from 'react-redux'
+
 import { CREATE_USER } from '../../graphql/mutations'
+import { logIn } from '../../app/userSlice'
+
 import useError from '../ui/useErrorMessage'
 import { parseError } from '../../utils/parseError'
+import { setLoginData } from '../../utils/loginData'
+
 import logger from '../../utils/logger'
 
 const useCreateUser = () => {
+  const dispatch = useDispatch()
   const [showError] = useError()
   const [mutation, result] = useMutation(CREATE_USER, {
     onError: (error) => {
@@ -26,7 +33,16 @@ const useCreateUser = () => {
       },
     })
     logger.info('Create user result:', createResult)
-    return createResult.data?.createUser
+    const loginData = createResult.data?.createUser
+    if (!loginData) {
+      logger.error('Create user failed')
+      return null
+    }
+
+    setLoginData(loginData)
+    dispatch(logIn(loginData))
+
+    return loginData
   }
 
   return [createUser, result]

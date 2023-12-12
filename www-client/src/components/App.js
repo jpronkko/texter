@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
@@ -10,30 +10,25 @@ import { logIn } from '../app/userSlice'
 import CreateUserPage from './pages/CreateUserPage'
 import LoginPage from './pages/LoginPage'
 import GroupAdminPage from './pages/GroupAdminPage'
-
+import ErrorDlg from './dialogs/ErrorDlg'
 import GroupSelectPage from './pages/GroupSelectPage'
 import MessagesPage from './pages/MessagesPage'
 import UserListPage from './pages/UserListPage'
-
-import ErrorDlg from './dialogs/ErrorDlg'
-
-import logger from '../utils/logger'
 import TopBar from './TopBar'
 
+import { getLoginData } from '../utils/loginData'
+import logger from '../utils/logger'
+
 const App = () => {
-  const user = useSelector((state) => state.user.userData)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const loginData = localStorage.getItem('texter-login')
-    const loginDataAsObj = loginData ? JSON.parse(loginData) : null
-    if (loginDataAsObj) {
-      logger.info('App: setting login data', loginDataAsObj)
-      dispatch(logIn(loginDataAsObj))
+    const loginData = getLoginData()
+    if (loginData) {
+      logger.info('App: setting login data', loginData)
+      dispatch(logIn(loginData))
     }
   }, [])
-
-  console.log('User now', user)
 
   const handleCreateUser = async (data) => {
     logger.info('Create user input data:', data)

@@ -15,7 +15,11 @@ const connect = async () => {
     .connect(config.MONGODB_URI)
     .then((dbConnection) => {
       db = dbConnection
-      logger.info('Connected to MongoDB.')
+      const str = config.MONGODB_URI
+      const firstIndex = str.lastIndexOf('@')
+      const lastIndex = str.lastIndexOf('?')
+      const host = str.substring(firstIndex + 1, lastIndex)
+      logger.info('Connected to MongoDB. Host and db: ', host)
     })
     .catch((error) => {
       logger.error('Error in connection to MongoDB:', error.message)
@@ -27,8 +31,8 @@ const mongoConnect = async () => {
     logger.info('Waiting for MongoDB connection...')
     await connect()
     if (!db) {
-      logger.error('MongoDB connection failed, retrying in 3 seconds...')
-      await sleep(3000)
+      logger.error('MongoDB connection failed, retrying in 5 seconds...')
+      await sleep(5000)
     }
   }
 }

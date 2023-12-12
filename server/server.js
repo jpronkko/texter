@@ -41,7 +41,7 @@ const startServer = async () => {
   }
 
   app.use(
-    '/',
+    '/api',
     express.json(),
     expressMiddleware(apolloServer, {
       context: async ({ req }) => {

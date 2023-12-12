@@ -34,7 +34,7 @@ const schema = new mongoose.Schema({
     required: true,
     unique: true,
     minlength: 4,
-    maxlength: 20,
+    maxlength: 40,
     validate: {
       validator: validator.isEmail,
     },
@@ -42,7 +42,6 @@ const schema = new mongoose.Schema({
   passwordHash: {
     type: String,
     required: true,
-    minlength: 5,
   },
   joinedGroups: [JoinedGroup],
 })

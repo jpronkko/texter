@@ -7,6 +7,7 @@ import { LOGIN } from '../../graphql/mutations'
 import useNotifyMessage from '../ui/useNotifyMessage'
 import useError from '../ui/useErrorMessage'
 import { parseError } from '../../utils/parseError'
+import { setLoginData } from '../../utils/loginData'
 import logger from '../../utils/logger'
 
 const useLogInOut = () => {
@@ -37,10 +38,9 @@ const useLogInOut = () => {
       logger.error('Login failed')
       return null
     }
-    localStorage.setItem('texter-login', JSON.stringify(loginData))
-    localStorage.setItem('texter-token', loginData.token)
-
+    setLoginData(loginData)
     dispatch(logIn(loginData))
+
     return loginData
   }
 

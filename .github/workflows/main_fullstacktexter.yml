@@ -9,6 +9,11 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  PROD_MONGODB_URI: ${{ secrets.PROD_MONGODB_URI }}
+  SECRET: ${{ secrets.SECRET }}
+  TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
