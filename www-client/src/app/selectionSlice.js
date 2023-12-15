@@ -12,7 +12,6 @@ export const selectionSlice = createSlice({
   },
   reducers: {
     setGroup: (state, action) => {
-      console.log('Set group action payload:', action.payload)
       state.group = {
         id: action.payload.id,
         name: action.payload.name,
@@ -25,7 +24,6 @@ export const selectionSlice = createSlice({
       state.topic = emptyTopic
     },
     setTopic: (state, action) => {
-      console.log('Set topic  action payload:', action.payload)
       state.topic = {
         id: action.payload.id,
         name: action.payload.name,

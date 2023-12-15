@@ -30,9 +30,21 @@ const GroupMembersTable = ({ groupId }) => {
   }
 
   const roleToTitle = {
+    OWNER: 'Owner',
     ADMIN: 'Admin',
     MEMBER: 'Member',
-    OWNER: 'Owner',
+  }
+
+  const roleComparator = (role1, role2) => {
+    console.log('roleComparator', role1, role2)
+    const role1Index = Object.keys(roleToTitle).findIndex(
+      (key) => key === role1
+    )
+    const role2Index = Object.keys(roleToTitle).findIndex(
+      (key) => key === role2
+    )
+    console.log('roleComparator', role1Index, role2Index)
+    return role1Index - role2Index
   }
 
   const columns = [
@@ -49,6 +61,7 @@ const GroupMembersTable = ({ groupId }) => {
       field: 'role',
       headerName: 'Role',
       width: 150,
+      sortComparator: roleComparator,
       renderCell: (params) =>
         params.row.role === 'OWNER' ? (
           roleToTitle[params.row.role]
@@ -99,8 +112,6 @@ const GroupMembersTable = ({ groupId }) => {
 
   return (
     <Container>
-      {/*  <div style={{ height: 400, width: '100%' }}>
-       */}{' '}
       <DataGrid
         rows={rows}
         columns={columns}
@@ -110,6 +121,14 @@ const GroupMembersTable = ({ groupId }) => {
         }}
         loading={loading}
         initialState={{
+          sorting: {
+            sortModel: [
+              {
+                field: 'role',
+                sort: 'asc',
+              },
+            ],
+          },
           pagination: {
             paginationModel: { page: 0, pageSize: 10 },
           },
@@ -117,7 +136,6 @@ const GroupMembersTable = ({ groupId }) => {
         pageSizeOptions={[10, 15]}
         footer
       />
-      {/* </div> */}
     </Container>
   )
 }

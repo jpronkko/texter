@@ -1,6 +1,9 @@
 import { useMutation } from '@apollo/client'
 
-import { GET_USER_JOINED_GROUPS } from '../../graphql/queries'
+import {
+  GET_RECV_INVITATIONS,
+  GET_USER_JOINED_GROUPS,
+} from '../../graphql/queries'
 import { CHANGE_INVITATION_STATUS } from '../../graphql/mutations'
 import useError from '../ui/useErrorMessage'
 
@@ -11,11 +14,28 @@ const useModifyRecvInv = (/* refetchGroups */) => {
       showError(`Modify invitation failed ${error.toString()}`)
       console.log('error', error)
     },
-    update: (store, response) => {
+    update: (cache, response) => {
       const modInvitation = response.data.changeInvitationStatus
-      console.log('inv update', response)
-      store.modify({
-        id: `InvitationInfo:${modInvitation.id}`,
+      console.log('Mutation: Modify Recv Inv Status response: ', modInvitation)
+      const result = cache.readQuery({
+        query: GET_RECV_INVITATIONS,
+      })
+
+      const invitation = result.getReceivedInvitations.find(
+        (item) => item.id === modInvitation.id
+      )
+      console.log('Mutation: Modify Recv Inv Status invitation: ', invitation)
+
+      if (!invitation) {
+        console.error(
+          'Modify Recv: Invitation not found in cache:',
+          modInvitation.id
+        )
+        return
+      }
+
+      cache.modify({
+        id: /* cache.identify(invitation) */ `InvitationInfo:${modInvitation.id}`,
         fields: {
           status() {
             return modInvitation.status
@@ -23,11 +43,13 @@ const useModifyRecvInv = (/* refetchGroups */) => {
         },
       })
 
-      /*const invitationsInStore = store.readQuery({
+      const invitationsInStore = cache.readQuery({
         query: GET_RECV_INVITATIONS,
-        variables: { id: modInvitation.id },
       })
-      console.log('invitationsInStore', invitationsInStore)*/
+      console.log(
+        'Modinv Recv: invitationsInStore after modify',
+        invitationsInStore
+      )
       // refetchGroups()
       /*const recvInvitations = invitationsInStore.getReceivedInvitations
       store.writeQuery({
@@ -47,10 +69,13 @@ const useModifyRecvInv = (/* refetchGroups */) => {
     },
     refetchQueries: [{ query: GET_USER_JOINED_GROUPS }],
   })
+
   const acceptInvitation = async (invitationId) => {
     const changeResult = await mutation({
       variables: { invitationId, status: 'ACCEPTED' },
     })
+    const result = changeResult.data?.changeInvitationStatus
+    console.log('acceptInvitation result', result)
     return changeResult.data?.changeInvitationStatus
   }
 

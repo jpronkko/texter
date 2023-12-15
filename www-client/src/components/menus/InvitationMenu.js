@@ -22,12 +22,11 @@ const RecvInvItem = ({ invitation }) => {
   const [acceptInvitation, rejectInvitation] = useModifyRecvInv()
 
   const handleAccept = async () => {
-    const retval = await acceptInvitation(invitation.id)
-    console.log('retval', retval)
+    await acceptInvitation(invitation.id)
   }
 
-  const handleReject = () => {
-    rejectInvitation(invitation.id)
+  const handleReject = async () => {
+    await rejectInvitation(invitation.id)
   }
 
   return (
@@ -40,7 +39,8 @@ const RecvInvItem = ({ invitation }) => {
         sx={{ flex: 1, p: 1 }}
       >
         <Typography>
-          Invite to {invitation.group.name} from {invitation.fromUser.username}
+          Invite to {invitation.group.name} from {invitation.fromUser.username}{' '}
+          {invitation.status}
         </Typography>
         <Box sx={{ ml: 2 }}>
           <Button
@@ -69,18 +69,12 @@ const InvitationMenu = () => {
   const { recvInvitations /* fetchMore, loading, error, refetch */ } =
     useRecvInvitations(userId)
 
-  const newInvitations = useRecvInvSubscription(userId)
-  const newInvStatus = useInvStatusSubscription(userId)
+  useRecvInvSubscription(userId)
+  useInvStatusSubscription(userId)
 
-  console.log(
-    'Invitation menu: newInvitations and status',
-    newInvitations,
-    'subscription: newInvStatus',
-    newInvStatus
-  )
-  const rInvitations = recvInvitations?.filter(
+  const rInvitations = recvInvitations /*?.filter(
     (inv) => inv.status === 'PENDING'
-  )
+  )*/
   const [anchorElUser, setAnchorElUser] = useState(null)
 
   const handleOpenInvitationMenu = (event) => {
@@ -100,7 +94,6 @@ const InvitationMenu = () => {
         />
       ))
     } else {
-      console.log('No invitations')
       return (
         <MenuItem>
           <Typography>No invitations</Typography>

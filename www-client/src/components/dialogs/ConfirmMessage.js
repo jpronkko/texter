@@ -15,7 +15,6 @@ const ConfirmMessage = forwardRef((props, ref) => {
     setVisible(false)
     console.log('handleOk', onOk)
     if (onOk) {
-      console.log('onOk')
       onOk()
     }
   }

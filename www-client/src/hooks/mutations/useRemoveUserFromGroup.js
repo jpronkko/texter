@@ -1,9 +1,12 @@
 import { useMutation } from '@apollo/client'
 
 import { REMOVE_USER_FROM_GROUP } from '../../graphql/mutations'
+// eslint-disable-next-line no-unused-vars
 import { GET_GROUP_MEMBERS } from '../../graphql/queries'
+import { GET_USER_JOINED_GROUPS } from '../../graphql/queries'
 
 import useError from '../ui/useErrorMessage'
+import { parseError } from '../../utils/parseError'
 import logger from '../../utils/logger'
 
 const useRemoveUserFromGroup = () => {
@@ -11,46 +14,55 @@ const useRemoveUserFromGroup = () => {
   const [mutation, result] = useMutation(REMOVE_USER_FROM_GROUP, {
     onError: (error) => {
       logger.error('remove user from group error:', error)
-      showError(`Remove user from group failed: ${error.toString()}`)
+      showError(`Remove user from group failed: ${parseError(error)}`)
     },
-    update: (store, response) => {
+    update: (cache, response) => {
       const removedUser = response.data.removeUserFromGroup
       const groupId = removedUser.group
       const userId = removedUser.user
 
-      const groupMembers = store.readQuery({
-        query: GET_GROUP_MEMBERS,
-        variables: { groupId },
-      })
-      logger.info('remove user from group update', removedUser)
-      logger.info('group members in store', groupMembers)
-      const updatedMembers = groupMembers.getGroupMembers.filter(
-        (member) => member.id !== userId
-      )
-      logger.info('updated group members', updatedMembers)
-      store.writeQuery({
-        query: GET_GROUP_MEMBERS,
-        data: {
-          variables: { groupId },
-          getGroupMembers: updatedMembers,
+      console.log('-------------------')
+      console.log('Remove user from group update', response)
+      cache.updateQuery(
+        {
+          query: GET_USER_JOINED_GROUPS,
+          variables: { userId: userId },
+          overwrite: true,
         },
-      })
-      logger.info(
-        'group members in store after update',
-        store.readQuery({
+        ({ getUserJoinedGroups }) => {
+          console.log('getUserJoinedGroups', getUserJoinedGroups)
+          return {
+            getUserJoinedGroups: {
+              userId: getUserJoinedGroups.userId,
+              joinedGroups: getUserJoinedGroups.joinedGroups.filter(
+                (item) => item.groupId !== groupId
+              ),
+            },
+          }
+        }
+      )
+
+      cache.updateQuery(
+        {
           query: GET_GROUP_MEMBERS,
-          variables: { groupId },
-        })
+          variables: { groupId: groupId },
+          overwrite: true,
+        },
+        ({ getGroupMembers }) => {
+          return {
+            getGroupMembers: getGroupMembers.filter(
+              (item) => item.id !== userId
+            ),
+          }
+        }
       )
     },
   })
 
   const removeUserFromGroup = async (userId, groupId) => {
-    logger.info('remove user from group params', groupId, userId)
     const removeResult = await mutation({
       variables: { userId, groupId },
     })
-    logger.info('remove user from group result:', removeResult)
     return removeResult.data?.removeUserFromGroup
   }
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 const info = (...prms) => {
-  console.log('------------------------------------------------')
+  console.log('-------------------------------------------------------------')
   console.log(...prms)
 }
 

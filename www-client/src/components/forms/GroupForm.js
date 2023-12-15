@@ -8,6 +8,40 @@ import useModifyGroup from '../../hooks/mutations/useModifyGroup'
 import { setGroup } from '../../app/selectionSlice'
 import { useDispatch } from 'react-redux'
 
+const GroupItem = ({ title, body, handleChange }) => {
+  return (
+    <Grid
+      container
+      direction={'row'}
+      sx={{ mb: 1.5 }}
+    >
+      <Grid
+        item
+        xs={12}
+      >
+        <Typography variant="h6">{title}</Typography>
+      </Grid>
+      <Grid
+        item
+        xs={10.8}
+      >
+        <Typography variant="body1">{body}</Typography>
+      </Grid>
+      <Grid
+        item
+        xs={1.2}
+      >
+        <Button
+          variant="contained"
+          onClick={handleChange}
+        >
+          <Typography>Change</Typography>
+        </Button>
+      </Grid>
+    </Grid>
+  )
+}
+
 const GroupForm = () => {
   const dispatch = useDispatch()
 
@@ -57,74 +91,24 @@ const GroupForm = () => {
         }}
       >
         <Grid container>
-          <Grid
-            container
-            direction={'row'}
-            sx={{ mb: 1.5 }}
-          >
-            <Grid
-              item
-              xs={12}
-              alignItems="stretch"
-            >
-              <Typography variant="h6">Name</Typography>
-            </Grid>
-            <Grid
-              item
-              xs={11}
-            >
-              <Typography variant="body1">{selectedGroup.name}</Typography>
-            </Grid>
-            <Grid
-              item
-              xs={1}
-            >
-              <Button
-                variant="contained"
-                onClick={() => nameDlgRef.current.open()}
-              >
-                Change
-              </Button>
-            </Grid>
-          </Grid>
+          <GroupItem
+            title="Name"
+            body={selectedGroup.name}
+            handleChange={() => nameDlgRef.current.open()}
+          />
           <Grid
             item
             xs={12}
+            sx={{ mb: 1.5 }}
           >
             <Divider />
           </Grid>
-          <Grid
-            container
-            direction={'row'}
-            sx={{ mt: 1.5 }}
-          >
-            <Grid
-              item
-              xs={12}
-            >
-              <Typography variant="h6">Description</Typography>
-            </Grid>
-            <Grid
-              item
-              xs={11}
-            >
-              <Typography variant="body1">
-                {selectedGroup.description}
-              </Typography>
-            </Grid>
-            <Grid
-              container
-              item
-              xs={1}
-            >
-              <Button
-                variant="contained"
-                onClick={() => descriptionDlgRef.current.open()}
-              >
-                Change
-              </Button>
-            </Grid>
-          </Grid>
+
+          <GroupItem
+            title="Description"
+            body={selectedGroup.description}
+            handleChange={() => descriptionDlgRef.current.open()}
+          />
         </Grid>
       </Paper>
     </Box>

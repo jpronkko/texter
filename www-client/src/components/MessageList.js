@@ -10,19 +10,10 @@ import useMessageSubsription from '../hooks/subscriptions/useMessageSubsription'
 import MessageListItem from './MessageListItem'
 
 const MessageList = () => {
-  const group = useSelector((state) => state.selection.group)
   const topic = useSelector((state) => state.selection.topic)
 
   const { messages, loading, error } = useMessages(topic.id)
-  const newLocal = useMessageSubsription(topic.id)
-  console.log(' -> ', newLocal.messages, newLocal.loading, newLocal.error)
-
-  console.log(
-    `message list: group ${JSON.stringify(group.id)}, topic ${JSON.stringify(
-      topic.id
-    )}`,
-    messages
-  )
+  useMessageSubsription(topic.id)
 
   if (loading) {
     return <div>Loading ...</div>
@@ -59,16 +50,3 @@ const MessageList = () => {
 }
 
 export default MessageList
-
-{
-  /* <Box
-      component="main"
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        flex: '1',
-        bgcolor: 'background.default',
-        padding: '10px',
-      }}
-    > */
-}

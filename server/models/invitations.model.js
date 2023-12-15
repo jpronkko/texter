@@ -19,7 +19,9 @@ const findInvitationById = async (id) => {
 }
 
 const getSentInvitations = async (userId) => {
-  const invitations = await Invitation.find({ fromUserId: userId })
+  const invitations = await Invitation.find({ fromUserId: userId }).sort({
+    sentTime: -1,
+  })
   if (!invitations) {
     throw new Error(`Invitations from user ${userId} not found!`)
   }
@@ -35,7 +37,9 @@ const getSentInvitations = async (userId) => {
 }
 
 const getReceivedInvitations = async (userId) => {
-  const invitations = await Invitation.find({ toUserId: userId })
+  const invitations = await Invitation.find({ toUserId: userId }).sort({
+    sentTime: -1,
+  })
   if (!invitations) {
     logger.error(`Invitations to user ${userId} not found!`)
     throw new Error(`Invitations to user ${userId} not found!`)
@@ -70,18 +74,26 @@ const createInvitation = async (fromUserId, toUser, groupId) => {
     fromUserId: new Types.ObjectId(fromUserId),
     toUserId: new Types.ObjectId(toUserId),
     groupId: new Types.ObjectId(groupId),
-  })
+  }).sort({ sentTime: -1 })
 
-  logger.info('Invitations', invitations)
+  logger.info(
+    'Invitations models: exisintg invitations',
+    invitations,
+    invitations.length
+  )
 
-  if (invitations && invitations.length > 0) {
+  if (
+    invitations &&
+    invitations.length > 0 &&
+    invitations[0].status === 'PENDING'
+  ) {
     logger.error(
-      'There is already a pending or rejected invitation!',
+      'There is already a pending invitation!',
       fromUserId,
       toUserId,
       groupId
     )
-    throw new Error(`There is already an invitation! ${invitations}`)
+    throw new Error(`There is already a pending invitation! ${invitations[0]}`)
   }
   const newInvitation = new Invitation({
     groupId,
@@ -128,8 +140,8 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
       throw new Error('No user group found!')
     }
 
-    await Invitation.deleteOne({ _id: invitation._id })
-    return invitationJSON
+    //await Invitation.deleteOne({ _id: invitation._id })
+    //return invitationJSON
   } else if (status === 'REJECTED') {
     if (invitationJSON.toUserId !== userId) {
       logger.error(
@@ -141,8 +153,8 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
       )
       throw new Error('Not authorized to reject invitation!')
     }
-    await Invitation.deleteOne({ _id: invitationId })
-    return invitationJSON
+    //await Invitation.deleteOne({ _id: invitationId })
+    //return invitationJSON
   } else if (status === 'CANCELLED') {
     if (invitationJSON.fromUserId !== userId) {
       logger.error(
@@ -154,11 +166,12 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
       )
       throw new Error('Not authorized to cancel invitation!')
     }
-    await Invitation.deleteOne({ _id: invitation._id })
-    return invitationJSON
+    //await Invitation.deleteOne({ _id: invitation._id })
+    //return invitationJSON
   }
 
   invitation.status = status
+  logger.info('Changing invitation status', invitation, status)
   return (await invitation.save()).toJSON()
 }
 

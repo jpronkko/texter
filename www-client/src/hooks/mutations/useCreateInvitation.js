@@ -6,39 +6,45 @@ import {
 } from '../../graphql/queries'
 import useError from '../ui/useErrorMessage'
 import logger from '../../utils/logger'
+import { parseError } from '../../utils/parseError'
+
+const updateCache = (cache, query, newInvitation) => {
+  const uniqueById = (items) => {
+    let seen = new Set()
+    return items.filter((item) => {
+      let id = item.id
+      return seen.has(id) ? false : seen.add(id)
+    })
+  }
+
+  cache.updateQuery(query, ({ getSentInvitations }) => {
+    logger.info(
+      'update get invitations query',
+      query,
+      ' getSentInvitaitons: ',
+      getSentInvitations
+    )
+    return {
+      getSentInvitations: uniqueById([newInvitation, ...getSentInvitations]),
+    }
+  })
+}
 
 const useCreateInvitation = () => {
   const [showError] = useError()
   const [mutation, result] = useMutation(CREATE_INVITATION, {
     onError: (error) => {
-      showError(`Create invitation failed ${error.toString()}`)
+      showError(`Create invitation failed ${parseError(error)}`)
       logger.error('create invitation error:', error)
     },
 
-    update: (store, response) => {
-      const newInvitation = response.data.createInvitation
-      const invitationsInStore = store.readQuery({
-        query: GET_SENT_INVITATIONS,
-        variables: {
-          id: newInvitation.id,
-          // fromUserId: newInvitation.fromUserId,
-          // toUserId: newInvitation.toUserId,
-        },
-      })
-      store.writeQuery({
-        query: GET_SENT_INVITATIONS,
-        data: {
-          // There is only one invitation per invitation id in the store
-          variables: {
-            __typename: 'Invitation',
-            id: newInvitation.id,
-            // fromUserId: newInvitation.fromUserId,
-            // toUserId: newInvitation.toUserId,
-          },
-          getSentInvitations:
-            invitationsInStore.getSentInvitations.concat(newInvitation),
-        },
-      })
+    update: (cache, response) => {
+      logger.info('create invitation update', response)
+      updateCache(
+        cache,
+        { query: GET_SENT_INVITATIONS },
+        response.data.createInvitation
+      )
     },
     refetchQueries: [{ query: GET_USERS_NOT_IN_GROUP }],
   })

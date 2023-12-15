@@ -18,6 +18,7 @@ const TitleBox = ({ title, children }) => {
           px: 1.5,
           backgroundColor: 'background.drawer',
           borderRadius: 1.5,
+          alignItems: 'center',
         }}
       >
         <Typography

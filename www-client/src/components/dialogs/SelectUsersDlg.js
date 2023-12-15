@@ -55,15 +55,19 @@ const SelectUsersDlg = forwardRef((props, ref) => {
   })
 
   const selectUser = (user, selected) => {
+    console.log('Sel DLG before: selectUser', user, selected, selectedUsers)
     if (selected) {
       setSelectedUsers([...selectedUsers, user])
     } else {
-      setSelectedUsers(selectedUsers.filter((item) => item.id !== user.id))
+      const newUsers = selectedUsers.filter((item) => item.id !== user.id)
+      setSelectedUsers(newUsers)
     }
+    console.log('Sel DLG after: selectUser', user, selected, selectedUsers)
   }
 
   const onUsersSelected = () => {
     handleUsers(selectedUsers)
+    setSelectedUsers([])
     close()
   }
 

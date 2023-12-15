@@ -1,50 +1,26 @@
 import { useApolloClient, useSubscription } from '@apollo/client'
 
-import { GET_SENT_INVITATIONS } from '../../graphql/queries'
-import { GET_RECV_INVITATIONS } from '../../graphql/queries'
 import { INVITATION_STATUS_CHANGED } from '../../graphql/subscriptions'
+import logger from '../../utils/logger'
 
 const useInvStatusSubscription = (userId) => {
   const apolloClient = useApolloClient()
   const { data, error, loading } = useSubscription(INVITATION_STATUS_CHANGED, {
     variables: { userId },
     onData: ({ data }) => {
-      console.log('Receiving new inv data', data)
-      const invUpdated = data.data.invitationStatusChanged
-      apolloClient.cache.updateQuery(
-        {
-          query: GET_SENT_INVITATIONS,
-          variables: { id: invUpdated.id },
+      const updatedInvitation = data.data.invitationStatusChanged
+      logger.info('useInvStatusSubscription-----')
+      logger.info('Subs Inv Status data: Receiving inv data', updatedInvitation)
+
+      // Change invitation status irrespective of the query (GET_RECV_INVITATIONS or GET_SENT_INVITATIONS)
+      apolloClient.cache.modify({
+        id: `InvitationInfo:${updatedInvitation.id}`,
+        fields: {
+          status() {
+            return updatedInvitation.status
+          },
         },
-        ({ getSentInvitations }) => {
-          return {
-            getSentInvitations: getSentInvitations.map((inv) => {
-              if (inv.id === invUpdated.id) {
-                return invUpdated
-              } else {
-                return inv
-              }
-            }),
-          }
-        }
-      )
-      apolloClient.cache.updateQuery(
-        {
-          query: GET_RECV_INVITATIONS,
-          variables: { id: invUpdated.id },
-        },
-        ({ getRecvInvitations }) => {
-          return {
-            getSentInvitations: getRecvInvitations.map((inv) => {
-              if (inv.id === invUpdated.id) {
-                return invUpdated
-              } else {
-                return inv
-              }
-            }),
-          }
-        }
-      )
+      })
     },
   })
   return {

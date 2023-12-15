@@ -5,7 +5,6 @@ import { Button, Container, Typography } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { PersonRemove, DoNotTouch } from '@mui/icons-material'
 
-import useGetUsersNotInGroup from '../hooks/queries/useGetUsersNotInGroup'
 import useModifySentInv from '../hooks/mutations/useModifySentInv'
 import useSentInvitations from '../hooks/queries/useSentInvitations'
 
@@ -16,17 +15,12 @@ import { getDateFromString } from '../utils/parsedate'
 const InvitationsTable = () => {
   const selectedGroup = useSelector((state) => state.selection.group)
 
-  const { sentInvitations, /*error*/ loading } = useSentInvitations()
+  const { sentInvitations, loading } = useSentInvitations()
   const [cancelInvitation] = useModifySentInv()
 
-  const { users, error: _error /*loading*/ } = useGetUsersNotInGroup(
-    selectedGroup?.id
-  )
   const groupInvitations = sentInvitations?.filter(
     (inv) => inv.group.id === selectedGroup.id && inv.status !== 'ACCEPTED'
   )
-
-  console.log('users', users, 'error', _error)
 
   let invitationToCancel = undefined
 
@@ -102,6 +96,31 @@ const InvitationsTable = () => {
       }))
     : []
 
+  const renderRows = () => {
+    if (rows.length === 0) {
+      return <Typography variant="h6">No Invitations</Typography>
+    } else {
+      return (
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          onSelectionModelChange={(newSelection) => {
+            console.log(newSelection)
+            // Perform any desired actions with the selected rows
+          }}
+          loading={loading}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 10 },
+            },
+          }}
+          pageSizeOptions={[10, 15]}
+          footer
+        />
+      )
+    }
+  }
+
   return (
     <Container>
       <ConfirmMessage
@@ -110,24 +129,7 @@ const InvitationsTable = () => {
         message="Are you sure you want to cancel this invitation?"
         onOk={onCancelInvitation}
       />
-      {/* <div style={{ height: 400, width: '100%' }}> */}
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        onSelectionModelChange={(newSelection) => {
-          console.log(newSelection)
-          // Perform any desired actions with the selected rows
-        }}
-        loading={loading}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 10 },
-          },
-        }}
-        pageSizeOptions={[10, 15]}
-        footer
-      />
-      {/* </div> */}
+      {renderRows()}
     </Container>
   )
 }

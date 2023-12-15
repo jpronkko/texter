@@ -25,13 +25,13 @@ const GroupSelectPage = () => {
   const confirmDlgRef = useRef()
 
   const user = useSelector((state) => state.user.userData)
-  const selectedGroup = useSelector((state) => state.selection.group)
   const [createGroup] = useCreateGroup()
 
   const { ownedGroups, joinedGroups, loading, error } = useGetUserGroups()
   const [removeUserFromGroup] = useRemoveUserFromGroup()
-  const userAdded = useUserAddSubsription(user.id)
-  const userRemoved = useUserRemoveSubscription(user.id)
+
+  useUserAddSubsription(user.id)
+  useUserRemoveSubscription(user.id)
 
   useEffect(() => {
     if (user.username === '') {
@@ -42,22 +42,10 @@ const GroupSelectPage = () => {
   }, [user.username])
 
   useEffect(() => {
-    console.log('Selecting this page', selectedGroup)
     dispatch(clearGroup())
   }, [])
 
-  console.log(
-    `Group select page subs result useradd: ${JSON.stringify(
-      userAdded,
-      null,
-      4
-    )}, userremoved: ${JSON.stringify(userRemoved, null, 4)}`
-  )
   const handleSelectGroup = async (newGroup) => {
-    console.log('Selecting group:', newGroup, selectedGroup)
-    /* if (selectedGroup && newGroup.id === selectedGroup.id) return
-    console.log('Selecting group II:', newGroup)
- */
     if (newGroup) dispatch(setGroup(newGroup))
     else dispatch(clearGroup(newGroup))
     navigate('/messages')
@@ -66,9 +54,7 @@ const GroupSelectPage = () => {
   let groupToLeave = undefined
 
   const handleCreateGroup = async (name, description) => {
-    console.log('Create group I:', name, description)
-    const groupData = await createGroup(name, description)
-    console.log(groupData)
+    await createGroup(name, description)
     groupDlgRef.current.close()
   }
 
@@ -85,7 +71,6 @@ const GroupSelectPage = () => {
   }
 
   const handleManageGroup = async (group) => {
-    console.log('Manage group', group)
     dispatch(setGroup(group))
     navigate('/group_admin')
   }
@@ -125,7 +110,6 @@ const GroupSelectPage = () => {
 
   if (error) {
     navigate('/login')
-    //return <div>Error: {error.message}</div>
   }
   // <CssBaseline />
   return (

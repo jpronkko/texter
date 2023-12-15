@@ -12,22 +12,23 @@ const useUserRemoveSubsription = (userId) => {
     },
     onData: ({ data }) => {
       console.log('_______________________')
-      console.log('user removed from group')
+      console.log('userRemoveSubscription removed from group')
       console.log(data)
-      const removedUserFromGroup = data.data.userRemovedFromGroup
+      const joinedGroups = data.data.userRemovedFromGroup.joinedGroups
+
       apolloClient.cache.updateQuery(
         {
           query: GET_USER_JOINED_GROUPS,
-          variables: { userId: removedUserFromGroup.userId },
+          variables: { userId: joinedGroups.userId },
+          overwrite: true,
         },
         ({ getUserJoinedGroups }) => {
           console.log('getUserJoinedGroups', getUserJoinedGroups)
           return {
             getUserJoinedGroups: {
+              __typename: 'JoinedGroupInfo',
               userId: getUserJoinedGroups.userId,
-              joinedGroups: getUserJoinedGroups.joinedGroups.filter(
-                (item) => item.groupId !== removedUserFromGroup.groupId
-              ),
+              joinedGroups,
             },
           }
         }
@@ -43,3 +44,7 @@ const useUserRemoveSubsription = (userId) => {
 }
 
 export default useUserRemoveSubsription
+
+/* joinedGroups: getUserJoinedGroups.joinedGroups.filter(
+  (item) => item.groupId !== joinedGroups.groupId
+), */

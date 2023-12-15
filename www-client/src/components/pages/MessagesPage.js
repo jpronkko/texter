@@ -42,20 +42,24 @@ const MessagesPage = () => {
   const topicDlgRef = useRef()
 
   useEffect(() => {
-    console.log('topics', topics, 'selectedTopic', selectedTopic)
+    if (error) {
+      navigate('/')
+    }
+  }, [error])
+
+  useEffect(() => {
     if (!selectedTopic.name && topics && topics.length > 0) {
       dispatch(setTopic(topics[0]))
     }
   }, [topics])
 
-  console.log('subs topics result', newTopics, removedTopics)
   const handleCreateTopic = async (name) => {
     const topic = await createTopic(selectedGroup.id, name)
     console.log('Handle Create Topic', topic)
     topicDlgRef.current.close()
   }
 
-  const handleSelectTopic = async (topic) => {
+  const handleSelectTopic = (topic) => {
     dispatch(setTopic(topic))
   }
 
@@ -82,10 +86,6 @@ const MessagesPage = () => {
     } else if (loading) {
       return <Typography>Loading...</Typography>
     }
-  }
-
-  if (error) {
-    return <Typography>{error.message}</Typography>
   }
 
   return (

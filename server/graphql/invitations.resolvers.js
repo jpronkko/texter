@@ -88,6 +88,7 @@ module.exports = {
 
       const { id, status } = args
 
+      logger.info('Change invitation status', id, status)
       try {
         const updatedInvitation = await invitationsModel.changeInvitationStatus(
           currentUser.id,
@@ -113,8 +114,13 @@ module.exports = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(['INVITATION_ADDED']),
         (payload, variables) => {
-          console.log('invitation added payload', payload)
-          return payload.invitationAdded.userId === variables.userId
+          console.log(
+            'Subscription: invitation added, payload',
+            payload,
+            'variables',
+            variables
+          )
+          return payload.invitationAdded.toUserId === variables.toUserId
         }
       ),
     },
@@ -122,8 +128,16 @@ module.exports = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(['INVITATION_STATUS_CHANGED']),
         (payload, variables) => {
-          console.log('invitation status changed payload', payload)
-          return payload.invitationStatusChanged.userId === variables.userId
+          console.log(
+            'Subscription: invitation status changed, payload',
+            payload,
+            'variables',
+            variables
+          )
+          return (
+            payload.invitationStatusChanged.toUserId === variables.userId ||
+            payload.invitationStatusChanged.fromUserId === variables.userId
+          )
         }
       ),
     },
