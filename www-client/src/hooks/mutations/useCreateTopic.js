@@ -5,6 +5,7 @@ import { GET_TOPICS } from '../../graphql/queries'
 
 import logger from '../../utils/logger'
 import useError from '../ui/useErrorMessage'
+import { uniqueById } from '../../utils/uniqById'
 
 const useCreateTopic = () => {
   const [showError] = useError()
@@ -13,9 +14,10 @@ const useCreateTopic = () => {
       showError(error.toString())
       logger.error('create topic error:', error)
     },
-    update: (store, response) => {
+
+    update: (cache, response) => {
       const newTopic = response.data.createTopic
-      const topicsInStore = store.readQuery({
+      const topicsInStore = cache.readQuery({
         query: GET_TOPICS,
         variables: { groupId: newTopic.groupId },
       })
@@ -24,31 +26,16 @@ const useCreateTopic = () => {
       console.log('topics in store', topicsInStore)
       console.log('new topic', newTopic)
 
-      /*   store.writeQuery({
-        query: GET_TOPICS,
-        variables: { groupId: newTopic.groupId },
-        data: {
-          getTopics: [
-            ...topicsInStore.getTopics,
-            {
-              __typename: 'Topic',
-              id: newTopic.id,
-              name: newTopic.name,
-              groupId: newTopic.groupId,
-            },
-          ],
-        },
-      })*/
-    },
-    //refetchQueries: [{ query: GET_TOPICS }],
-    /*update: (cache, response) => {
-      cache.updateQuery({ query: GET_TOPICS }, ({ getTopics }) => {
-        //console.log('updating', response)
-        return {
-          getTopics: getTopics.concat(response.data.createTopic),
+      cache.updateQuery(
+        { query: GET_TOPICS, variables: { groupId: newTopic.groupId } },
+        ({ getTopics }) => {
+          console.log('mutation updating', getTopics)
+          return {
+            getTopics: uniqueById(getTopics.concat(newTopic)),
+          }
         }
-      })
-    },*/
+      )
+    },
   })
 
   const createTopic = async (groupId, name) => {

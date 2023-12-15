@@ -2,6 +2,7 @@ import { useApolloClient, useSubscription } from '@apollo/client'
 
 import { GET_TOPICS } from '../../graphql/queries'
 import { TOPIC_ADDED_TO_GROUP } from '../../graphql/subscriptions'
+import { uniqueById } from '../../utils/uniqById'
 
 const useTopicsAddedSubscription = (groupId) => {
   const apolloClient = useApolloClient()
@@ -18,7 +19,7 @@ const useTopicsAddedSubscription = (groupId) => {
         ({ getTopics }) => {
           console.log('Subs: getTopics', getTopics)
           return {
-            getTopics: getTopics.concat(newTopic),
+            getTopics: uniqueById(getTopics.concat(newTopic)),
           }
         }
       )

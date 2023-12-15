@@ -47,7 +47,7 @@ const useLogInOut = () => {
   const logout = async () => {
     console.log('apollo reset store')
     try {
-      //await client.resetStore()
+      await client.resetStore()
       await client.clearStore()
     } catch (e) {
       console.log('reset store failed', e)

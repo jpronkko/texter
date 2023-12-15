@@ -72,9 +72,9 @@ const InvitationMenu = () => {
   useRecvInvSubscription(userId)
   useInvStatusSubscription(userId)
 
-  const rInvitations = recvInvitations /*?.filter(
+  const rInvitations = recvInvitations?.filter(
     (inv) => inv.status === 'PENDING'
-  )*/
+  )
   const [anchorElUser, setAnchorElUser] = useState(null)
 
   const handleOpenInvitationMenu = (event) => {
@@ -113,7 +113,9 @@ const InvitationMenu = () => {
             variant="body1"
             color={'primary.contrastText'}
           >
-            {rInvitations?.length === 0 ? 'No invitations' : 'New invitations!'}
+            {rInvitations?.length === 0
+              ? 'No invitations'
+              : 'Pending invitations!'}
           </Typography>
         </IconButton>
       </Tooltip>

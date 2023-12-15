@@ -206,7 +206,7 @@ module.exports = {
       const userGroupRole = await usersModel.addUserToGroup(
         userId,
         groupId,
-        'MEMBER'
+        'ADMIN'
       )
 
       pubsub.publish('USER_ADDED_TO_GROUP', {

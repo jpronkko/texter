@@ -1,20 +1,9 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  //Divider,
-  Drawer,
-  Grid,
-  Toolbar,
-  Typography,
-} from '@mui/material'
-import { AddBox, ArrowBack } from '@mui/icons-material'
+import { Box, Button, Drawer, Toolbar, Typography } from '@mui/material'
+import { AddBox } from '@mui/icons-material'
 
 import { setTopic } from '../../app/selectionSlice'
 import useCreateTopic from '../../hooks/mutations/useCreateTopic'
@@ -23,6 +12,7 @@ import useGetTopics from '../../hooks/queries/useGetTopics'
 import CreateMessage from '../CreateMessage'
 import InputTextDlg from '../dialogs/InputTextDlg'
 import MessageList from '../MessageList'
+import useGetUserGroups from '../../hooks/queries/useGetGroups'
 import useTopicsAddedSubscription from '../../hooks/subscriptions/useTopicsAddedSubscriptions'
 import useTopicRemovedSubscription from '../../hooks/subscriptions/useTopicRemovedSubscription'
 
@@ -31,11 +21,13 @@ const drawerWidth = 250
 const MessagesPage = () => {
   const selectedGroup = useSelector((state) => state.selection.group)
   const selectedTopic = useSelector((state) => state.selection.topic)
+  const { joinedGroups } = useGetUserGroups()
 
+  console.log('groups', joinedGroups)
   const { topics, error, loading } = useGetTopics(selectedGroup.id)
-  const newTopics = useTopicsAddedSubscription(selectedGroup.id)
-  const removedTopics = useTopicRemovedSubscription(selectedGroup.id)
   const [createTopic] = useCreateTopic()
+  useTopicsAddedSubscription(selectedGroup.id)
+  useTopicRemovedSubscription(selectedGroup.id)
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -88,6 +80,29 @@ const MessagesPage = () => {
     }
   }
 
+  // Display Add Topic button only if user is OWNER or ADMIN of the group
+  const renderAddTopicButton = () => {
+    const group = joinedGroups.find((group) => group.id === selectedGroup.id)
+    if (group && group.role !== 'ADMIN') return null
+
+    return (
+      <Button
+        variant="contained"
+        startIcon={<AddBox />}
+        sx={{
+          mb: 1.0,
+          mx: 1.2,
+          py: 1.2,
+          color: 'primary.contrastText',
+          justifyContent: 'flex-start',
+        }}
+        onClick={() => topicDlgRef.current.open()}
+      >
+        <Typography>Add Topic</Typography>
+      </Button>
+    )
+  }
+
   return (
     <Box
       sx={{
@@ -98,6 +113,8 @@ const MessagesPage = () => {
         height: '120%',
         backgroundColor: 'red',
         position: 'relative',
+        margin: '0px',
+        padding: '0px',
       }}
     >
       <InputTextDlg
@@ -127,41 +144,8 @@ const MessagesPage = () => {
         >
           TOPICS OF {selectedGroup.name}
         </Typography>
+        {renderAddTopicButton()}
         {renderTopics()}
-        <Box
-          sx={{
-            display: 'flex',
-            flex: 1,
-            flexDirection: 'column',
-            justifyContent: 'flex-end',
-            py: 1,
-          }}
-        >
-          <Button
-            variant="contained"
-            startIcon={<AddBox />}
-            sx={{
-              my: 0.5,
-              color: 'primary.contrastText',
-              justifyContent: 'flex-start',
-            }}
-            onClick={() => topicDlgRef.current.open()}
-          >
-            <Typography>Add Topic</Typography>
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<ArrowBack />}
-            sx={{
-              my: 0.5,
-              color: 'primary.contrastText',
-              justifyContent: 'flex-start',
-            }}
-            onClick={() => navigate('/')}
-          >
-            <Typography>Groups</Typography>
-          </Button>
-        </Box>
       </Drawer>
 
       <Box
@@ -171,11 +155,12 @@ const MessagesPage = () => {
           position: 'absolute',
           left: drawerWidth + 5,
           top: 5,
-          height: '100vh', //`calc(100% - 10px)`,
-          width: `calc(100% - ${drawerWidth + 50}px)`,
-          backgroundColor: 'red',
+          height: `calc(100vh - 80px)`,
+          width: `calc(100% - ${drawerWidth + 10}px)`,
+          /* backgroundColor: 'red', */
           margin: '0px',
           padding: '2px',
+          justifyContent: 'flex-end',
         }}
       >
         <MessageList />

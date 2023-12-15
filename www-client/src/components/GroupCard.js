@@ -18,7 +18,7 @@ const GroupCard = ({
   ownGroup = false,
 }) => {
   return (
-    <Card sx={{ minWidth: 345 }}>
+    <Card sx={{ minWidth: 300 }}>
       <CardActionArea onClick={() => handleSelectGroup(group)}>
         {/*  <CardMedia
           component="img"

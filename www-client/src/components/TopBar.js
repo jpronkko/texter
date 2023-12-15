@@ -15,13 +15,30 @@ import { BorderColor } from '@mui/icons-material'
 import NotifyMessage from './dialogs/NotifyMessage'
 import InvitationMenu from './menus/InvitationMenu'
 import UserMenu from './menus/UserMenu'
+import { useLocation } from 'react-router-dom'
 
 const TopBar = () => {
-  const user = useSelector((state) => state.user.userData)
-  const group = useSelector((state) => state.selection.group)
-  const topic = useSelector((state) => state.selection.topic)
+  const location = useLocation()
 
+  const user = useSelector((state) => state.user.userData)
+  /* const group = useSelector((state) => state.selection.group)
+  const topic = useSelector((state) => state.selection.topic)
+ */
   const userLoggedIn = () => user.username !== ''
+
+  const renderGroup = () => {
+    if (location.pathname === '/') return null
+    return (
+      <>
+        <Button
+          variant="contained"
+          href="/"
+        >
+          <Typography>Browse Groups</Typography>
+        </Button>
+      </>
+    )
+  }
 
   return (
     <AppBar
@@ -49,16 +66,7 @@ const TopBar = () => {
             TEXTER
           </Typography>
           <NotifyMessage />
-          <Button
-            variant="contained"
-            href="/"
-          >
-            Select Group
-          </Button>
-          <Typography>
-            group: {group?.name} description: {group.description} topic:{' '}
-            {topic?.name}
-          </Typography>
+          {renderGroup()}
 
           <Box
             sx={{

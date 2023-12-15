@@ -23,6 +23,7 @@ const useGetUserGroups = () => {
       id: g.groupId,
       name: g.groupName,
       description: g.description,
+      role: g.role,
     }))
 
   const ownedGroups = () => {
