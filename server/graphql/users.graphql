@@ -23,15 +23,6 @@ type JoinedGroupInfo {
   joinedGroups: [JoinedGroup]
 }
 
-# type User {
-#   id: ID!
-#   name: String!
-#   username: String!
-#   email: String!
-#   passwordHash: String!
-#   joinedGroups: [JoinedGroup]
-# }
-
 type UserInfo {
   id: ID!
   name: String!
@@ -68,9 +59,6 @@ type LoginData {
 }
 
 type Query {
-  me: UserInfo
-  getUserBaseData(id: ID!): UserBaseData
-  allUsers: [UserInfo]
   getUserJoinedGroups: JoinedGroupInfo
   getUsersNotInGroup(groupId: ID!): [UserBaseData]
 }

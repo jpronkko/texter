@@ -1,6 +1,6 @@
-const url = 'http://localhost:4000'
-const resetUrl = 'http://localhost:4000/test/reset'
-const createUsersUrl = 'http://localhost:4000/test/addusers'
+const url = 'http://localhost:8080/api/graphql'
+const resetUrl = 'http://localhost:8080/test/reset'
+const createUsersUrl = 'http://localhost:8080/test/addusers'
 
 const request = require('supertest')
 
@@ -63,7 +63,6 @@ const createUser = async (name, username, email, password) => {
         }
        }`
   const result = await gqlToServer(url, mutation)
-  console.log('Create user result', result.body)
   return result.body?.data?.createUser
 }
 
@@ -77,7 +76,6 @@ const createTestUser = async () => {
 }
 
 const createGroup = async (groupName, description, token) => {
-  console.log('Create group', groupName, 'token', token)
   const mutation = `mutation CreateGroup { 
     createGroup(name: "${groupName}", description: "${description}") {
       id
@@ -86,9 +84,6 @@ const createGroup = async (groupName, description, token) => {
     } 
   }`
   const result = await gqlToServer(url, mutation, token)
-  console.log('result from create group: ', result.body)
-  console.log('GroupName', groupName)
-
   return result.body?.data?.createGroup
 }
 
@@ -106,7 +101,6 @@ const login = async (username, password) => {
   }`
 
   const result = await gqlToServer(url, mutation)
-  console.log(result.body)
   return result.body?.data?.login
 }
 
@@ -124,7 +118,6 @@ const addUserToGroup = async (userId, groupId, token) => {
   }`
 
   const result = await gqlToServer(url, mutation, token)
-  console.log(result.body)
   return result.body?.data?.addUserToGroup
 }
 
@@ -156,7 +149,6 @@ const createInvitation = async (groupId, fromUserId, toUser, token) => {
     }`
 
   const result = await gqlToServer(url, mutation, token)
-  console.log('error', result.body.error)
   return result.body?.data?.createInvitation
 }
 
@@ -176,27 +168,6 @@ const createTopic = async (groupId, name, token) => {
   return result.body?.data?.createTopic
 }
 
-/* const getUser = async (username) => {
-  const query = `query FindUser {
-    findUser(username: "${username}") {
-      id
-      name
-      username
-      groups {
-        group {
-          id
-          name
-        }
-        role
-      }
-    }
-  }`
-
-  const result = await gqlToServer(url, query)
-  return result.body.data.findUser
-}
- */
-
 const getUserJoinedGroups = async (token) => {
   const query = `query GetUserJoinedGroups {
     getUserJoinedGroups {
@@ -211,8 +182,6 @@ const getUserJoinedGroups = async (token) => {
   }`
 
   const result = await gqlToServer(url, query, token)
-  console.log(result.body)
-
   const joinedData = result.body.data.getUserJoinedGroups
   return joinedData
 }
@@ -247,7 +216,6 @@ const createMessage = async (topicId, body, token) => {
   }`
 
   const result = await gqlToServer(url, mutation, token)
-  console.log(result.body)
   return result.body?.data?.createMessage
 }
 
@@ -262,7 +230,6 @@ module.exports = {
   createTestUsers,
   createUser,
   createGroup,
-  //getUser,
   login,
   loginTestUser,
   addUserToGroup,

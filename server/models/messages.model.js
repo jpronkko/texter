@@ -1,20 +1,17 @@
-const logger = require('../utils/logger')
-
+const ObjectId = require('mongoose').Types.ObjectId
 const Message = require('./messages.mongo')
 const Topic = require('./topics.mongo')
 
-const getAllMessages = async () => {
-  return await Message.find({})
-}
+const logger = require('../utils/logger')
 
 const createMessage = async (user, topicId, body) => {
-  logger.info(
-    `Create message, user: ${JSON.stringify(
-      user
-    )}, topic: ${topicId}, body: ${body}`
-  )
+  if (!ObjectId.isValid(topicId)) {
+    logger.error('Invalid topicId:', topicId)
+    throw new Error(`Invalid topicId! ${topicId}`)
+  }
 
   const topic = await Topic.findById(topicId)
+
   if (!topic) {
     logger.error('No such topic found:', topicId)
     throw new Error(`No such topic found! ${topicId}`)
@@ -45,6 +42,5 @@ const createMessage = async (user, topicId, body) => {
 }
 
 module.exports = {
-  getAllMessages,
   createMessage,
 }

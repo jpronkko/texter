@@ -19,23 +19,6 @@ const pubsub = new PubSub()
 
 module.exports = {
   Query: {
-    me: (root, args, contextValue) => {
-      console.log('context', contextValue)
-      return contextValue.currentUser
-    },
-
-    getUserBaseData: async (root, args, { currentUser }) => {
-      checkUser(currentUser, 'Getting user data failed!')
-      const user = await usersModel.findUserWithId(currentUser.id)
-      return {
-        id: user.id,
-        username: user.username,
-        name: user.name,
-        email: user.email,
-      }
-    },
-    allUsers: async () => await usersModel.getAllUsers(),
-
     getUserJoinedGroups: async (root, args, { currentUser }) => {
       try {
         checkUser(currentUser, 'Getting user groups failed, not authorized!')
@@ -123,12 +106,11 @@ module.exports = {
     },
 
     login: async (root, args) => {
-      logger.info('Login with arguments', args)
-      const {
-        credentials: { username, password },
-      } = args
-
       try {
+        const {
+          credentials: { username, password },
+        } = args
+
         const tokenAndUser = await usersModel.login(username, password)
         return tokenAndUser
       } catch (error) {
@@ -144,86 +126,98 @@ module.exports = {
     },
 
     changePassword: async (root, args, { currentUser }) => {
-      logger.info('Change password arguments', args)
-      checkUser(currentUser, 'Changing password failed!')
-      const { oldPassword, newPassword } = args
+      try {
+        checkUser(currentUser, 'Changing password failed!')
+        const { oldPassword, newPassword } = args
 
-      if (newPassword.length < MIN_PASSWORD_LENGTH) {
-        throw new GraphQLError('Password too short!', {
-          extensions: {
-            code: 'USER_CREATE_FAILED',
-            invalidArgs: args.password,
-          },
-        })
+        const correctPW = await usersModel.compUserPWWithHash(
+          currentUser.id,
+          oldPassword
+        )
+
+        if (!correctPW) {
+          logger.error('Wrong password', currentUser.username)
+          throw new Error('Wrong password')
+        }
+
+        if (newPassword.length < MIN_PASSWORD_LENGTH) {
+          throw new Error('Password too short!')
+        }
+
+        const userBaseData = await usersModel.changePassword(
+          currentUser.id,
+          newPassword
+        )
+        return userBaseData
+      } catch {
+        logger.error('Changing password failed')
+        throw new GraphQLError('Changing password failed')
       }
-
-      const correctPW = await usersModel.compUserPWWithHash(
-        currentUser.id,
-        oldPassword
-      )
-
-      if (!correctPW) {
-        logger.error('Wrong password', currentUser, oldPassword)
-        throw new GraphQLError('Wrong password')
-      }
-
-      const userBaseData = await usersModel.changePassword(
-        currentUser.id,
-        newPassword
-      )
-      return userBaseData
     },
 
     changeEmail: async (root, args, { currentUser }) => {
-      logger.info('Change email arguments', args)
-      checkUser(currentUser, 'Changing email failed!')
-      const { password, newEmail } = args
+      try {
+        checkUser(currentUser, 'Changing email failed!')
+        const { password, newEmail } = args
 
-      if (!usersModel.compUserPWWithHash(currentUser.id, password)) {
-        throw new GraphQLError('Wrong password')
+        const correctPW = await usersModel.compUserPWWithHash(
+          currentUser.id,
+          password
+        )
+
+        if (!correctPW) {
+          logger.error('Wrong password', currentUser.username)
+          throw new Error('Wrong password')
+        }
+
+        const userBaseData = await usersModel.changeEmail(
+          currentUser.id,
+          newEmail
+        )
+        return userBaseData
+      } catch {
+        logger.error('Changing email failed')
+        throw new GraphQLError('Changing email failed')
       }
-
-      const userBaseData = await usersModel.changeEmail(
-        currentUser.id,
-        newEmail
-      )
-      return userBaseData
     },
 
     addUserToGroup: async (root, args, { currentUser }) => {
-      checkUser(currentUser, 'Adding a user to a group failed!')
+      try {
+        checkUser(currentUser, 'Adding a user to a group failed!')
 
-      const { groupId, userId } = args
-      console.log('Add user to group', userId, groupId, currentUser.id)
+        const { groupId, userId } = args
+        if (!checkUserOwnsGroup(currentUser, groupId)) {
+          throw new Error('No permission to add user to a group')
+        }
+        if (currentUser.id === userId) {
+          throw new Error('Trying to add oneself to a group')
+        }
+        // Return user information without password hash
+        const userGroupRole = await usersModel.addUserToGroup(
+          userId,
+          groupId,
+          'MEMBER'
+        )
 
-      if (!checkUserOwnsGroup(currentUser, groupId)) {
-        throw new GraphQLError('No permission to add user to a group')
+        pubsub.publish('USER_ADDED_TO_GROUP', {
+          userId,
+          userAddedToGroup: {
+            ...userGroupRole,
+          },
+        })
+        return userGroupRole
+      } catch (error) {
+        logger.error('Adding user to group failed', error)
+        throw new GraphQLError('Adding user to group failed', error.message)
       }
-      if (currentUser.id === userId) {
-        throw new GraphQLError('Trying to add oneself to a group')
-      }
-      // Return user information without pw hash
-      const userGroupRole = await usersModel.addUserToGroup(
-        userId,
-        groupId,
-        'ADMIN'
-      )
-
-      pubsub.publish('USER_ADDED_TO_GROUP', {
-        userId,
-        userAddedToGroup: {
-          ...userGroupRole,
-        },
-      })
-      return userGroupRole
     },
 
     removeUserFromGroup: async (root, args, { currentUser }) => {
-      checkUser(currentUser, 'Removing user from group failed!')
-
-      const { userId, groupId } = args
-
       try {
+        checkUser(currentUser, 'Removing user from group failed!')
+
+        const { userId, groupId } = args
+
         const userIsInGroup = checkUserInGroup(currentUser, groupId)
         if (!userIsInGroup) {
           throw new GraphQLError('User is not in group!')
@@ -254,14 +248,14 @@ module.exports = {
     },
 
     updateUserRole: async (root, args, { currentUser }) => {
-      checkUser(currentUser, 'Updating user role failed!')
-
-      const { userId, groupId, role } = args
-      if (!checkUserOwnsGroup(currentUser, groupId)) {
-        throw new GraphQLError('No permission to change user role in group!')
-      }
-
       try {
+        checkUser(currentUser, 'Updating user role failed!')
+
+        const { userId, groupId, role } = args
+        if (!checkUserOwnsGroup(currentUser, groupId)) {
+          throw new Error('No permission to change user role in group!')
+        }
+
         const userGroupRole = await usersModel.updateRoleInGroup(
           userId,
           groupId,
@@ -269,7 +263,7 @@ module.exports = {
         )
         return userGroupRole
       } catch (error) {
-        throw new GraphQLError('User update did not work', error.message)
+        throw new GraphQLError('User update failed!', error.message)
       }
     },
   },

@@ -8,11 +8,6 @@ const { checkUser, checkUserInTopicGroup } = require('../utils/checkUser')
 const pubsub = new PubSub()
 
 module.exports = {
-  Query: {
-    allMessages: async () => {
-      return await messagesModel.getAllMessages()
-    },
-  },
   Mutation: {
     createMessage: async (root, args, { currentUser }) => {
       try {
@@ -24,9 +19,7 @@ module.exports = {
 
         if (!checkUserInTopicGroup(currentUser, topicId)) {
           logger.error('User not in correct group', currentUser, topicId)
-          throw new GraphQLError('User not in correct group!', {
-            extensions: { code: 'WRONG_GROUP' },
-          })
+          throw new Error('User not in correct group!')
         }
         const message = await messagesModel.createMessage(
           currentUser,

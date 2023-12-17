@@ -21,7 +21,6 @@ input InvitationInput {
 }
 
 type Query {
-  allInvitations: [Invitation]
   getReceivedInvitations: [Invitation]
   getSentInvitations: [Invitation]
 }

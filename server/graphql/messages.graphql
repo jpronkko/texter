@@ -24,15 +24,6 @@ input MessageInput {
   body: String!
 }
 
-# type MessageOut {
-#   topicId: ID!
-#   message: Message!
-# }
-
-type Query {
-  allMessages: [Message]
-}
-
 type Mutation {
   createMessage(messageInput: MessageInput): MessageInfo
 }

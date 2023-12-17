@@ -21,7 +21,6 @@ type MemberData {
 }
 
 type Query {
-  allGroups: [GroupInfo]
   getTopics(groupId: ID!): [Topic]
   getGroupMembers(groupId: ID!): [MemberData]
 }

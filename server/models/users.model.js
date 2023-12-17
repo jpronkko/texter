@@ -9,13 +9,10 @@ const findUserWithId = async (userId) => {
 
   if (user) {
     const jsonedUser = user.toJSON()
-    //console.log('jsonedUser', jsonedUser)
     jsonedUser.joinedGroups = user.joinedGroups.map((item) => ({
       role: item.role,
       group: item.group.toString(),
     }))
-    //console.log('jsonedUser II', jsonedUser)
-
     return jsonedUser
   }
 
@@ -63,7 +60,6 @@ const getAllUsers = async () => {
   })
 
   const allUsersJSON = allUsers.map((user) => user.toJSON())
-  console.log('all users I', allUsersJSON)
   allUsersJSON.forEach((user) => {
     user.joinedGroups = user.joinedGroups.map((item) => ({
       groupId: item.group.id,
@@ -93,7 +89,6 @@ const createUser = async (name, username, email, passwordHash) => {
 }
 
 const login = async (username, password) => {
-  logger.info('Login user', username)
   const user = await User.findOne({ username })
 
   if (!user) {
@@ -122,13 +117,10 @@ const compUserPWWithHash = async (userId, password) => {
     return false
   }
   const passwordCorrect = await pwCompare(password, user.passwordHash)
-  logger.info('Is password correct: ', passwordCorrect)
-
   return passwordCorrect
 }
 
 const changePassword = async (userId, newPassword) => {
-  logger.info('Change password for user', userId)
   const user = await User.findById(userId)
   if (!user) {
     logger.error(`User with id: ${userId} not found!`)
@@ -162,29 +154,23 @@ const changeEmail = async (userId, newEmail) => {
     throw new Error('No such user!')
   }
   user.email = newEmail
-  try {
-    const updatedUser = await user.save()
-    if (!updatedUser) {
-      logger.error('User save failed in changePassword')
-      throw new Error('Saving user failed!')
-    }
-    return {
-      id: updatedUser.id,
-      name: updatedUser.name,
-      username: updatedUser.username,
-      email: updatedUser.email,
-    }
-  } catch (error) {
+
+  const updatedUser = await user.save()
+  if (!updatedUser) {
+    logger.error('User save failed in changePassword')
     throw new Error('Saving user failed!')
+  }
+  return {
+    id: updatedUser.id,
+    name: updatedUser.name,
+    username: updatedUser.username,
+    email: updatedUser.email,
   }
 }
 
 const addUserToGroup = async (userId, groupId, role) => {
-  logger.info(
-    `Add user to group userId: ${userId}, groupId: ${groupId}, role: ${role}`
-  )
-
   const user = await User.findById(userId)
+
   if (!user) {
     logger.error(`User with id: ${userId} not found!`)
     throw new Error('No such user!')
@@ -211,8 +197,6 @@ const addUserToGroup = async (userId, groupId, role) => {
 }
 
 const removeUserFromGroup = async (userId, groupId) => {
-  logger.info('Remove user from group', userId, groupId)
-
   const user = await User.findById(userId).populate({
     path: 'joinedGroups',
     model: 'JoinedGroup',
@@ -227,8 +211,6 @@ const removeUserFromGroup = async (userId, groupId) => {
     logger.error(`User with id: ${userId} not found!`)
     throw new Error('No such user!')
   }
-
-  logger.info('User in remove user from group', JSON.stringify(user, null, 2))
 
   const group = user.joinedGroups.find(
     (item) => item.group._id.toString() === groupId
@@ -256,7 +238,6 @@ const removeUserFromGroup = async (userId, groupId) => {
     role: item.role,
   }))
 
-  logger.info('Remove user group, ret from model', joinedGroups)
   return {
     joinedGroups,
     userGroupRole: { user: userId, group: groupId, role: group.role },
@@ -264,8 +245,6 @@ const removeUserFromGroup = async (userId, groupId) => {
 }
 
 const updateRoleInGroup = async (userId, groupId, role) => {
-  logger.info('Update user role in group', userId, groupId, role)
-
   const user = await User.findById(userId)
 
   if (!user) {
@@ -282,7 +261,6 @@ const updateRoleInGroup = async (userId, groupId, role) => {
 }
 
 const getUserJoinedGroups = async (userId) => {
-  logger.info('Get user joined groups', userId)
   const user = await User.findById(userId).populate({
     path: 'joinedGroups',
     model: 'JoinedGroup',
@@ -318,12 +296,6 @@ const getUsersNotInGroup = async (groupId) => {
     'toUserId'
   )
 
-  logger.info(
-    'hasInvitationToGroup',
-    hasInvitationToGroup,
-    hasInvitationToGroup.toUserId
-  )
-
   const usersNotInGroup = await User.find({
     $and: [
       { 'joinedGroups.group': { $ne: groupObjectId } },
@@ -331,7 +303,6 @@ const getUsersNotInGroup = async (groupId) => {
     ],
   })
 
-  logger.info('usersNotInGroup', usersNotInGroup)
   return usersNotInGroup.map((user) => ({
     id: user._id.toString(),
     username: user.username,

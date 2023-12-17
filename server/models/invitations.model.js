@@ -5,14 +5,6 @@ const User = require('./users.mongo')
 const { addUserToGroup } = require('./users.model')
 const logger = require('../utils/logger')
 
-const getAllInvitations = async () => {
-  const invitations = await Invitation.find({})
-  console.log('all invitations', invitations)
-  if (invitations.length > 0)
-    return invitations.map((invitation) => invitation.toJSON())
-  return []
-}
-
 const findInvitationById = async (id) => {
   const invitation = await Invitation.findById(id)
   return invitation.toJSON()
@@ -26,14 +18,6 @@ const getSentInvitations = async (userId) => {
     throw new Error(`Invitations from user ${userId} not found!`)
   }
   return invitations.map((item) => item.toJSON())
-
-  /*return invitations.map((item) => ({
-    id: item._id.toString(),
-    group: item.groupId,
-    user: item.toUserId,
-    status: item.status,
-    sentTime: item.sentTime,
-  }))*/
 }
 
 const getReceivedInvitations = async (userId) => {
@@ -45,17 +29,9 @@ const getReceivedInvitations = async (userId) => {
     throw new Error(`Invitations to user ${userId} not found!`)
   }
   return invitations.map((item) => item.toJSON())
-  /*return invitations.map((item) => ({
-    id: item._id.toString(),
-    group: item.groupId,
-    user: item.fromUserId,
-    status: item.status,
-    sentTime: item.sentTime,
-  }))*/
 }
 
 const createInvitation = async (fromUserId, toUser, groupId) => {
-  console.log('trying to find username', toUser)
   const userToInvite = await User.findOne({ username: toUser })
   if (!userToInvite) {
     throw new Error('User to invite not found!')
@@ -75,12 +51,6 @@ const createInvitation = async (fromUserId, toUser, groupId) => {
     toUserId: new Types.ObjectId(toUserId),
     groupId: new Types.ObjectId(groupId),
   }).sort({ sentTime: -1 })
-
-  logger.info(
-    'Invitations models: exisintg invitations',
-    invitations,
-    invitations.length
-  )
 
   if (
     invitations &&
@@ -114,7 +84,7 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
   const invitationJSON = invitation.toJSON()
 
   if (invitationJSON.status === status) {
-    logger.info(`Changing invitation status, but it as already ${status}.`)
+    logger.error(`Changing invitation status, but it as already ${status}.`)
     return invitationJSON
   }
 
@@ -135,13 +105,11 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
       invitationJSON.groupId,
       'MEMBER'
     )
+
     if (!groupId) {
       logger.error('No user group found!')
       throw new Error('No user group found!')
     }
-
-    //await Invitation.deleteOne({ _id: invitation._id })
-    //return invitationJSON
   } else if (status === 'REJECTED') {
     if (invitationJSON.toUserId !== userId) {
       logger.error(
@@ -153,8 +121,6 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
       )
       throw new Error('Not authorized to reject invitation!')
     }
-    //await Invitation.deleteOne({ _id: invitationId })
-    //return invitationJSON
   } else if (status === 'CANCELLED') {
     if (invitationJSON.fromUserId !== userId) {
       logger.error(
@@ -166,17 +132,13 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
       )
       throw new Error('Not authorized to cancel invitation!')
     }
-    //await Invitation.deleteOne({ _id: invitation._id })
-    //return invitationJSON
   }
 
   invitation.status = status
-  logger.info('Changing invitation status', invitation, status)
   return (await invitation.save()).toJSON()
 }
 
 module.exports = {
-  getAllInvitations,
   getReceivedInvitations,
   getSentInvitations,
   findInvitationById,

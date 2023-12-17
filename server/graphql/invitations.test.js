@@ -51,7 +51,6 @@ describe('invitations test', () => {
       userData1.token
     )
 
-    console.log('invitation', invitation)
     expect(invitation.group.id).toEqual(groupData.id)
     expect(invitation.fromUser.id).toEqual(userData1.userId)
     expect(invitation.toUser.id).toEqual(userData2.userId)
@@ -112,7 +111,6 @@ describe('invitations test', () => {
       }`
 
     const result = await gqlToServer(url, query, userData1.token)
-    console.log(result.body)
     const invitation = result.body?.data?.getSentInvitations[0]
 
     expect(invitation).toBeDefined()
@@ -153,9 +151,8 @@ describe('invitations test', () => {
     }`
 
     const result = await gqlToServer(url, query, userData2.token)
-    console.log(result.body)
-
     const invitation = result.body?.data?.getReceivedInvitations[0]
+
     expect(invitation).toBeDefined()
     expect(invitation.group.id).toEqual(groupData.id)
     expect(invitation.fromUser.id).toEqual(userData1.userId)

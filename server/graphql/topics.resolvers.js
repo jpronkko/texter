@@ -16,9 +16,7 @@ const pubsub = new PubSub()
 
 module.exports = {
   Query: {
-    allTopics: async () => await topicsModel.getAllTopics(),
     getMessages: async (root, args, { currentUser }) => {
-      console.log('Get messages, current user', currentUser)
       checkUser(currentUser, 'Current user not authorized!')
 
       try {
@@ -34,47 +32,53 @@ module.exports = {
   },
   Mutation: {
     createTopic: async (root, args, { currentUser }) => {
-      const { groupId, name } = args
-      checkUser(currentUser, 'Creating a topic failed!')
+      try {
+        const { groupId, name } = args
+        checkUser(currentUser, 'Creating a topic failed!')
 
-      if (!checkUserOwnsOrIsAdminInGroup(currentUser, groupId)) {
-        throw new GraphQLError('No permission to add topic to a group')
-      }
+        if (!checkUserOwnsOrIsAdminInGroup(currentUser, groupId)) {
+          throw new GraphQLError('No permission to add topic to a group')
+        }
 
-      const topic = await topicsModel.createTopic(groupId, name)
-      if (!topic) {
-        logger.error('Create topic failed!', topic)
-        throw new GraphQLError('Topic name taken', {
-          extensions: { code: 'TOPIC_NAME_TAKEN' },
+        const topic = await topicsModel.createTopic(groupId, name)
+        if (!topic) {
+          logger.error('Create topic failed!', topic)
+          throw new GraphQLError('Topic name taken', {
+            extensions: { code: 'TOPIC_NAME_TAKEN' },
+          })
+        }
+
+        pubsub.publish('TOPIC_ADDED_TO_GROUP', {
+          groupId,
+          topicAddedToGroup: topic,
         })
+        return topic
+      } catch (error) {
+        throw new GraphQLError('Create topic failed!')
       }
-
-      pubsub.publish('TOPIC_ADDED_TO_GROUP', {
-        groupId,
-        topicAddedToGroup: topic,
-      })
-      return topic
     },
     removeTopic: async (root, args, { currentUser }) => {
-      const { groupId, topicId } = args
-      checkUser(currentUser, 'Removing a topic failed!')
+      try {
+        const { groupId, topicId } = args
+        checkUser(currentUser, 'Removing a topic failed!')
 
-      if (!checkUserOwnsGroup(currentUser, groupId)) {
-        throw new GraphQLError('No permission to add topic to a group')
-      }
-      const topic = await topicsModel.removeTopic(topicId)
-      if (!topic) {
-        logger.error('Remove topic failed!', topic)
-        throw new GraphQLError('Remove topic failed!', {
-          extensions: { code: 'REMOVE_TOPIC_FAILED' },
+        if (!checkUserOwnsGroup(currentUser, groupId)) {
+          throw new Error('No permission to add topic to a group')
+        }
+        const topic = await topicsModel.removeTopic(topicId)
+        if (!topic) {
+          logger.error('Remove topic failed!', topic)
+          throw new Error('Remove topic failed!')
+        }
+
+        pubsub.publish('TOPIC_REMOVED', {
+          groupId: topic.groupId,
+          topicRemoved: topic,
         })
+        return topic
+      } catch (error) {
+        throw new GraphQLError('Remove topic failed!')
       }
-
-      pubsub.publish('TOPIC_REMOVED', {
-        groupId: topic.groupId,
-        topicRemoved: topic,
-      })
-      return topic
     },
   },
   Subscription: {

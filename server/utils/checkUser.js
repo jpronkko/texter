@@ -11,13 +11,10 @@ const checkUser = (currentUser, errorMessage) => {
 const checkUserInGroup = (user, groupId) => {
   const userGroups = user.joinedGroups
 
-  //console.error('-----------------')
-  //console.log('Check user in group, userGroups', user, userGroups)
   if (userGroups.find((item) => item.group.toString() === groupId)) {
     return true
   }
-  logger.error(`User ${user} not in group ${groupId}!`)
-  logger.error(userGroups)
+  logger.error(`User ${JSON.stringify(user, null, 4)} not in group ${groupId}!`)
   return false
 }
 

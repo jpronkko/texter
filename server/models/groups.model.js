@@ -4,12 +4,6 @@ const User = require('./users.mongo')
 const logger = require('../utils/logger')
 const mongoose = require('mongoose')
 
-const getAllGroups = async () => {
-  const groups = await Group.find({})
-  if (groups) return groups.map((group) => group.toJSON())
-  return null
-}
-
 const findGroup = async (groupId) => {
   const group = await Group.findById(groupId)
   if (group) {
@@ -123,7 +117,6 @@ const modifyGroup = async (groupId, name, description) => {
 }
 
 module.exports = {
-  getAllGroups,
   findGroup,
   findGroupWithName,
   findOrCreateCommonGroup,

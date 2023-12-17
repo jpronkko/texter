@@ -37,20 +37,8 @@ describe('topic test', () => {
 
   it('creating a topic works with appropriate token', async () => {
     const topic = await createTopic(groupData.id, testTopicName, userData.token)
-
     expect(topic.groupId).toEqual(groupData.id)
     expect(topic.name).toEqual(testTopicName)
-
-    const query = `query AllTopics {
-        allTopics {
-          id
-          name
-        }
-      }`
-
-    const result = await gqlToServer(url, query, userData.token)
-    const topicInDb = result.body?.data?.allTopics[0]
-    expect(topicInDb).toBeDefined()
 
     const query2 = `query GetTopics {
         getTopics(groupId: "${groupData.id}") {
@@ -59,18 +47,26 @@ describe('topic test', () => {
         }
       }`
     const result2 = await gqlToServer(url, query2, userData.token)
-    console.log(result2.body)
     const topicInDb2 = result2.body.data.getTopics[0]
     expect(topicInDb2.name).toEqual(testTopicName)
   })
 
-  /*it('creating a topic does not work with false token', async () => {
+  it('creating a topic does not work with non existing group id', async () => {
+    const topic = await createTopic(
+      '123456789012345678901234',
+      testTopicName,
+      userData.token
+    )
+    expect(topic).toBeNull()
+  })
+
+  it('creating a topic does not work with false token', async () => {
     const topic = await createTopic(
       groupData.id,
       testTopicName,
-      'fidhljvfsjdfdhfjs',
+      'fidhljvfsjdfdhfjs'
     )
 
-    expect(topic).toBeUndefined()
-  })*/
+    expect(topic).toBeNull()
+  })
 })

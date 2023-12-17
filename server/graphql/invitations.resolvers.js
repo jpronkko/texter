@@ -11,7 +11,6 @@ const pubsub = new PubSub()
 
 module.exports = {
   Query: {
-    allInvitations: async () => await invitationsModel.getAllInvitations(),
     getReceivedInvitations: async (root, args, { currentUser }) => {
       try {
         checkUser(currentUser, 'Getting recv. invitations failed!')
@@ -56,14 +55,15 @@ module.exports = {
 
   Mutation: {
     createInvitation: async (root, args, { currentUser }) => {
-      const {
-        invitation: { toUser, groupId },
-      } = args
-      checkUser(currentUser, 'Creating invitation failed!')
-
       try {
+        const {
+          invitation: { toUser, groupId },
+        } = args
+
+        checkUser(currentUser, 'Creating invitation failed!')
+
         if (!checkUserOwnsGroup(currentUser, groupId)) {
-          throw new GraphQLError('No permission to add invitation to a group')
+          throw new Error('No permission to add invitation to a group')
         }
 
         const invitation = await invitationsModel.createInvitation(
@@ -73,23 +73,19 @@ module.exports = {
         )
         if (!invitation) {
           logger.error('Create invitation failed!', invitation)
-          throw new GraphQLError('Create invitation failed!', {
-            extensions: { code: 'CREATE_INVITATION_FAILED' },
-          })
+          throw new Error('Create invitation failed!')
         }
         pubsub.publish('INVITATION_ADDED', { invitationAdded: invitation })
         return invitation
       } catch (error) {
-        throw new GraphQLError(`Create invitation failed: ${error.message}`)
+        throw new Error(`Create invitation failed: ${error.message}`)
       }
     },
     changeInvitationStatus: async (root, args, { currentUser }) => {
-      checkUser(currentUser, 'Change invitation status failed!')
-
-      const { id, status } = args
-
-      logger.info('Change invitation status', id, status)
       try {
+        checkUser(currentUser, 'Change invitation status failed!')
+        const { id, status } = args
+
         const updatedInvitation = await invitationsModel.changeInvitationStatus(
           currentUser.id,
           id,
@@ -114,12 +110,6 @@ module.exports = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(['INVITATION_ADDED']),
         (payload, variables) => {
-          console.log(
-            'Subscription: invitation added, payload',
-            payload,
-            'variables',
-            variables
-          )
           return payload.invitationAdded.toUserId === variables.toUserId
         }
       ),
@@ -128,12 +118,6 @@ module.exports = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(['INVITATION_STATUS_CHANGED']),
         (payload, variables) => {
-          console.log(
-            'Subscription: invitation status changed, payload',
-            payload,
-            'variables',
-            variables
-          )
           return (
             payload.invitationStatusChanged.toUserId === variables.userId ||
             payload.invitationStatusChanged.fromUserId === variables.userId

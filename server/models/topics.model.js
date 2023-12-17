@@ -18,7 +18,6 @@ const findTopic = async (id) => {
 }
 
 const getMessages = async (topicId) => {
-  logger.info('Trying to find messages with topicId:', topicId)
   const topic = await Topic.findById(topicId).populate({
     path: 'messages',
     model: 'Message',
@@ -39,13 +38,10 @@ const getMessages = async (topicId) => {
     fromUser: message.fromUser.toJSON(),
   }))
 
-  logger.info('getMessages', JSON.stringify(messagesJSON, null, 4))
   return messagesJSON
 }
 
 const createTopic = async (groupId, name) => {
-  logger.info(`Creating topic with groupId ${groupId} name: ${name}`)
-
   const existingTopic = await Topic.findOne({ groupId, name })
   if (existingTopic) {
     throw Error('Topic name taken')
@@ -63,7 +59,6 @@ const createTopic = async (groupId, name) => {
   }
   group.topics = group.topics.concat(topic.id)
   await group.save()
-  logger.info('Saved topic', savedTopic)
   return savedTopic.toJSON()
 }
 

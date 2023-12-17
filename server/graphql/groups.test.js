@@ -32,7 +32,6 @@ describe('groups tests', () => {
   })
 
   it('create group with existing userId, non-existing group', async () => {
-    console.log('UserData from create user', userData)
     const groupData = await createGroup(
       testGroupName,
       'test description',
@@ -51,12 +50,8 @@ describe('groups tests', () => {
 
     // Check that the user has the group in the joinedGroups
     const savedUser = await findUserWithId(userData.userId)
-    console.log('-------')
-    console.log(savedUser.joinedGroups)
     const joinedGroups = savedUser.joinedGroups
-    /* const joinedGroups = savedUser.joinedGroups.map((item) => {
-      return { ...item, group: item.group.toString() }
-    }) */
+
     expect(joinedGroups).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -114,7 +109,6 @@ describe('groups tests', () => {
     }`
 
     const response = await gqlToServer(url, query, userData.token)
-    console.log('response.body.data', response.error)
     const result = response.body.data.modifyGroup
 
     expect(result.name).toEqual(newGroupName)

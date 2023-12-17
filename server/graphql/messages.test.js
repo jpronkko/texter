@@ -66,12 +66,6 @@ describe('messages test', () => {
     expect(message).toBeNull()
   })
 
-  /* it('Creating message with garbage token does not work', async () => {
-    const message = await createMessage(topicData.id, testMessage, 'lfjfkjj')
-
-    expect(message).toBeNull()
-  })
-
   it('Creating message with non existing topic id does not work', async () => {
     const message = await createMessage(
       '123456789012345678901234',
@@ -80,5 +74,5 @@ describe('messages test', () => {
     )
 
     expect(message).toBeNull()
-  })*/
+  })
 })
