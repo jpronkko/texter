@@ -27,7 +27,7 @@ const TopBar = () => {
   const userLoggedIn = () => user.username !== ''
 
   const renderGroup = () => {
-    if (location.pathname === '/') return null
+    if (!userLoggedIn() || location.pathname === '/') return null
     return (
       <>
         <Button

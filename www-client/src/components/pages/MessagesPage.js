@@ -160,12 +160,20 @@ const MessagesPage = () => {
           /* backgroundColor: 'red', */
           margin: '0px',
           padding: '2px',
-          justifyContent: 'flex-end',
+          alignItems: selectedTopic.name ? 'stretch' : 'center',
+          justifyContent: selectedTopic.name ? 'flex-end' : 'center',
         }}
       >
-        <MessageList />
-
-        <CreateMessage />
+        {selectedTopic.name ? (
+          <>
+            <MessageList />
+            <CreateMessage />
+          </>
+        ) : (
+          <Typography variant="h6">
+            Create a topic and start messaging!
+          </Typography>
+        )}
       </Box>
     </Box>
   )

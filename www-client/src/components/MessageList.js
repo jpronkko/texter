@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from 'react'
 
 import { useSelector } from 'react-redux'
-import { /* Box, */ List } from '@mui/material'
+import { /* Box, */ List, Typography } from '@mui/material'
 
 import useMessages from '../hooks/queries/useGetMessages'
 import useMessageSubsription from '../hooks/subscriptions/useMessageSubsription'
@@ -43,7 +43,11 @@ const MessageList = () => {
   }
 
   if (!messages || messages.length === 0) {
-    return <div>No messages yet</div>
+    return (
+      <div>
+        <Typography variant="h6">No messages yet</Typography>
+      </div>
+    )
   }
 
   const renderedMessages = messages
@@ -71,5 +75,3 @@ const MessageList = () => {
 }
 
 export default MessageList
-
-/* <List sx={{ minHeight: '100%', overflow: 'auto' }}></List> */

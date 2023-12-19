@@ -25,7 +25,7 @@ const schema = yup.object({
 
 const LoginForm = ({ handleLogin }) => {
   const navigate = useNavigate()
-  const { control, reset, handleSubmit } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       username: '',
       password: '',
@@ -72,21 +72,17 @@ const LoginForm = ({ handleLogin }) => {
             type="password"
           />
           <Button
-            id="create-button"
+            id="login-button"
             onClick={handleSubmit(onSubmit)}
             variant={'contained'}
           >
             Submit
           </Button>
-          <Button
-            onClick={() => reset()}
-            variant={'outlined'}
-          >
-            Reset
-          </Button>
+
           <Divider />
           <Typography>Do not have an account?</Typography>
           <Button
+            id="create-new-button"
             variant={'contained'}
             onClick={() => navigate('/create_account')}
           >

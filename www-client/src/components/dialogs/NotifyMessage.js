@@ -17,7 +17,7 @@ const NotifyMessage = () => {
     }, 4000)
   }, [message])
 
-  return <>{message ? <Alert>{message}</Alert> : null}</>
+  return <>{message ? <Alert id="notify-message">{message}</Alert> : null}</>
 }
 
 export default NotifyMessage

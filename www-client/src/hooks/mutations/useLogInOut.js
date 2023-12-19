@@ -18,17 +18,15 @@ const useLogInOut = () => {
 
   const [loginMutation, result] = useMutation(LOGIN, {
     onError: (error) => {
-      showError(`Login failed: ${parseError(error)}`)
       logger.error('Login error:', error)
+      showError(`Login failed: ${parseError(error)}`)
     },
     onCompleted: (data) => {
-      showMessage(`User ${data.login.username} logged in!`)
-      logger.info('Login completed:', data)
+      showMessage(`${data.login.username} has logged in!`)
     },
   })
 
   const login = async (username, password) => {
-    logger.info('Login')
     const loginResult = await loginMutation({
       variables: { credentials: { username, password } },
     })
@@ -50,7 +48,7 @@ const useLogInOut = () => {
       await client.resetStore()
       await client.clearStore()
     } catch (e) {
-      console.log('reset store failed', e)
+      logger.error('reset store failed', e)
     }
     localStorage.clear()
     dispatch(logOut())

@@ -91,7 +91,7 @@ const CreateUserForm = ({ handleCreate }) => {
             type="password"
           />
           <Button
-            id="create-button"
+            id="create-submit-button"
             onClick={handleSubmit(onSubmit)}
             variant={'contained'}
           >

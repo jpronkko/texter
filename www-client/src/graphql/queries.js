@@ -17,16 +17,6 @@ export const GET_MY_INFO = gql`
   }
 `
 
-export const GET_USER_BASE_DATA = gql`
-  query GetUserBaseData($id: ID!) {
-    getUserBaseData(id: $id) {
-      id
-      name
-      username
-    }
-  }
-`
-
 export const GET_ALL_USERS = gql`
   query GetAllUsers {
     allUsers {

@@ -1,3 +1,5 @@
 /node_modules
 *.swp
 /pygqlclient
+/cypress/screenshots
+/cypress/videos
