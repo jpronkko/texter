@@ -28,6 +28,7 @@ const GroupCard = ({
         /> */}
         <CardContent sx={{ backgroundColor: 'background.default' }}>
           <Typography
+            id="group-name"
             gutterBottom
             variant="h6"
             component="div"
@@ -35,6 +36,7 @@ const GroupCard = ({
             {group.name}
           </Typography>
           <Typography
+            id="group-description"
             variant="body2"
             color="text.primary"
           >
@@ -44,6 +46,7 @@ const GroupCard = ({
       </CardActionArea>
       <CardActions sx={{ backgroundColor: 'secondary.light' }}>
         <Button
+          id="select-group-button"
           size="small"
           color="secondary"
           onClick={() => handleSelectGroup(group)}
@@ -52,6 +55,7 @@ const GroupCard = ({
         </Button>
         {ownGroup && (
           <Button
+            id="manage-group-button"
             size="small"
             color="primary"
             onClick={() => handleManageGroup(group)}
@@ -61,6 +65,7 @@ const GroupCard = ({
         )}
         {!ownGroup && group.name !== 'Common' && (
           <Button
+            id="leave-group-button"
             size="small"
             color="primary"
             onClick={() => handleLeaveGroup(group)}

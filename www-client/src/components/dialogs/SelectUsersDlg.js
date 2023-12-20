@@ -23,8 +23,10 @@ const UserItem = ({ user, selectUser }) => {
 
   return (
     <FormControlLabel
+      id="user-label"
       control={
         <Checkbox
+          id="user-checkbox"
           checked={userSelected}
           onChange={handleChange}
           name={user.email}
@@ -106,6 +108,7 @@ const SelectUsersDlg = forwardRef((props, ref) => {
       </DialogContent>
       <DialogActions>
         <Button
+          id="selection-ok-button"
           variant="contained"
           onClick={onUsersSelected}
         >

@@ -21,8 +21,6 @@ const useRemoveUserFromGroup = () => {
       const groupId = removedUser.group
       const userId = removedUser.user
 
-      console.log('-------------------')
-      console.log('Remove user from group update', response)
       cache.updateQuery(
         {
           query: GET_USER_JOINED_GROUPS,

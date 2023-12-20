@@ -18,15 +18,17 @@ import useModifyRecvInv from '../../hooks/mutations/useModifyRecvInv'
 import useRecvInvSubscription from '../../hooks/subscriptions/useRecvInvSubscription'
 import useInvStatusSubscription from '../../hooks/subscriptions/useInvStatusSubscriptions'
 
-const RecvInvItem = ({ invitation }) => {
+const RecvInvItem = ({ invitation, closeMenu }) => {
   const [acceptInvitation, rejectInvitation] = useModifyRecvInv()
 
   const handleAccept = async () => {
     await acceptInvitation(invitation.id)
+    closeMenu()
   }
 
   const handleReject = async () => {
     await rejectInvitation(invitation.id)
+    closeMenu()
   }
 
   return (
@@ -38,12 +40,13 @@ const RecvInvItem = ({ invitation }) => {
         justifyContent={'space-between'}
         sx={{ flex: 1, p: 1 }}
       >
-        <Typography>
+        <Typography id="invitation-label">
           Invite to {invitation.group.name} from {invitation.fromUser.username}{' '}
           {invitation.status}
         </Typography>
         <Box sx={{ ml: 2 }}>
           <Button
+            id="invitation-accept-button"
             variant="contained"
             onClick={handleAccept}
           >
@@ -91,6 +94,7 @@ const InvitationMenu = () => {
         <RecvInvItem
           key={item.id}
           invitation={item}
+          closeMenu={handleCloseInvitationMenu}
         />
       ))
     } else {
@@ -105,6 +109,7 @@ const InvitationMenu = () => {
     <>
       <Tooltip title={username}>
         <IconButton
+          id="invitation-menu-button"
           onClick={handleOpenInvitationMenu}
           sx={{ p: 1, mx: 1 }}
         >

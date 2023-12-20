@@ -53,6 +53,7 @@ const MessageList = () => {
   const renderedMessages = messages
     ? messages.map((message) => (
         <MessageListItem
+          id="message-list-item"
           key={message.id}
           sender={message.fromUser}
           sentTime={message.sentTime}

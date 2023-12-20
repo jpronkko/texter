@@ -34,4 +34,19 @@ describe('template spec', function () {
     cy.get('#login-button').click()
     cy.get('#notify-message').contains(`${this.user1.username} has logged in!`)
   })
+
+  it('logout', function () {
+    cy.addUser({
+      username: this.user1.username,
+      name: this.user1.name,
+      email: this.user1.email,
+      password: this.user1.password,
+    })
+    cy.login({
+      username: this.user1.username,
+      password: this.user1.password,
+    })
+    cy.logout()
+    cy.location('pathname').should('eq', '/login')
+  })
 })

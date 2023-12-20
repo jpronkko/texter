@@ -53,7 +53,6 @@ const GroupAdminPage = () => {
   }
 
   const handleCreateInvitation = async (users) => {
-    console.log('Handle Create Invitation', users)
     const allInvites = []
     users.forEach(async (user) => {
       const invitation = await createInvitation(
@@ -101,6 +100,7 @@ const GroupAdminPage = () => {
       </Paper>
       <TitleBox title={'Invitations to ' + selectedGroup.name}>
         <Button
+          id="add-invitation-button"
           variant="contained"
           onClick={() => selectUsersDlgRef.current.open()}
         >

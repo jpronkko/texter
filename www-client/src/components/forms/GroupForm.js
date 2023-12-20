@@ -8,7 +8,7 @@ import useModifyGroup from '../../hooks/mutations/useModifyGroup'
 import { setGroup } from '../../app/selectionSlice'
 import { useDispatch } from 'react-redux'
 
-const GroupItem = ({ title, body, handleChange }) => {
+const GroupItem = ({ id, title, body, handleChange }) => {
   return (
     <Grid
       container
@@ -25,13 +25,19 @@ const GroupItem = ({ title, body, handleChange }) => {
         item
         xs={10.8}
       >
-        <Typography variant="body1">{body}</Typography>
+        <Typography
+          id={id + '-title'}
+          variant="body1"
+        >
+          {body}
+        </Typography>
       </Grid>
       <Grid
         item
         xs={1.2}
       >
         <Button
+          id={id + '-change-button'}
           variant="contained"
           onClick={handleChange}
         >
@@ -53,14 +59,12 @@ const GroupForm = () => {
   const descriptionDlgRef = useRef()
 
   const handleChangeName = async (name) => {
-    console.log('Change name', name)
     await modifyGroup(selectedGroup.id, name, selectedGroup.description)
     dispatch(setGroup({ ...selectedGroup, name }))
     nameDlgRef.current.close()
   }
 
   const handleChangeDescription = async (description) => {
-    console.log('Change description', description)
     await modifyGroup(selectedGroup.id, selectedGroup.name, description)
     dispatch(setGroup({ ...selectedGroup, description }))
     descriptionDlgRef.current.close()
@@ -92,6 +96,7 @@ const GroupForm = () => {
       >
         <Grid container>
           <GroupItem
+            id="group-name"
             title="Name"
             body={selectedGroup.name}
             handleChange={() => nameDlgRef.current.open()}
@@ -105,6 +110,7 @@ const GroupForm = () => {
           </Grid>
 
           <GroupItem
+            id="group-description"
             title="Description"
             body={selectedGroup.description}
             handleChange={() => descriptionDlgRef.current.open()}

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 
-import { useNavigate } from 'react-router-dom'
+//import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import Menu from '@mui/material/Menu'
@@ -21,7 +21,7 @@ const UserMenu = () => {
   const confirmDlgRef = useRef()
   const profileDlgRef = useRef()
 
-  const navigate = useNavigate()
+  //const navigate = useNavigate()
   const [, logout] = useLogInOut()
 
   const showLogout = () => {
@@ -33,7 +33,7 @@ const UserMenu = () => {
       name: 'Profile',
       callback: () => profileDlgRef.current.toggleProfile(true),
     },
-    { name: 'All Users', callback: () => navigate('/users') },
+    // { name: 'All Users', callback: () => navigate('/users') },
     { name: 'Logout', callback: showLogout },
   ]
 
@@ -62,6 +62,7 @@ const UserMenu = () => {
 
       <Tooltip title={username}>
         <IconButton
+          id="usermenu-button"
           onClick={handleOpenUserMenu}
           sx={{ p: 1 }}
         >
@@ -78,7 +79,7 @@ const UserMenu = () => {
       </Tooltip>
       <Menu
         sx={{ mt: '45px' }}
-        id="menu-appbar"
+        id="usermenu"
         anchorEl={anchorElUser}
         anchorOrigin={{
           vertical: 'top',

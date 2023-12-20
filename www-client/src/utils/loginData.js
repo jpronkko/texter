@@ -12,5 +12,3 @@ export const getLoginData = () => {
   const loginDataAsObj = loginData ? JSON.parse(loginData) : null
   return loginDataAsObj
 }
-
-//export default { getLoginData, getStoredToken, setLoginData }

@@ -58,7 +58,12 @@ const startServer = async () => {
             )
             return { currentUser }
           } catch (error) {
-            logger.error('Middleware: Token decode failed', error)
+            logger.error(
+              'Middleware: Token decode failed',
+              error,
+              'auth',
+              auth.substring(7)
+            )
           }
           return null
         }

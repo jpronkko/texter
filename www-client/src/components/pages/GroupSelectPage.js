@@ -7,11 +7,13 @@ import { Button, Container, Grid } from '@mui/material'
 import ConfirmMessage from '../dialogs/ConfirmMessage'
 import CreateGroupDlg from '../dialogs/CreateGroupDlg'
 import GroupCard from '../GroupCard'
+import Loading from '../Loading'
 import TitleBox from '../TitleBox'
 
 import useCreateGroup from '../../hooks/mutations/useCreateGroup'
-import useRemoveUserFromGroup from '../../hooks/mutations/useRemoveUserFromGroup'
 import useGetUserGroups from '../../hooks/queries/useGetGroups'
+import useLogInOut from '../../hooks/mutations/useLogInOut'
+import useRemoveUserFromGroup from '../../hooks/mutations/useRemoveUserFromGroup'
 import useUserAddSubsription from '../../hooks/subscriptions/useUserAddSubscription'
 import useUserRemoveSubscription from '../../hooks/subscriptions/useUserRemoveSubscription'
 
@@ -29,6 +31,7 @@ const GroupSelectPage = () => {
 
   const { ownedGroups, joinedGroups, loading, error } = useGetUserGroups()
   const [removeUserFromGroup] = useRemoveUserFromGroup()
+  const [logOut] = useLogInOut()
 
   useUserAddSubsription(user.id)
   useUserRemoveSubscription(user.id)
@@ -45,17 +48,27 @@ const GroupSelectPage = () => {
     dispatch(clearGroup())
   }, [])
 
-  const handleSelectGroup = async (newGroup) => {
-    if (newGroup) dispatch(setGroup(newGroup))
-    else dispatch(clearGroup(newGroup))
-    navigate('/messages')
-  }
+  useEffect(() => {
+    const callLogout = async () => {
+      await logOut()
+    }
+
+    if (error) {
+      callLogout()
+    }
+  }, [error])
 
   let groupToLeave = undefined
 
   const handleCreateGroup = async (name, description) => {
     await createGroup(name, description)
     groupDlgRef.current.close()
+  }
+
+  const handleSelectGroup = async (newGroup) => {
+    if (newGroup) dispatch(setGroup(newGroup))
+    else dispatch(clearGroup(newGroup))
+    navigate('/messages')
   }
 
   const handleLeaveGroup = async (group) => {
@@ -65,7 +78,6 @@ const GroupSelectPage = () => {
   }
 
   const leaveGroup = async () => {
-    console.log('Leaving group', groupToLeave)
     await removeUserFromGroup(user.id, groupToLeave.id)
     confirmDlgRef.current.close()
   }
@@ -106,12 +118,8 @@ const GroupSelectPage = () => {
     </Grid>
   ))
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <Loading />
 
-  if (error) {
-    navigate('/login')
-  }
-  // <CssBaseline />
   return (
     <Container sx={{ mb: 2 }}>
       <CreateGroupDlg
@@ -139,6 +147,7 @@ const GroupSelectPage = () => {
         >
           <TitleBox title={'Own Groups'}>
             <Button
+              id="create-group-button"
               variant="contained"
               onClick={() => groupDlgRef.current.open()}
             >
@@ -148,6 +157,7 @@ const GroupSelectPage = () => {
         </Grid>
 
         <Grid
+          id="owned-groups"
           container
           direction={'row'}
           spacing={2}
@@ -161,6 +171,7 @@ const GroupSelectPage = () => {
           <TitleBox title={'Other Joined Groups'}></TitleBox>
         </Grid>
         <Grid
+          id="other-joined-groups"
           container
           direction={'row'}
           spacing={2}

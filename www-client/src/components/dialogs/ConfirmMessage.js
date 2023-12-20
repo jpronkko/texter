@@ -13,7 +13,6 @@ const ConfirmMessage = forwardRef((props, ref) => {
 
   const handleOk = () => {
     setVisible(false)
-    console.log('handleOk', onOk)
     if (onOk) {
       onOk()
     }
@@ -50,6 +49,7 @@ const ConfirmMessage = forwardRef((props, ref) => {
         </DialogContent>
         <DialogActions>
           <Button
+            id="confirm-ok-button"
             onClick={handleOk}
             autoFocus
             variant="contained"

@@ -11,7 +11,7 @@ const MessageListItem = ({ sender, sentTime, body /* onClick */ }) => {
         {sender.name} {getDateFromString(sentTime)}
       </Divider>
       <Box sx={{ py: 0.25 }}>
-        <Typography>{body}</Typography>
+        <Typography id="message">{body}</Typography>
       </Box>
     </Box>
   )

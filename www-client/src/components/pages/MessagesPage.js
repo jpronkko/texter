@@ -59,6 +59,7 @@ const MessagesPage = () => {
     if (topics) {
       return topics.map((item) => (
         <Button
+          id="select-topic-button"
           variant="text"
           sx={{
             color: 'primary.contrastText',
@@ -87,6 +88,7 @@ const MessagesPage = () => {
 
     return (
       <Button
+        id="add-topic-button"
         variant="contained"
         startIcon={<AddBox />}
         sx={{
@@ -157,7 +159,6 @@ const MessagesPage = () => {
           top: 5,
           height: `calc(100vh - 80px)`,
           width: `calc(100% - ${drawerWidth + 10}px)`,
-          /* backgroundColor: 'red', */
           margin: '0px',
           padding: '2px',
           alignItems: selectedTopic.name ? 'stretch' : 'center',

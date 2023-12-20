@@ -29,7 +29,6 @@ const InputTextDlg = forwardRef((props, ref) => {
   })
 
   const onSubmit = (data) => {
-    console.log('Submiting input:', data)
     handleInput(data.input)
   }
 
@@ -73,7 +72,7 @@ const InputTextDlg = forwardRef((props, ref) => {
         </DialogContent>
         <DialogActions>
           <Button
-            id="create-button"
+            id="submit-button"
             onClick={handleSubmit(onSubmit)}
             variant={'contained'}
           >

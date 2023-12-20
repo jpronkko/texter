@@ -38,7 +38,7 @@ const CreateMessageForm = ({ handleCreate }) => {
           xs={11.0}
         >
           <FormTextInput
-            id="message"
+            id="message-input"
             name="message"
             control={control}
             label="Message"
@@ -51,7 +51,7 @@ const CreateMessageForm = ({ handleCreate }) => {
           xs={1.0}
         >
           <Button
-            id="create-button"
+            id="submit-message-button"
             type="submit"
             onClick={handleSubmit(onSubmit)}
             variant={'contained'}

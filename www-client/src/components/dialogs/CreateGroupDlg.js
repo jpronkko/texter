@@ -8,7 +8,6 @@ import { Button } from '@mui/material'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
-//import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import FormTextInput from '../forms/FormTextInput'
 
@@ -85,7 +84,7 @@ const GreateGroupDlg = forwardRef((props, ref) => {
         </DialogContent>
         <DialogActions>
           <Button
-            id="create-button"
+            id="create-submit-button"
             onClick={handleSubmit(onSubmit)}
             variant={'contained'}
           >

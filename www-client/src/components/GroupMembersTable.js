@@ -111,7 +111,7 @@ const GroupMembersTable = ({ groupId }) => {
     : []
 
   return (
-    <Container>
+    <Container id="group-members-table">
       <DataGrid
         rows={rows}
         columns={columns}
