@@ -1,11 +1,11 @@
-describe('template spec', function () {
+describe('basic user operations e.g. login/out', function () {
   beforeEach(function () {
     cy.resetData()
     cy.fixture('user1.json').as('user1')
     cy.fixture('user2.json').as('user2')
   })
 
-  it('passes', function () {
+  it('main page loads', function () {
     cy.openPage()
     cy.contains('Texter', { matchCase: false })
   })
@@ -21,7 +21,7 @@ describe('template spec', function () {
     cy.get('#notify-message').contains(`${this.user1.username} has logged in!`)
   })
 
-  it('login', function () {
+  it('login succeeds with correct password', function () {
     cy.addUser({
       username: this.user1.username,
       name: this.user1.name,
@@ -35,7 +35,22 @@ describe('template spec', function () {
     cy.get('#notify-message').contains(`${this.user1.username} has logged in!`)
   })
 
-  it('logout', function () {
+  it('login fails with incorrect password', function () {
+    cy.addUser({
+      username: this.user1.username,
+      name: this.user1.name,
+      email: this.user1.email,
+      password: this.user1.password,
+    })
+    cy.openPage()
+    cy.get('#username').type(this.user1.username)
+    cy.get('#password').type(this.user1.password + 'p')
+    cy.get('#login-button').click()
+    cy.get('#error-dialog-message').contains('wrong username or password')
+    cy.get('#error-dialog-ok-button').click()
+  })
+
+  it('logout succeeds', function () {
     cy.addUser({
       username: this.user1.username,
       name: this.user1.name,

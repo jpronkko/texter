@@ -31,7 +31,6 @@ const EmailDlg = forwardRef((props, ref) => {
   })
 
   const onSubmit = (data) => {
-    console.log('Submiting input:', data)
     handleInput(data.password, data.email)
   }
 
@@ -55,10 +54,8 @@ const EmailDlg = forwardRef((props, ref) => {
       <Dialog
         open={visible}
         onClose={close}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Change your e-mail</DialogTitle>
+        <DialogTitle id="email-dialog-title">Change your e-mail</DialogTitle>
         <DialogContent sx={{ my: 1 }}>
           <FormTextInput
             id="password"
@@ -82,7 +79,7 @@ const EmailDlg = forwardRef((props, ref) => {
             type="email"
           />
           <Button
-            id="create-button"
+            id="submit-email-button"
             onClick={handleSubmit(onSubmit)}
             variant={'contained'}
             sx={{ my: 1 }}
@@ -90,7 +87,7 @@ const EmailDlg = forwardRef((props, ref) => {
             Change
           </Button>
           <Button
-            id="cancel-button"
+            id="cancel-email-button"
             onClick={close}
             variant={'outlined'}
             sx={{ ml: 2 }}

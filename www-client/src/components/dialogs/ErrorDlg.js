@@ -38,13 +38,14 @@ const ErrorDlg = () => {
         <DialogContent>
           <DialogContentText
             color="text.error"
-            id="alert-dialog-description"
+            id="error-dialog-message"
           >
             {errorMessage}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button
+            id="error-dialog-ok-button"
             color="error"
             variant="contained"
             onClick={handleClose}

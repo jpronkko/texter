@@ -94,10 +94,7 @@ const ProfileDrawer = forwardRef((props, ref) => {
             elevation={3}
             style={{
               display: 'grid',
-              /* width: drawerWidth - 5, */
               gridRowGap: '20px',
-              /* padding: '10px',
-              margin: '10px 10px', */
               margin: '12px',
               padding: '25px',
             }}
@@ -129,7 +126,12 @@ const ProfileDrawer = forwardRef((props, ref) => {
                 alignItems="stretch"
               >
                 <Typography variant="h6">E-mail</Typography>
-                <Typography variant="body1">{user.email}</Typography>
+                <Typography
+                  id="user-email"
+                  variant="body1"
+                >
+                  {user.email}
+                </Typography>
               </Grid>
               <Grid
                 item

@@ -17,7 +17,7 @@ const schema = yup.object({
     .min(5, ({ min }) => `Password must be at least ${min} characters.`)
     .max(50, ({ max }) => `Password must be no more than ${max} characters.`)
     .required('Password is required'),
-  password_repeat: yup
+  passwordRepeat: yup
     .string()
     .equals([yup.ref('newPassword')], 'Passwords must match'),
 })
@@ -30,14 +30,14 @@ const PasswordDlg = forwardRef((props, ref) => {
     defaultValues: {
       oldPassword: '',
       newPassword: '',
-      password_repeat: '',
+      passwordRepeat: '',
     },
     resolver: yupResolver(schema),
     mode: 'onChange',
   })
 
   const onSubmit = (data) => {
-    console.log('Submiting input:', data)
+    console.log('Submiting pw input:', data)
     handleInput(data.oldPassword, data.newPassword)
   }
   const open = () => {
@@ -60,34 +60,34 @@ const PasswordDlg = forwardRef((props, ref) => {
       <Dialog
         open={visible}
         onClose={close}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Change password</DialogTitle>
+        <DialogTitle id="new_password-dialog-title">
+          Change password
+        </DialogTitle>
         <DialogContent sx={{ margin: '5px' }}>
           <FormTextInput
-            id="oldPassword"
+            id="old-password"
             name="oldPassword"
             control={control}
             label="Old Password"
             type="password"
           />
           <FormTextInput
-            id="newPassword"
+            id="new-password"
             name="newPassword"
             control={control}
             label="New Password"
             type="password"
           />
           <FormTextInput
-            id="password_repeat"
-            name="password_repeat"
+            id="password-repeat"
+            name="passwordRepeat"
             control={control}
             label="Repeat Password"
             type="password"
           />
           <Button
-            id="create-button"
+            id="submit-password-button"
             onClick={handleSubmit(onSubmit)}
             variant={'contained'}
             sx={{ my: 1 }}
@@ -95,7 +95,7 @@ const PasswordDlg = forwardRef((props, ref) => {
             Change
           </Button>
           <Button
-            id="cancel-button"
+            id="cancel-password-button"
             onClick={close}
             variant={'outlined'}
             sx={{ ml: 2 }}
@@ -110,13 +110,3 @@ const PasswordDlg = forwardRef((props, ref) => {
 
 PasswordDlg.displayName = 'PasswordDlg'
 export default PasswordDlg
-/*
-<Grid
-            container
-            alignContent="left"
-            spacing={1}
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-          >
-          </Grid> */

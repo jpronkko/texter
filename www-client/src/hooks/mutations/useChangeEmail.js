@@ -7,6 +7,7 @@ import { setMessage } from '../../app/notifySlice'
 import { CHANGE_EMAIL } from '../../graphql/mutations'
 
 import useError from '../ui/useErrorMessage'
+import { parseError } from '../../utils/parseError'
 import logger from '../../utils/logger'
 
 const useChangeEmail = () => {
@@ -15,12 +16,12 @@ const useChangeEmail = () => {
 
   const [mutation, result] = useMutation(CHANGE_EMAIL, {
     onError: (error) => {
-      showError(`Change email failed ${error.toString()}`)
-      logger.error('change email error:', error)
+      showError(`Changing e-mail failed: ${parseError(error)}!`)
+      logger.error('Change e-mail error:', error)
     },
     onCompleted: (data) => {
-      dispatch(setMessage('Email changed'))
-      logger.info('change email completed:', data)
+      dispatch(setMessage('E-mail changed'))
+      logger.info('Change e-mail completed:', data)
     },
   })
 
@@ -31,6 +32,10 @@ const useChangeEmail = () => {
         newEmail,
       },
     })
+
+    console.log('change email result:', changeResult)
+    if (changeResult.errors) return
+
     const texterStorage = JSON.parse(localStorage.getItem('texter-login'))
     texterStorage.email = newEmail
     localStorage.setItem('texter-login', JSON.stringify(texterStorage))

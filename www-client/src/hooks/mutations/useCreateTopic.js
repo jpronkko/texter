@@ -6,30 +6,22 @@ import { GET_TOPICS } from '../../graphql/queries'
 import logger from '../../utils/logger'
 import useError from '../ui/useErrorMessage'
 import { uniqueById } from '../../utils/uniqById'
+import { parseError } from '../../utils/parseError'
 
 const useCreateTopic = () => {
   const [showError] = useError()
   const [mutation, result] = useMutation(CREATE_TOPIC, {
     onError: (error) => {
-      showError(error.toString())
+      showError(parseError(error))
       logger.error('create topic error:', error)
     },
 
     update: (cache, response) => {
       const newTopic = response.data.createTopic
-      const topicsInStore = cache.readQuery({
-        query: GET_TOPICS,
-        variables: { groupId: newTopic.groupId },
-      })
-      console.log('-------------------')
-      console.log('Search topics in store with group id', newTopic.groupId)
-      console.log('topics in store', topicsInStore)
-      console.log('new topic', newTopic)
 
       cache.updateQuery(
         { query: GET_TOPICS, variables: { groupId: newTopic.groupId } },
         ({ getTopics }) => {
-          console.log('mutation updating', getTopics)
           return {
             getTopics: uniqueById(getTopics.concat(newTopic)),
           }

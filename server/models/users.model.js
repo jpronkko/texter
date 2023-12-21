@@ -73,12 +73,12 @@ const getAllUsers = async () => {
 const createUser = async (name, username, email, passwordHash) => {
   const existingUser = await findUserByUsername(username)
   if (existingUser) {
-    throw new Error('Username taken')
+    throw new Error('username taken')
   }
   const user = new User({ name, username, email, passwordHash })
   const savedUser = (await user.save()).toJSON()
   if (!savedUser) {
-    throw new Error('User save failed!')
+    throw new Error('user save failed')
   }
   return {
     userId: savedUser.id,
@@ -98,7 +98,7 @@ const login = async (username, password) => {
   const passwordCorrect = await pwCompare(password, user.passwordHash)
 
   if (!passwordCorrect) {
-    throw new Error('Wrong credentials')
+    throw new Error('wrong username or password')
   }
 
   const userJSON = user.toJSON()
@@ -124,7 +124,7 @@ const changePassword = async (userId, newPassword) => {
   const user = await User.findById(userId)
   if (!user) {
     logger.error(`User with id: ${userId} not found!`)
-    throw new Error('No such user!')
+    throw new Error('no such user')
   }
 
   const passwordHash = await getHash(newPassword)
@@ -134,7 +134,7 @@ const changePassword = async (userId, newPassword) => {
     const updatedUser = await user.save()
     if (!updatedUser) {
       logger.error('User save failed in changePassword')
-      throw new Error('Saving user failed!')
+      throw new Error('saving user failed')
     }
     return {
       id: updatedUser.id,
@@ -143,7 +143,7 @@ const changePassword = async (userId, newPassword) => {
       email: updatedUser.email,
     }
   } catch (error) {
-    throw new Error('Saving user failed!')
+    throw new Error('saving user failed')
   }
 }
 
@@ -151,14 +151,14 @@ const changeEmail = async (userId, newEmail) => {
   const user = await User.findById(userId)
   if (!user) {
     logger.error(`User with id: ${userId} not found!`)
-    throw new Error('No such user!')
+    throw new Error('no such user')
   }
   user.email = newEmail
 
   const updatedUser = await user.save()
   if (!updatedUser) {
     logger.error('User save failed in changePassword')
-    throw new Error('Saving user failed!')
+    throw new Error('saving user failed')
   }
   return {
     id: updatedUser.id,
@@ -173,14 +173,14 @@ const addUserToGroup = async (userId, groupId, role) => {
 
   if (!user) {
     logger.error(`User with id: ${userId} not found!`)
-    throw new Error('No such user!')
+    throw new Error('no such user')
   }
 
   const exists = user.joinedGroups.find(
     (item) => item.group.toString() === groupId
   )
   if (exists) {
-    throw new Error('User exists in group already')
+    throw new Error('user exists in group already')
   }
   user.joinedGroups = user.joinedGroups.concat({
     group: groupId,
@@ -190,7 +190,7 @@ const addUserToGroup = async (userId, groupId, role) => {
   const updatedUser = await user.save()
   if (!updatedUser) {
     logger.error('User save to db failed in addUserToGroup', updatedUser)
-    throw new Error('Saving user failed!')
+    throw new Error('saving user failed')
   }
 
   return { user: updatedUser.id, group: groupId, role }
@@ -209,7 +209,7 @@ const removeUserFromGroup = async (userId, groupId) => {
 
   if (!user) {
     logger.error(`User with id: ${userId} not found!`)
-    throw new Error('No such user!')
+    throw new Error('no such user')
   }
 
   const group = user.joinedGroups.find(
@@ -217,7 +217,7 @@ const removeUserFromGroup = async (userId, groupId) => {
   )
   if (!group) {
     logger.error(`Group with id: ${groupId} not found!`)
-    throw new Error(`No such group ${groupId} in joined groups!`)
+    throw new Error(`no such group in joined groups`)
   }
 
   user.joinedGroups = user.joinedGroups.filter(
@@ -227,7 +227,7 @@ const removeUserFromGroup = async (userId, groupId) => {
   const updatedUser = await user.save()
   if (!updatedUser) {
     logger.error('User save failed in addUserToGroup')
-    throw new Error('Saving user failed!')
+    throw new Error('saving user failed')
   }
 
   const jsonedUser = updatedUser.toJSON()
@@ -249,7 +249,7 @@ const updateRoleInGroup = async (userId, groupId, role) => {
 
   if (!user) {
     logger.error(`No such user found: ${userId}`)
-    throw new Error('No such user!')
+    throw new Error('no such user')
   }
 
   user.joinedGroups = user.joinedGroups.map((item) =>
@@ -273,7 +273,7 @@ const getUserJoinedGroups = async (userId) => {
 
   if (!user) {
     logger.error(`No user with ${userId} found!`)
-    throw new Error('No such user!')
+    throw new Error('no such user')
   }
 
   const jsonedUser = user.toJSON()

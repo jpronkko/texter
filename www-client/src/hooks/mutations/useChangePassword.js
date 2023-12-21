@@ -28,6 +28,9 @@ const useChangePassword = () => {
       variables: { oldPassword, newPassword },
     })
 
+    console.log('change password result:', changeResult)
+    if (changeResult.errors) return
+
     const texterStorage = JSON.parse(localStorage.getItem('texter-login'))
     texterStorage.password = newPassword
     localStorage.setItem('texter-login', JSON.stringify(texterStorage))

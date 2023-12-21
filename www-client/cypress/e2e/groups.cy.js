@@ -1,4 +1,4 @@
-describe('Group page', function () {
+describe('group creation, selection, user invitations to group', function () {
   beforeEach(function () {
     cy.resetData()
     cy.fixture('user1.json')
@@ -21,8 +21,16 @@ describe('Group page', function () {
     cy.fixture('testgroup.json').as('testgroup')
   })
 
-  it('common group', function () {
-    cy.get('#group-name').contains('Common')
+  it('common group exists and can post to general topic', function () {
+    cy.get('#other-joined-groups')
+      .get('#group-name')
+      .contains('Common')
+      .get('#select-group-button')
+      .click()
+    cy.get('#select-topic-button').contains('General').click()
+    cy.get('#message-input').type('test message')
+    cy.get('#submit-message-button').click()
+    cy.get('#message').contains('test message')
   })
 
   it('create group', function () {

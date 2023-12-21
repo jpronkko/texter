@@ -33,7 +33,6 @@ const UserMenu = () => {
       name: 'Profile',
       callback: () => profileDlgRef.current.toggleProfile(true),
     },
-    // { name: 'All Users', callback: () => navigate('/users') },
     { name: 'Logout', callback: showLogout },
   ]
 
@@ -95,9 +94,9 @@ const UserMenu = () => {
       >
         {userMenuItems.map((item) => (
           <MenuItem
+            id={`usermenu-${item.name.toLowerCase()}`}
             key={item.name}
             onClick={() => callItemCallback(item)}
-            /*  sx={{ backgroundColor: 'background.drawer' }} */
           >
             <Typography
               textAlign="center"

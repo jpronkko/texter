@@ -21,24 +21,33 @@ const useRemoveUserFromGroup = () => {
       const groupId = removedUser.group
       const userId = removedUser.user
 
-      cache.updateQuery(
-        {
-          query: GET_USER_JOINED_GROUPS,
-          variables: { userId: userId },
-          overwrite: true,
-        },
-        ({ getUserJoinedGroups }) => {
-          console.log('getUserJoinedGroups', getUserJoinedGroups)
-          return {
-            getUserJoinedGroups: {
-              userId: getUserJoinedGroups.userId,
-              joinedGroups: getUserJoinedGroups.joinedGroups.filter(
-                (item) => item.groupId !== groupId
-              ),
-            },
+      const userJoinedGroupsInCache = cache.readQuery({
+        query: GET_USER_JOINED_GROUPS,
+      })
+
+      if (userJoinedGroupsInCache) {
+        cache.updateQuery(
+          {
+            query: GET_USER_JOINED_GROUPS,
+            variables: { userId: userId },
+            overwrite: true,
+          },
+          ({ getUserJoinedGroups }) => {
+            console.log('getUserJoinedGroups', getUserJoinedGroups)
+            return {
+              getUserJoinedGroups: {
+                userId: getUserJoinedGroups.userId,
+                joinedGroups: getUserJoinedGroups.joinedGroups.filter(
+                  (item) => item.groupId !== groupId
+                ),
+              },
+            }
           }
-        }
-      )
+        )
+      }
+      const groupMembersInCache = cache.readQuery({ query: GET_GROUP_MEMBERS })
+      console.log('Remove user members in cache', groupMembersInCache)
+      if (!groupMembersInCache) return
 
       cache.updateQuery(
         {

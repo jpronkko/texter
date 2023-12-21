@@ -4,6 +4,7 @@ import { CREATE_MESSAGE } from '../../graphql/mutations'
 import { GET_MESSAGES } from '../../graphql/queries'
 
 import useError from '../ui/useErrorMessage'
+import { parseError } from '../../utils/parseError'
 import logger from '../../utils/logger'
 
 const useCreateMessage = () => {
@@ -11,7 +12,7 @@ const useCreateMessage = () => {
 
   const [mutation, result] = useMutation(CREATE_MESSAGE, {
     onError: (error) => {
-      showError(`Create message failed ${error.toString()}`)
+      showError(`Create message failed ${parseError(error)}`)
       logger.error('Create message error:', error)
     },
     update: (store, response) => {

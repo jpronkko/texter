@@ -21,17 +21,14 @@ module.exports = {
   Query: {
     getUserJoinedGroups: async (root, args, { currentUser }) => {
       try {
-        checkUser(currentUser, 'Getting user groups failed, not authorized!')
+        checkUser(currentUser, 'not authorized')
         const joinedGroups = await usersModel.getUserJoinedGroups(
           currentUser.id
         )
         return { userId: currentUser.id, joinedGroups }
       } catch (error) {
         logger.error('Getting user joined groups failed', error)
-        throw new GraphQLError(
-          'Getting user joined groups failed',
-          error.message
-        )
+        throw new GraphQLError(error.message)
       }
     },
 
@@ -43,10 +40,7 @@ module.exports = {
         return usersNotInGroup
       } catch (error) {
         logger.error('Getting users not in group failed', error)
-        throw new GraphQLError(
-          'Getting users not in group failed',
-          error.message
-        )
+        throw new GraphQLError(error.message)
       }
     },
   },
@@ -84,7 +78,7 @@ module.exports = {
         const userGroupRole = await usersModel.addUserToGroup(
           tokenAndUser.userId,
           commonGroup.id,
-          'MEMBER'
+          'ADMIN'
         )
 
         if (!userGroupRole) {
@@ -127,7 +121,7 @@ module.exports = {
 
     changePassword: async (root, args, { currentUser }) => {
       try {
-        checkUser(currentUser, 'Changing password failed!')
+        checkUser(currentUser, 'not authorized')
         const { oldPassword, newPassword } = args
 
         const correctPW = await usersModel.compUserPWWithHash(
@@ -137,11 +131,11 @@ module.exports = {
 
         if (!correctPW) {
           logger.error('Wrong password', currentUser.username)
-          throw new Error('Wrong password')
+          throw new Error('wrong password')
         }
 
         if (newPassword.length < MIN_PASSWORD_LENGTH) {
-          throw new Error('Password too short!')
+          throw new Error('password too short!')
         }
 
         const userBaseData = await usersModel.changePassword(
@@ -149,15 +143,15 @@ module.exports = {
           newPassword
         )
         return userBaseData
-      } catch {
+      } catch (error) {
         logger.error('Changing password failed')
-        throw new GraphQLError('Changing password failed')
+        throw new GraphQLError(error.message)
       }
     },
 
     changeEmail: async (root, args, { currentUser }) => {
       try {
-        checkUser(currentUser, 'Changing email failed!')
+        checkUser(currentUser, 'not authorized')
         const { password, newEmail } = args
 
         const correctPW = await usersModel.compUserPWWithHash(
@@ -167,7 +161,7 @@ module.exports = {
 
         if (!correctPW) {
           logger.error('Wrong password', currentUser.username)
-          throw new Error('Wrong password')
+          throw new Error('wrong password')
         }
 
         const userBaseData = await usersModel.changeEmail(
@@ -175,22 +169,22 @@ module.exports = {
           newEmail
         )
         return userBaseData
-      } catch {
-        logger.error('Changing email failed')
-        throw new GraphQLError('Changing email failed')
+      } catch (error) {
+        logger.error('Changing e-mail failed', error.message)
+        throw new GraphQLError(error.message)
       }
     },
 
     addUserToGroup: async (root, args, { currentUser }) => {
       try {
-        checkUser(currentUser, 'Adding a user to a group failed!')
+        checkUser(currentUser, 'not authorized')
 
         const { groupId, userId } = args
         if (!checkUserOwnsGroup(currentUser, groupId)) {
-          throw new Error('No permission to add user to a group')
+          throw new Error('no permission to add user to a group')
         }
         if (currentUser.id === userId) {
-          throw new Error('Trying to add oneself to a group')
+          throw new Error('trying to add oneself to a group')
         }
         // Return user information without password hash
         const userGroupRole = await usersModel.addUserToGroup(
@@ -208,19 +202,19 @@ module.exports = {
         return userGroupRole
       } catch (error) {
         logger.error('Adding user to group failed', error)
-        throw new GraphQLError('Adding user to group failed', error.message)
+        throw new GraphQLError(error.message)
       }
     },
 
     removeUserFromGroup: async (root, args, { currentUser }) => {
       try {
-        checkUser(currentUser, 'Removing user from group failed!')
+        checkUser(currentUser, 'not authorized')
 
         const { userId, groupId } = args
 
         const userIsInGroup = checkUserInGroup(currentUser, groupId)
         if (!userIsInGroup) {
-          throw new GraphQLError('User is not in group!')
+          throw new GraphQLError('user is not in group')
         }
 
         const userOwnsGroup = checkUserOwnsGroup(currentUser, groupId)
@@ -228,7 +222,7 @@ module.exports = {
         // If user is group owner one can remove other users from the group
         // If user is deleting him/herself from the group, it is allowed
         if (!userOwnsGroup && currentUser.id !== userId) {
-          throw new GraphQLError('No permission to remove user from group!')
+          throw new GraphQLError('no permission to remove user from group')
         }
 
         const result = await usersModel.removeUserFromGroup(userId, groupId)
@@ -243,7 +237,7 @@ module.exports = {
         return result.userGroupRole
       } catch (error) {
         logger.error('Removing user from group failed', error)
-        throw new GraphQLError('User removal did not work', error.message)
+        throw new GraphQLError(error.message)
       }
     },
 
@@ -253,7 +247,7 @@ module.exports = {
 
         const { userId, groupId, role } = args
         if (!checkUserOwnsGroup(currentUser, groupId)) {
-          throw new Error('No permission to change user role in group!')
+          throw new Error('no permission to change user role in group')
         }
 
         const userGroupRole = await usersModel.updateRoleInGroup(
@@ -263,7 +257,7 @@ module.exports = {
         )
         return userGroupRole
       } catch (error) {
-        throw new GraphQLError('User update failed!', error.message)
+        throw new GraphQLError(error.message)
       }
     },
   },

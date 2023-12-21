@@ -47,14 +47,6 @@ Cypress.Commands.add('openPageWithToken', () => {
   cy.visit(main_url)
 })
 
-Cypress.Commands.add('apiMutation', (mutations) => {
-  cy.request({
-    method: 'POST',
-    url: 'api/graphql',
-    body: { query: 'mutation' + mutations },
-  })
-})
-
 Cypress.Commands.add('addUser', ({ username, name, email, password }) => {
   const mutation = `mutation CreateUser { createUser(user: 
     { name: "${name}", 
@@ -88,6 +80,10 @@ Cypress.Commands.add('login', ({ username, password }) => {
     url: api_url,
     body: { query: mutation },
   }).then((result) => {
+    if (result.body.errors) {
+      cy.task('log', 'Login error: ' + JSON.stringify(result.body.errors))
+      return
+    }
     const userData = result.body.data.login
     cy.task('log', 'Login: ' + JSON.stringify(userData))
     localStorage.setItem('texter-login', JSON.stringify(userData))
