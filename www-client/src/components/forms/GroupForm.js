@@ -89,7 +89,6 @@ const GroupForm = () => {
         style={{
           display: 'grid',
           flexGrow: 1,
-          /* gridRowGap: '20px', */
           padding: '20px',
           margin: '1px 0px',
         }}

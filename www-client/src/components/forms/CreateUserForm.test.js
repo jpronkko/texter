@@ -3,15 +3,22 @@ import '@testing-library/jest-dom/extend-expect'
 import { render, screen } from '@testing-library/react'
 import CreateUserForm from './CreateUserForm'
 import userEvent from '@testing-library/user-event'
+import * as router from 'react-router'
+
+const navigate = jest.fn()
 
 const userData = {
-  name: 'Ilari',
+  name: 'Ilari Lyhtypilari',
   username: 'ilari',
   email: 'ilari@pilari.com',
-  password: 'secret',
+  password: 'secret123',
 }
 
 describe('Test CreateUserForm rendering and input', () => {
+  beforeEach(() => {
+    jest.spyOn(router, 'useNavigate').mockImplementation(() => navigate)
+  })
+
   test('renders elements', async () => {
     render(<CreateUserForm />)
     const nameInput = screen.getByRole('textbox', { name: /^name/i })
@@ -54,4 +61,3 @@ describe('Test CreateUserForm rendering and input', () => {
     expect(onSubmitMock).toHaveBeenCalledWith(userData)
   })
 })
-
