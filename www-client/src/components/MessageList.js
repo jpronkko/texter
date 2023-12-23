@@ -1,13 +1,13 @@
-//import { useEffect, useState } from 'react';
 import React, { useEffect, useRef } from 'react'
 
 import { useSelector } from 'react-redux'
-import { /* Box, */ List, Typography } from '@mui/material'
+import { List, Typography } from '@mui/material'
 
 import useMessages from '../hooks/queries/useGetMessages'
 import useMessageSubsription from '../hooks/subscriptions/useMessageSubsription'
 
 import MessageListItem from './MessageListItem'
+import Loading from './Loading'
 
 const useScrollToBottom = (ref) => {
   const scrollToBottom = () => {
@@ -24,7 +24,7 @@ const useScrollToBottom = (ref) => {
 const MessageList = () => {
   const topic = useSelector((state) => state.selection.topic)
 
-  const { messages, loading, error } = useMessages(topic.id)
+  const { messages, loading } = useMessages(topic.id)
   useMessageSubsription(topic.id)
 
   const ref = useRef()
@@ -35,11 +35,7 @@ const MessageList = () => {
   }, [messages, topic])
 
   if (loading) {
-    return <div>Loading ...</div>
-  }
-
-  if (error) {
-    return <div>Error Retrieving messages: {JSON.stringify(error)}</div>
+    return <Loading />
   }
 
   if (!messages || messages.length === 0) {
@@ -67,7 +63,7 @@ const MessageList = () => {
       ref={ref}
       sx={{
         maxHeight: '100%',
-        overflow: 'auto' /* backgroundColor: '#606060' */,
+        overflow: 'auto',
       }}
     >
       {renderedMessages ? renderedMessages : 'No messages'}

@@ -32,10 +32,7 @@ const InvitationsTable = () => {
   }
 
   const onCancelInvitation = async () => {
-    console.log('cancelInvitation', invitationToCancel)
-    const cancelledInvitation = await cancelInvitation(invitationToCancel)
-    console.log('cancelledInvitation', cancelledInvitation)
-    //confirmDlgRef.current.close()
+    await cancelInvitation(invitationToCancel)
   }
 
   const columns = [
@@ -104,10 +101,6 @@ const InvitationsTable = () => {
         <DataGrid
           rows={rows}
           columns={columns}
-          onSelectionModelChange={(newSelection) => {
-            console.log(newSelection)
-            // Perform any desired actions with the selected rows
-          }}
           loading={loading}
           initialState={{
             pagination: {

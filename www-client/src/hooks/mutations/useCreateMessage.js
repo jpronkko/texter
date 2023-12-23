@@ -3,6 +3,7 @@ import { useMutation } from '@apollo/client'
 import { CREATE_MESSAGE } from '../../graphql/mutations'
 import { GET_MESSAGES } from '../../graphql/queries'
 
+import { uniqueById } from '../../utils/uniqById'
 import useError from '../ui/useErrorMessage'
 import { parseError } from '../../utils/parseError'
 import logger from '../../utils/logger'
@@ -12,8 +13,8 @@ const useCreateMessage = () => {
 
   const [mutation, result] = useMutation(CREATE_MESSAGE, {
     onError: (error) => {
-      showError(`Create message failed ${parseError(error)}`)
       logger.error('Create message error:', error)
+      showError(`Create message failed ${parseError(error)}`)
     },
     update: (store, response) => {
       const newMessage = response.data.createMessage
@@ -21,9 +22,26 @@ const useCreateMessage = () => {
         query: GET_MESSAGES,
         variables: { topicId: newMessage.topicId },
       })
-      console.log('-------------------')
-      console.log('Search messages in store with topic id', newMessage.topicId)
-      console.log('messages in store', messagesInStore)
+
+      logger.info('Create message update:', newMessage)
+      logger.info('messages in store', messagesInStore)
+
+      const message = {
+        __typename: 'MessageInfo',
+        id: newMessage.id,
+        topicId: newMessage.topicId,
+        body: newMessage.body,
+        fromUser: newMessage.fromUser,
+        sentTime: newMessage.sentTime,
+      }
+
+      store.writeQuery({
+        query: GET_MESSAGES,
+        variables: { topicId: newMessage.topicId },
+        data: {
+          getMessages: uniqueById(messagesInStore.getMessages.concat(message)),
+        },
+      })
       /*store.writeQuery({
         query: GET_MESSAGES,
         variables: { topicId: newMessage.topicId },
@@ -62,7 +80,6 @@ const useCreateMessage = () => {
   })
 
   const createMessage = async (topicId, body) => {
-    console.log(`group id ${topicId}, body: ${body}`)
     const createResult = await mutation({
       variables: { messageInput: { topicId, body } },
     })

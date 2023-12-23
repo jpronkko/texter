@@ -3,10 +3,11 @@ import React, { useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 
-import InputTextDlg from '../dialogs/InputTextDlg'
 import useModifyGroup from '../../hooks/mutations/useModifyGroup'
 import { setGroup } from '../../app/selectionSlice'
 import { useDispatch } from 'react-redux'
+
+import InputTextDlg from '../dialogs/InputTextDlg'
 
 const GroupItem = ({ id, title, body, handleChange }) => {
   return (

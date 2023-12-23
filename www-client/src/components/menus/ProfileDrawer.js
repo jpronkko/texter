@@ -42,7 +42,6 @@ const ProfileDrawer = forwardRef((props, ref) => {
   }
 
   const handleChangePassword = async (oldPassword, newPassword) => {
-    console.log('New password', newPassword)
     const result = await changePassword(oldPassword, newPassword)
     if (result) {
       newPasswordDlg.current.close()
@@ -50,7 +49,6 @@ const ProfileDrawer = forwardRef((props, ref) => {
   }
 
   const handleChangeEmail = async (password, newEmail) => {
-    console.log('Password', password, 'email', newEmail)
     const result = await changeEmail(password, newEmail)
     if (result) {
       newEmailDlg.current.close()

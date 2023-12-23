@@ -18,7 +18,6 @@ import GroupAdminPage from './pages/GroupAdminPage'
 import ErrorDlg from './dialogs/ErrorDlg'
 import GroupSelectPage from './pages/GroupSelectPage'
 import MessagesPage from './pages/MessagesPage'
-import UserListPage from './pages/UserListPage'
 import TopBar from './TopBar'
 
 import { getLoginData } from '../utils/loginData'
@@ -30,7 +29,6 @@ const App = () => {
   useEffect(() => {
     const loginData = getLoginData()
     if (loginData) {
-      logger.info('App: setting login data', loginData)
       dispatch(logIn(loginData))
     }
   }, [])
@@ -70,10 +68,6 @@ const App = () => {
           <Route
             path="/login"
             element={<LoginPage handleLogin={loginUser} />}
-          />
-          <Route
-            path="/users"
-            element={<UserListPage />}
           />
           <Route
             path="*"

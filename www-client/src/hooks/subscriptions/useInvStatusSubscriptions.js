@@ -1,7 +1,6 @@
 import { useApolloClient, useSubscription } from '@apollo/client'
 
 import { INVITATION_STATUS_CHANGED } from '../../graphql/subscriptions'
-import logger from '../../utils/logger'
 
 const useInvStatusSubscription = (userId) => {
   const apolloClient = useApolloClient()
@@ -9,10 +8,9 @@ const useInvStatusSubscription = (userId) => {
     variables: { userId },
     onData: ({ data }) => {
       const updatedInvitation = data.data.invitationStatusChanged
-      logger.info('useInvStatusSubscription-----')
-      logger.info('Subs Inv Status data: Receiving inv data', updatedInvitation)
 
-      // Change invitation status irrespective of the query (GET_RECV_INVITATIONS or GET_SENT_INVITATIONS)
+      // Change invitation status irrespective of the query
+      // GET_RECV_INVITATIONS or GET_SENT_INVITATIONS
       apolloClient.cache.modify({
         id: `InvitationInfo:${updatedInvitation.id}`,
         fields: {

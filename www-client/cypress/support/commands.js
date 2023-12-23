@@ -1,28 +1,3 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import { api_url, main_url, reset_url } from './connections'
 
 Cypress.Commands.add('resetData', () => {
@@ -34,16 +9,6 @@ Cypress.Commands.add('print', (message) => {
 })
 
 Cypress.Commands.add('openPage', () => {
-  cy.visit(main_url)
-})
-
-Cypress.Commands.add('openPageWithToken', () => {
-  //const storedToken = JSON.parse(localStorage.getItem('texter-token'))
-  /*cy.visit(main_url, {
-    onBeforeLoad: (win) => {
-      win.localStorage.setItem('texter-token', JSON.stringify(storedToken))
-    },
-  })*/
   cy.visit(main_url)
 })
 
@@ -157,6 +122,6 @@ Cypress.Commands.add('addUserToGroup', ({ userId, groupId }) => {
     headers: { Authorization: `bearer ${storedToken['token']}` },
     body: { query: mutation },
   }).then((result) => {
-    console.log('user added to group', result)
+    cy.task('log', 'group add' + JSON.stringify(result))
   })
 })

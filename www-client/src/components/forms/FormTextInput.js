@@ -22,8 +22,6 @@ const FormTextInput = ({
   const {
     field,
     fieldState: { error },
-    //fieldState: { invalid, isTouched, isDirty },
-    //formState: { touchedFields, dirtyFields },
   } = useController({
     name,
     control,
@@ -56,15 +54,15 @@ const FormTextInput = ({
       error={!!error}
       onChange={field.onChange} // send value to hook form
       onBlur={field.onBlur} // notify when input is touched/blur
-      value={field.value} // input value
-      name={field.name} // send down the input name
+      value={field.value}
+      name={field.name}
       size="small"
       label={label}
       type={type}
       variant="outlined"
       margin="dense"
       fullWidth
-      inputRef={field.ref} // send input ref, so we can focus on input when error appear
+      inputRef={field.ref} // send input ref, so we can focus on input when error appears
       InputProps={inputProps}
       sx={{ p: 0 }}
     />

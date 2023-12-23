@@ -1,15 +1,17 @@
 import { useMutation } from '@apollo/client'
-import useError from '../ui/useErrorMessage'
 import { MODIFY_GROUP } from '../../graphql/mutations'
-import logger from '../../utils/logger'
 import { GET_USER_JOINED_GROUPS } from '../../graphql/queries'
+
+import useError from '../ui/useErrorMessage'
+import { parseError } from '../../utils/parseError'
+import logger from '../../utils/logger'
 
 const useModifyGroup = (userId) => {
   const [showError] = useError()
   const [mutation, result] = useMutation(MODIFY_GROUP, {
     onError: (error) => {
-      showError(`Modify group failed: ${error.toString()}`)
-      logger.error('modify group error:', error)
+      logger.error('modify group failed:', error)
+      showError(`Modify group failed: ${parseError(error)}`)
     },
     update: (store, response) => {
       const modifiedGroup = response.data.modifyGroup
@@ -17,10 +19,6 @@ const useModifyGroup = (userId) => {
         query: GET_USER_JOINED_GROUPS,
         variables: { userId },
       })
-      console.log('-------------------')
-      console.log('Search groups in store with user id', userId)
-      console.log('groups in store', joinedGroupInfo)
-      console.log('modified group', modifiedGroup)
       const updatedGroups =
         joinedGroupInfo.getUserJoinedGroups.joinedGroups.map((item) => {
           if (item.groupId === modifiedGroup.id) {
@@ -33,7 +31,7 @@ const useModifyGroup = (userId) => {
             return item
           }
         })
-      console.log('updated groups', updatedGroups)
+
       store.writeQuery({
         query: GET_USER_JOINED_GROUPS,
         data: {
@@ -49,18 +47,9 @@ const useModifyGroup = (userId) => {
   })
 
   const modifyGroup = async (groupId, name, description) => {
-    logger.info(
-      'modify group',
-      groupId,
-      'name',
-      name,
-      'description',
-      description
-    )
     const modifyResult = await mutation({
       variables: { groupId, name, description },
     })
-    logger.info('modify group result:', modifyResult)
     return modifyResult.data?.modifyGroup
   }
 

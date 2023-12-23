@@ -39,17 +39,9 @@ const ConfirmMessage = forwardRef((props, ref) => {
         open={visible}
         onClose={close}
       >
-        <DialogTitle
-          data-testid="title"
-          id="confirm-dialog-title"
-        >
-          {title}
-        </DialogTitle>
+        <DialogTitle id="confirm-dialog-title">{title}</DialogTitle>
         <DialogContent>
-          <DialogContentText
-            testId="message"
-            id="confirm-dialog-description"
-          >
+          <DialogContentText id="confirm-dialog-description">
             {message}
           </DialogContentText>
         </DialogContent>

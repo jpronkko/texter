@@ -12,8 +12,8 @@ const useCreateTopic = () => {
   const [showError] = useError()
   const [mutation, result] = useMutation(CREATE_TOPIC, {
     onError: (error) => {
-      showError(parseError(error))
       logger.error('create topic error:', error)
+      showError(`Create topic error ${parseError(error)}`)
     },
 
     update: (cache, response) => {
@@ -31,9 +31,7 @@ const useCreateTopic = () => {
   })
 
   const createTopic = async (groupId, name) => {
-    logger.info('createTopic:', groupId, name)
     const createResult = await mutation({ variables: { groupId, name } })
-    logger.info('Create topic result:', createResult)
     return createResult.data?.createTopic
   }
 

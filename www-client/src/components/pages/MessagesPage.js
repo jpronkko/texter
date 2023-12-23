@@ -8,13 +8,14 @@ import { AddBox } from '@mui/icons-material'
 import { setTopic } from '../../app/selectionSlice'
 import useCreateTopic from '../../hooks/mutations/useCreateTopic'
 import useGetTopics from '../../hooks/queries/useGetTopics'
+import useGetUserGroups from '../../hooks/queries/useGetGroups'
+import useTopicsAddedSubscription from '../../hooks/subscriptions/useTopicsAddedSubscriptions'
+import useTopicRemovedSubscription from '../../hooks/subscriptions/useTopicRemovedSubscription'
 
 import CreateMessage from '../CreateMessage'
 import InputTextDlg from '../dialogs/InputTextDlg'
 import MessageList from '../MessageList'
-import useGetUserGroups from '../../hooks/queries/useGetGroups'
-import useTopicsAddedSubscription from '../../hooks/subscriptions/useTopicsAddedSubscriptions'
-import useTopicRemovedSubscription from '../../hooks/subscriptions/useTopicRemovedSubscription'
+import Loading from '../Loading'
 
 const drawerWidth = 250
 
@@ -23,7 +24,6 @@ const MessagesPage = () => {
   const selectedTopic = useSelector((state) => state.selection.topic)
   const { joinedGroups } = useGetUserGroups()
 
-  console.log('groups', joinedGroups)
   const { topics, error, loading } = useGetTopics(selectedGroup.id)
   const [createTopic] = useCreateTopic()
   useTopicsAddedSubscription(selectedGroup.id)
@@ -46,8 +46,7 @@ const MessagesPage = () => {
   }, [topics])
 
   const handleCreateTopic = async (name) => {
-    const topic = await createTopic(selectedGroup.id, name)
-    console.log('Handle Create Topic', topic)
+    await createTopic(selectedGroup.id, name)
     topicDlgRef.current.close()
   }
 
@@ -77,7 +76,7 @@ const MessagesPage = () => {
         </Button>
       ))
     } else if (loading) {
-      return <Typography>Loading...</Typography>
+      return <Loading />
     }
   }
 

@@ -3,11 +3,11 @@ import { useDispatch } from 'react-redux'
 
 import { CREATE_USER } from '../../graphql/mutations'
 import { logIn } from '../../app/userSlice'
+import { setLoginData } from '../../utils/loginData'
 import useNotifyMessage from '../ui/useNotifyMessage'
+
 import useError from '../ui/useErrorMessage'
 import { parseError } from '../../utils/parseError'
-import { setLoginData } from '../../utils/loginData'
-
 import logger from '../../utils/logger'
 
 const useCreateUser = () => {
@@ -16,7 +16,7 @@ const useCreateUser = () => {
   const [showMessage] = useNotifyMessage()
   const [mutation, result] = useMutation(CREATE_USER, {
     onError: (error) => {
-      logger.error('create user error:', error)
+      logger.error('Create user failed:', error)
       showError(`Create user failed: ${parseError(error)}`)
     },
     onCompleted: (data) => {
@@ -25,7 +25,6 @@ const useCreateUser = () => {
   })
 
   const createUser = async (user) => {
-    logger.info('create user params', user)
     const createResult = await mutation({
       variables: {
         user: {
@@ -36,10 +35,8 @@ const useCreateUser = () => {
         },
       },
     })
-    logger.info('Create user result:', createResult)
     const loginData = createResult.data?.createUser
     if (!loginData) {
-      logger.error('Create user failed')
       return null
     }
 

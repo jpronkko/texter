@@ -1,20 +1,20 @@
 import { useMutation } from '@apollo/client'
 
-import useError from '../ui/useErrorMessage'
 import { REMOVE_TOPIC } from '../../graphql/mutations'
+import useError from '../ui/useErrorMessage'
+import { parseError } from '../../utils/parseError'
 import logger from '../../utils/logger'
 
 const useRemoveTopic = () => {
   const [showError] = useError()
   const [mutation, result] = useMutation(REMOVE_TOPIC, {
     onError: (error) => {
-      showError(`Remove topic failed: ${error.toString()}`)
-      logger.error('remove topic error:', error)
+      logger.error('Remove topic failed:', error)
+      showError(`Remove topic failed: ${parseError(error)}`)
     },
   })
 
   const removeTopic = async (groupId, topicId) => {
-    logger.info('remove topic', topicId, 'groupId', groupId)
     const removeResult = await mutation({
       variables: { groupId, topicId },
       onError: (error) => {
@@ -22,7 +22,6 @@ const useRemoveTopic = () => {
         logger.error('remove topic error:', error)
       },
     })
-    logger.info('remove user from group result:', removeResult)
     return removeResult.data?.removeTopic
   }
 

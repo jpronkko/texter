@@ -4,7 +4,6 @@ import './index.css'
 import App from './components/App'
 import { Provider } from 'react-redux'
 
-//import reportWebVitals from './reportWebVitals'
 import {
   ApolloClient,
   InMemoryCache,
@@ -27,8 +26,6 @@ import logger from './utils/logger'
 
 const authLink = setContext((_, { headers }) => {
   const token = getStoredToken()
-  logger.info('AuthLink setContext: setting token to', token)
-
   return {
     headers: {
       ...headers,
@@ -63,7 +60,6 @@ const splitLink = split(
     )
   },
   wsLink,
-  //httpLink
   authLink.concat(httpLink)
 )
 
@@ -85,8 +81,3 @@ root.render(
     </ApolloProvider>
   </Provider>
 )
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-//reportWebVitals();

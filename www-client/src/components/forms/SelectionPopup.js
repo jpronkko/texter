@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
-// import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
+import { MenuItem, Select } from '@mui/material'
 import FormControl from '@mui/material/FormControl'
-import Select from '@mui/material/Select'
 
 const SelectionPopup = ({
   defaultValue,

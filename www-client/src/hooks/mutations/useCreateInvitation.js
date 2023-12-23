@@ -4,19 +4,13 @@ import {
   GET_SENT_INVITATIONS,
   GET_USERS_NOT_IN_GROUP,
 } from '../../graphql/queries'
+
+import { uniqueById } from '../../utils/uniqById'
 import useError from '../ui/useErrorMessage'
-import logger from '../../utils/logger'
 import { parseError } from '../../utils/parseError'
+import logger from '../../utils/logger'
 
 const updateCache = (cache, query, newInvitation) => {
-  const uniqueById = (items) => {
-    let seen = new Set()
-    return items.filter((item) => {
-      let id = item.id
-      return seen.has(id) ? false : seen.add(id)
-    })
-  }
-
   cache.updateQuery(query, ({ getSentInvitations }) => {
     logger.info(
       'update get invitations query',
@@ -34,12 +28,11 @@ const useCreateInvitation = () => {
   const [showError] = useError()
   const [mutation, result] = useMutation(CREATE_INVITATION, {
     onError: (error) => {
-      showError(`Create invitation failed ${parseError(error)}`)
       logger.error('create invitation error:', error)
+      showError(`Create invitation failed ${parseError(error)}`)
     },
 
     update: (cache, response) => {
-      logger.info('create invitation update', response)
       updateCache(
         cache,
         { query: GET_SENT_INVITATIONS },
@@ -50,7 +43,6 @@ const useCreateInvitation = () => {
   })
 
   const createInvitation = async (fromUserId, groupId, toUser) => {
-    console.log('createInvitation', fromUserId, groupId, toUser)
     const createResult = await mutation({
       variables: {
         invitation: {
@@ -60,7 +52,6 @@ const useCreateInvitation = () => {
         },
       },
     })
-    logger.info('Create invitation result:', createResult)
     return createResult.data?.createInvitation
   }
 

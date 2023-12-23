@@ -6,14 +6,15 @@ import {
 } from '../../graphql/queries'
 import { CHANGE_INVITATION_STATUS } from '../../graphql/mutations'
 import useError from '../ui/useErrorMessage'
+import { parseError } from '../../utils/parseError'
 import logger from '../../utils/logger'
 
 const useModifySentInv = () => {
   const [showError] = useError()
   const [mutation, result] = useMutation(CHANGE_INVITATION_STATUS, {
     onError: (error) => {
-      showError(`Modify invitation failed ${error.toString()}`)
-      console.log('error', error)
+      logger.error('Modify invitation failed:', error)
+      showError(`Modify invitation failed ${parseError(error)}`)
     },
     update: (cache, response) => {
       const modifiedInvitation = response.data.changeInvitationStatus
@@ -25,7 +26,7 @@ const useModifySentInv = () => {
       const invitation = result.getSentInvitations.find(
         (item) => item.id === modifiedInvitation.id
       )
-      console.log('Modify Sent: invitation: ', invitation)
+
       if (!invitation) {
         logger.error(
           'Modify Sent: Invitation not found in cache:',
@@ -35,29 +36,13 @@ const useModifySentInv = () => {
       }
 
       cache.modify({
-        id: cache.identify(invitation), //`InvitationInfo:${modInvitation.id}`,
+        id: `InvitationInfo:${invitation.id}`,
         fields: {
           status() {
             return modifiedInvitation.status
           },
         },
       })
-      const invitationsInStore = cache.readQuery({
-        query: GET_SENT_INVITATIONS,
-        variables: { id: modifiedInvitation.id },
-        //variables: { userId: modInvitation.toUserId },
-      })
-      console.log('SENT_INVITATIONS invitationsInStore', invitationsInStore)
-      /* store.writeQuery({
-        query: GET_SENT_INVITATIONS,
-        data: {
-          variables: { id: modInvitation.id },
-          //variables: { userId: modInvitation.toUserId },
-          getInvitations: invitationsInStore.getInvitations.map((inv) =>
-            inv.id !== modInvitation.id ? inv : modInvitation
-          ),
-        },
-      }) */
     },
     refetchQueries: [{ query: GET_USERS_NOT_IN_GROUP }],
   })

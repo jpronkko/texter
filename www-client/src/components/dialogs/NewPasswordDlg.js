@@ -2,12 +2,7 @@ import React, { forwardRef, useState, useImperativeHandle } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogTitle /* Grid */,
-} from '@mui/material'
+import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material'
 import FormTextInput from '../forms/FormTextInput'
 
 const schema = yup.object({
@@ -37,7 +32,6 @@ const PasswordDlg = forwardRef((props, ref) => {
   })
 
   const onSubmit = (data) => {
-    console.log('Submiting pw input:', data)
     handleInput(data.oldPassword, data.newPassword)
   }
   const open = () => {

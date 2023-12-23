@@ -33,8 +33,6 @@ const GreateGroupDlg = forwardRef((props, ref) => {
   })
 
   const onSubmit = (data) => {
-    console.log('Submiting input:', data)
-    //setTextInput(data.name)
     handleInput(data.name, data.description)
   }
 

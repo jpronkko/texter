@@ -7,16 +7,16 @@ import { Button, Container, Paper } from '@mui/material'
 import useGetUsersNotInGroup from '../../hooks/queries/useGetUsersNotInGroup'
 import useCreateInvitation from '../../hooks/mutations/useCreateInvitation'
 import useCreateTopic from '../../hooks/mutations/useCreateTopic'
+import useGetGroupMembers from '../../hooks/queries/useGetGroupMembers'
+import useSentInvitations from '../../hooks/queries/useSentInvitations'
 
 import GroupForm from '../forms/GroupForm'
 import GroupMembersTable from '../GroupMembersTable'
 import InputTextDlg from '../dialogs/InputTextDlg'
 import InvitationsTable from '../InvitationsTable'
-import TopicsTable from '../TopicsTable'
 import SelectUsersDlg from '../dialogs/SelectUsersDlg'
 import TitleBox from '../TitleBox'
-import useSentInvitations from '../../hooks/queries/useSentInvitations'
-import useGetGroupMembers from '../../hooks/queries/useGetGroupMembers'
+import TopicsTable from '../TopicsTable'
 
 const GroupAdminPage = () => {
   const navigate = useNavigate()
@@ -26,9 +26,7 @@ const GroupAdminPage = () => {
   const { refetch } = useGetGroupMembers(selectedGroup?.id)
 
   const [createTopic] = useCreateTopic()
-  const { users /*error: _error loading*/ } = useGetUsersNotInGroup(
-    selectedGroup?.id
-  )
+  const { users } = useGetUsersNotInGroup(selectedGroup?.id)
   const currentUser = useSelector((state) => state.user.userData)
   const [createInvitation] = useCreateInvitation()
 
@@ -42,10 +40,6 @@ const GroupAdminPage = () => {
 
   const topicDlgRef = useRef()
   const selectUsersDlgRef = useRef()
-
-  const handleFormSubmit = (data) => {
-    console.log('Create group form submitted', data)
-  }
 
   const handleCreateTopic = async (name) => {
     await createTopic(selectedGroup.id, name)
@@ -81,7 +75,7 @@ const GroupAdminPage = () => {
         handleUsers={handleCreateInvitation}
       />
       <TitleBox title={'Profile of ' + selectedGroup.name} />
-      <GroupForm handleFormSubmit={handleFormSubmit} />
+      <GroupForm />
       <TitleBox title={'Topics of ' + selectedGroup.name}>
         <Button
           variant="contained"

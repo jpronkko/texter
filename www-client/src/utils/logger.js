@@ -15,8 +15,6 @@ const error = (...prms) => {
   }
 }
 
-/* eslint-enable no-console */
-
 export default {
   info,
   error,

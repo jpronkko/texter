@@ -10,22 +10,18 @@ import useUpdateUserRole from '../hooks/mutations/useUpdateUserRole'
 import useRemoveUserFromGroup from '../hooks/mutations/useRemoveUserFromGroup'
 
 const GroupMembersTable = ({ groupId }) => {
-  const { members, loading, error } = useGetGroupMembers(groupId)
+  const { members, loading } = useGetGroupMembers(groupId)
   const [updateUserRole] = useUpdateUserRole()
   const [removeUserFromGroup] = useRemoveUserFromGroup()
 
   const handleUserRoleChange = async (userId, roleTitle) => {
-    console.log('handleUserRoleChange', userId, roleTitle)
     const role = Object.keys(roleToTitle).find(
       (key) => roleToTitle[key] === roleTitle
     )
-    console.log(Object.keys(roleToTitle), roleTitle, role)
-    console.log('handleUserRoleChange', userId, groupId, role)
     await updateUserRole(userId, groupId, role)
   }
 
   const handleRemoveUserFromGroup = async (userId) => {
-    console.log('handkeRemoveUserFromGroup', userId, groupId)
     await removeUserFromGroup(userId, groupId)
   }
 
@@ -36,14 +32,12 @@ const GroupMembersTable = ({ groupId }) => {
   }
 
   const roleComparator = (role1, role2) => {
-    console.log('roleComparator', role1, role2)
     const role1Index = Object.keys(roleToTitle).findIndex(
       (key) => key === role1
     )
     const role2Index = Object.keys(roleToTitle).findIndex(
       (key) => key === role2
     )
-    console.log('roleComparator', role1Index, role2Index)
     return role1Index - role2Index
   }
 
@@ -92,14 +86,6 @@ const GroupMembersTable = ({ groupId }) => {
     },
   ]
 
-  /* if (loading) {
-    return <div>Loading...</div>
-  }*/
-
-  if (error) {
-    return <div>Error: {error.message}</div>
-  }
-
   const rows = members
     ? members.map((item) => ({
         id: item.id,
@@ -115,10 +101,7 @@ const GroupMembersTable = ({ groupId }) => {
       <DataGrid
         rows={rows}
         columns={columns}
-        onSelectionModelChange={(newSelection) => {
-          console.log(newSelection)
-          // Perform any desired actions with the selected rows
-        }}
+        minHeight={300}
         loading={loading}
         initialState={{
           sorting: {

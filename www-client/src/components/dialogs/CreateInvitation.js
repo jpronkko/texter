@@ -4,12 +4,13 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
-import { Button } from '@mui/material'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-//import DialogContentText from '@mui/material/DialogContentText'
-import DialogTitle from '@mui/material/DialogTitle'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from '@mui/material'
 import FormTextInput from '../forms/FormTextInput'
 
 const schema = yup.object({
@@ -29,8 +30,6 @@ const CreateInvitation = forwardRef((props, ref) => {
   })
 
   const onSubmit = (data) => {
-    console.log('Submiting input:', data)
-    //setTextInput(data.name)
     handleCreateInvitation(groupId, data.input)
   }
 

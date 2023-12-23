@@ -7,6 +7,7 @@ import useTopicsAddedSubscription from '../hooks/subscriptions/useTopicsAddedSub
 import useTopicRemovedSubscription from '../hooks/subscriptions/useTopicRemovedSubscription'
 
 import ConfirmMessage from './dialogs/ConfirmMessage'
+import Loading from './Loading'
 
 const TopicItem = ({ topic, handleRemoveTopic }) => {
   return (
@@ -64,7 +65,7 @@ const TopicsTable = ({ selectedGroup }) => {
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <Loading />
   }
 
   return (

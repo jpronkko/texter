@@ -14,12 +14,11 @@ const useChangePassword = () => {
   const [showError] = useError()
   const [mutation, result] = useMutation(CHANGE_PASSWORD, {
     onError: (error) => {
-      showError(`Change password failed ${error.toString()}`)
       logger.error('change password error:', error)
+      showError(`Change password failed ${error.toString()}`)
     },
-    onCompleted: (data) => {
+    onCompleted: () => {
       dispatch(setMessage('Password changed'))
-      logger.info('Change password completed:', data)
     },
   })
 
@@ -28,7 +27,6 @@ const useChangePassword = () => {
       variables: { oldPassword, newPassword },
     })
 
-    console.log('change password result:', changeResult)
     if (changeResult.errors) return
 
     const texterStorage = JSON.parse(localStorage.getItem('texter-login'))
@@ -36,7 +34,6 @@ const useChangePassword = () => {
     localStorage.setItem('texter-login', JSON.stringify(texterStorage))
     dispatch(setPassword(newPassword))
 
-    logger.info('change password result:', changeResult)
     return changeResult.data?.changePassword
   }
 

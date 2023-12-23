@@ -11,8 +11,6 @@ const useUserAddSubsription = (userId) => {
       userId: userId,
     },
     onData: ({ data }) => {
-      console.log('_______________________')
-      console.log(data)
       const newUserToGroup = data.data.userAddedToGroup
       apolloClient.cache.updateQuery(
         {
@@ -20,7 +18,6 @@ const useUserAddSubsription = (userId) => {
           variables: { userId: newUserToGroup.userId },
         },
         ({ getUserJoinedGroups }) => {
-          console.log('getUserJoinedGroups', getUserJoinedGroups)
           return {
             getUserJoinedGroups: {
               userId: getUserJoinedGroups.userId,

@@ -2,9 +2,9 @@ import { useApolloClient, useMutation } from '@apollo/client'
 import { useDispatch } from 'react-redux'
 
 import { logIn, logOut } from '../../app/userSlice'
-
 import { LOGIN } from '../../graphql/mutations'
 import useNotifyMessage from '../ui/useNotifyMessage'
+
 import useError from '../ui/useErrorMessage'
 import { parseError } from '../../utils/parseError'
 import { setLoginData } from '../../utils/loginData'
@@ -33,7 +33,6 @@ const useLogInOut = () => {
 
     const loginData = loginResult.data?.login
     if (!loginData) {
-      logger.error('Login failed')
       return null
     }
     setLoginData(loginData)
@@ -43,7 +42,6 @@ const useLogInOut = () => {
   }
 
   const logout = async () => {
-    console.log('apollo reset store')
     try {
       await client.resetStore()
       await client.clearStore()
