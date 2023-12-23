@@ -30,7 +30,7 @@ const getMessages = async (topicId) => {
 
   if (!topic) {
     logger.error(`No topic with id ${topicId} found!`)
-    throw new Error('No such topic!')
+    throw new Error('no such topic')
   }
 
   const messagesJSON = topic.messages.map((message) => ({
@@ -44,18 +44,18 @@ const getMessages = async (topicId) => {
 const createTopic = async (groupId, name) => {
   const existingTopic = await Topic.findOne({ groupId, name })
   if (existingTopic) {
-    throw Error('Topic name taken')
+    throw Error('topic name taken')
   }
 
   const group = await Group.findById(groupId)
   if (!group) {
-    throw new Error('No such group found!')
+    throw new Error('no such group found')
   }
 
   const topic = new Topic({ groupId, name })
   const savedTopic = await topic.save()
   if (!savedTopic) {
-    throw new Error('Topic save failed!')
+    throw new Error('topic save failed')
   }
   group.topics = group.topics.concat(topic.id)
   await group.save()
@@ -65,7 +65,7 @@ const createTopic = async (groupId, name) => {
 const removeTopic = async (topicId) => {
   const topicToRemove = await Topic.findByIdAndDelete(topicId)
   if (!topicToRemove) {
-    throw new Error('Topic remove failed, topic not found!')
+    throw new Error('topic not found!')
   }
   await Message.deleteMany({ topicId })
   return topicToRemove.toJSON()

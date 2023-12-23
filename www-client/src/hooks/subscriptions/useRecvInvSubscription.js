@@ -40,7 +40,7 @@ const useRecvInvSubscription = (userId) => {
 
       if (hasNewInvitation) {
         showMessage(
-          `New invitation reveived from ${pendingInvitation.fromUser.username}`
+          `New invitation received from ${pendingInvitation.fromUser.username}`
         )
       }
     },

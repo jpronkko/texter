@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client'
 
 import { GET_SENT_INVITATIONS } from '../../graphql/queries'
-import logger from '../../utils/logger'
 import useError from '../ui/useErrorMessage'
 import { parseError } from '../../utils/parseError'
+import logger from '../../utils/logger'
 
 const useSentInvitations = () => {
   const [showError] = useError()

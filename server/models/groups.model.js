@@ -57,11 +57,7 @@ const createGroup = async (user, name, description) => {
     role: 'OWNER',
   })
 
-  try {
-    await userToUpdate.save()
-  } catch (error) {
-    console.error(error)
-  }
+  await userToUpdate.save()
 
   return savedGroup.toJSON()
 }

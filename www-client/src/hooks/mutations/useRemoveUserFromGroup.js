@@ -44,6 +44,7 @@ const useRemoveUserFromGroup = () => {
         )
       }
       const groupMembersInCache = cache.readQuery({ query: GET_GROUP_MEMBERS })
+      logger.info('groupMembersInCache', groupMembersInCache)
       if (!groupMembersInCache) return
 
       cache.updateQuery(

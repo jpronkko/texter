@@ -4,10 +4,6 @@ Cypress.Commands.add('resetData', () => {
   cy.request('POST', reset_url)
 })
 
-Cypress.Commands.add('print', (message) => {
-  cy.task('log', message)
-})
-
 Cypress.Commands.add('openPage', () => {
   cy.visit(main_url)
 })
@@ -46,11 +42,9 @@ Cypress.Commands.add('login', ({ username, password }) => {
     body: { query: mutation },
   }).then((result) => {
     if (result.body.errors) {
-      cy.task('log', 'Login error: ' + JSON.stringify(result.body.errors))
       return
     }
     const userData = result.body.data.login
-    cy.task('log', 'Login: ' + JSON.stringify(userData))
     localStorage.setItem('texter-login', JSON.stringify(userData))
     localStorage.setItem('texter-token', userData.token)
     cy.visit(main_url)

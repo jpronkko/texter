@@ -16,8 +16,8 @@ const useChangeEmail = () => {
 
   const [mutation, result] = useMutation(CHANGE_EMAIL, {
     onError: (error) => {
-      showError(`Changing e-mail failed: ${parseError(error)}!`)
       logger.error('Change e-mail error:', error)
+      showError(`Changing e-mail failed: ${parseError(error)}!`)
     },
     onCompleted: () => {
       dispatch(setMessage('E-mail changed'))

@@ -217,7 +217,7 @@ const removeUserFromGroup = async (userId, groupId) => {
   )
   if (!group) {
     logger.error(`Group with id: ${groupId} not found!`)
-    throw new Error(`no such group in joined groups`)
+    throw new Error(`user not in group`)
   }
 
   user.joinedGroups = user.joinedGroups.filter(

@@ -3,8 +3,7 @@ describe('group creation, selection, user invitations to group', function () {
     cy.resetData()
     cy.fixture('user1.json')
       .as('user1')
-      .then((user1) => {
-        cy.print('prn log' + JSON.stringify(user1))
+      .then(() => {
         cy.addUser({
           username: this.user1.username,
           name: this.user1.name,

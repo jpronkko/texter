@@ -23,9 +23,6 @@ const useCreateMessage = () => {
         variables: { topicId: newMessage.topicId },
       })
 
-      logger.info('Create message update:', newMessage)
-      logger.info('messages in store', messagesInStore)
-
       const message = {
         __typename: 'MessageInfo',
         id: newMessage.id,
@@ -42,40 +39,6 @@ const useCreateMessage = () => {
           getMessages: uniqueById(messagesInStore.getMessages.concat(message)),
         },
       })
-      /*store.writeQuery({
-        query: GET_MESSAGES,
-        variables: { topicId: newMessage.topicId },
-        data: {
-          getMessages: [
-            ...messagesInStore.getMessages,
-            {
-              __typename: 'MessageInfo',
-              id: newMessage.id,
-              topicId: newMessage.topicId,
-              body: newMessage.body,
-              fromUser: newMessage.fromUser,
-              sentTime: newMessage.sentTime,
-            },
-          ],
-        },
-      })*/
-      /*cache.updateQuery(
-        {
-          query: GET_MESSAGES,
-          //  variables: { topicId },
-        },
-        (data) => {
-          if (data) {
-            console.log('updating', response, data?.getMessages)
-            return {
-              getMessages: data?.getMessages?.concat(
-                response.data.createMessage
-              ),
-            }
-          }
-          console.log('data undefined! response', response)
-        }
-      )*/
     },
   })
 
@@ -102,13 +65,3 @@ const useCreateMessage = () => {
 }
 
 export default useCreateMessage
-/*
-  update: (cache, response) => {
-      cache.updateQuery({ query: GET_MESSAGES }, ({ getMessages }) => {
-        console.log('updating', response, data)
-        return {
-          getMessages: data.getMessages.concat(response.data.createMessage),
-        }
-      })
-    },
-  */

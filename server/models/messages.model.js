@@ -26,14 +26,14 @@ const createMessage = async (user, topicId, body) => {
   const savedMessage = await message.save()
   if (!savedMessage) {
     logger.error('Message save failed:', message)
-    throw new Error(`Message save failed! ${message}`)
+    throw new Error('message save failed')
   }
 
   topic.messages = topic.messages.concat(message._id)
   const savedTopic = await topic.save()
   if (!savedTopic) {
     logger.error('Topic save failed:', topic)
-    throw new Error(`Topic save failed! ${topic}`)
+    throw new Error('Topic save failed!')
   }
   return {
     ...savedMessage.toJSON(),

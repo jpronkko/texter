@@ -1,4 +1,3 @@
-//const request = require('supertest')
 const { startServer, stopServer } = require('../server')
 const {
   url,
@@ -21,7 +20,9 @@ describe('user test', () => {
   let httpServer, apolloServer
 
   beforeAll(async () => {
-    ;({ httpServer, apolloServer } = await startServer())
+    const server = await startServer()
+    httpServer = server.httpServer
+    apolloServer = server.apolloServer
   })
 
   afterAll(async () => {

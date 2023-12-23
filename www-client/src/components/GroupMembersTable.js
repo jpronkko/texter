@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
 import { Button, Container } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { PersonRemove } from '@mui/icons-material'
 import SelectionPopup from './forms/SelectionPopup'
+
+import ConfirmMessage from './dialogs/ConfirmMessage'
 
 import useGetGroupMembers from '../hooks/queries/useGetGroupMembers'
 import useUpdateUserRole from '../hooks/mutations/useUpdateUserRole'
@@ -21,8 +23,17 @@ const GroupMembersTable = ({ groupId }) => {
     await updateUserRole(userId, groupId, role)
   }
 
-  const handleRemoveUserFromGroup = async (userId) => {
-    await removeUserFromGroup(userId, groupId)
+  let userToRemove = undefined
+
+  const confirmDlgRef = useRef()
+
+  const preapreRemoveUserFromGroup = async (userId) => {
+    userToRemove = userId
+    confirmDlgRef.current.open()
+  }
+
+  const onRemoveUser = async () => {
+    await removeUserFromGroup(userToRemove, groupId)
   }
 
   const roleToTitle = {
@@ -78,7 +89,7 @@ const GroupMembersTable = ({ groupId }) => {
         <Button
           variant="contained"
           disabled={params.row.role === 'OWNER'}
-          onClick={() => handleRemoveUserFromGroup(params.row.id)}
+          onClick={() => preapreRemoveUserFromGroup(params.row.id)}
         >
           <PersonRemove />
         </Button>
@@ -98,6 +109,12 @@ const GroupMembersTable = ({ groupId }) => {
 
   return (
     <Container id="group-members-table">
+      <ConfirmMessage
+        ref={confirmDlgRef}
+        title="Confirm"
+        message="Are you sure you want to remove this user?"
+        onOk={onRemoveUser}
+      />
       <DataGrid
         rows={rows}
         columns={columns}

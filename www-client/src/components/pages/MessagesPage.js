@@ -11,23 +11,30 @@ import useGetTopics from '../../hooks/queries/useGetTopics'
 import useGetUserGroups from '../../hooks/queries/useGetGroups'
 import useTopicsAddedSubscription from '../../hooks/subscriptions/useTopicsAddedSubscriptions'
 import useTopicRemovedSubscription from '../../hooks/subscriptions/useTopicRemovedSubscription'
+import useUserRemoveSubsription from '../../hooks/subscriptions/useUserRemoveSubscription'
 
 import CreateMessage from '../CreateMessage'
 import InputTextDlg from '../dialogs/InputTextDlg'
 import MessageList from '../MessageList'
 import Loading from '../Loading'
+import useNotifyMessage from '../../hooks/ui/useNotifyMessage'
 
 const drawerWidth = 250
 
 const MessagesPage = () => {
   const selectedGroup = useSelector((state) => state.selection.group)
   const selectedTopic = useSelector((state) => state.selection.topic)
+  const user = useSelector((state) => state.user.userData)
+  const [showMessage] = useNotifyMessage()
+
   const { joinedGroups } = useGetUserGroups()
 
   const { topics, error, loading } = useGetTopics(selectedGroup.id)
   const [createTopic] = useCreateTopic()
+
   useTopicsAddedSubscription(selectedGroup.id)
   useTopicRemovedSubscription(selectedGroup.id)
+  useUserRemoveSubsription(user.id)
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -38,6 +45,19 @@ const MessagesPage = () => {
       navigate('/')
     }
   }, [error])
+
+  useEffect(() => {
+    if (!selectedGroup.id) {
+      return
+    }
+    const isInGroup = joinedGroups.find(
+      (group) => group.id === selectedGroup.id
+    )
+    if (isInGroup) {
+      showMessage('You exited group ' + selectedGroup.name + '.')
+      navigate('/')
+    }
+  }, [joinedGroups])
 
   useEffect(() => {
     if (!selectedTopic.name && topics && topics.length > 0) {

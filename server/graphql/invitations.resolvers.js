@@ -13,28 +13,26 @@ module.exports = {
   Query: {
     getReceivedInvitations: async (root, args, { currentUser }) => {
       try {
-        checkUser(currentUser, 'Getting recv. invitations failed!')
+        checkUser(currentUser, 'not authorized')
 
         const invitationInfo = await invitationsModel.getReceivedInvitations(
           currentUser.id
         )
         return invitationInfo
       } catch (error) {
-        throw new GraphQLError(
-          `Get received invitations failed: ${error.message}`
-        )
+        throw new GraphQLError(error.message)
       }
     },
     getSentInvitations: async (root, args, { currentUser }) => {
       try {
-        checkUser(currentUser, 'Getting sent invitations failed!')
+        checkUser(currentUser, 'not authorized')
 
         const invitationInfo = await invitationsModel.getSentInvitations(
           currentUser.id
         )
         return invitationInfo
       } catch (error) {
-        throw new GraphQLError(`Get sent invitations failed: ${error.message}`)
+        throw new GraphQLError(error.message)
       }
     },
   },
@@ -60,7 +58,7 @@ module.exports = {
           invitation: { toUser, groupId },
         } = args
 
-        checkUser(currentUser, 'Creating invitation failed!')
+        checkUser(currentUser, 'not authorized')
 
         if (!checkUserOwnsGroup(currentUser, groupId)) {
           throw new Error('No permission to add invitation to a group')
@@ -78,12 +76,12 @@ module.exports = {
         pubsub.publish('INVITATION_ADDED', { invitationAdded: invitation })
         return invitation
       } catch (error) {
-        throw new Error(`Create invitation failed: ${error.message}`)
+        throw new GraphQLError(error.message)
       }
     },
     changeInvitationStatus: async (root, args, { currentUser }) => {
       try {
-        checkUser(currentUser, 'Change invitation status failed!')
+        checkUser(currentUser, 'not authorized')
         const { id, status } = args
 
         const updatedInvitation = await invitationsModel.changeInvitationStatus(
@@ -99,9 +97,7 @@ module.exports = {
         })
         return updatedInvitation
       } catch (error) {
-        throw new GraphQLError(
-          `Change invitation status failed: ${error.message}`
-        )
+        throw new GraphQLError(error.message)
       }
     },
   },
