@@ -12,7 +12,7 @@ env:
   PROD_MONGODB_URI: ${{ secrets.PROD_MONGODB_URI }}
   TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
   SECRET: ${{ secrets.SECRET }}
-  PORT: "8080"
+  PORT: ${{ vars.PORT }}
 
 jobs:
   build_and_test:
@@ -39,11 +39,11 @@ jobs:
       - name: API test
         run: npm run api-test
       - name: e2e test
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           command: npm run e2e-test
           start: npm run start:test
-          wait-on: "http://localhost:8080"
+          wait-on: http://localhost:8080
 
       - name: Zip artifact for deployment
         run: cd ./server && zip release.zip ./* -r && mv release.zip ../
