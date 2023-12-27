@@ -45,8 +45,8 @@ const InvitationsTable = () => {
     {
       field: 'status',
       headerName: 'Invitation status',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
+      description: 'Whether invitation is pending, accepted or not',
+      sortable: true,
       width: 200,
     },
     {
@@ -64,6 +64,7 @@ const InvitationsTable = () => {
       sortable: false,
       renderCell: (params) => (
         <Button
+          id="cancel-invitation-button"
           variant="contained"
           disabled={
             params.row.status === Status['CANCELLED'] ||
@@ -115,7 +116,7 @@ const InvitationsTable = () => {
   }
 
   return (
-    <Container>
+    <Container id="invitations-table">
       <ConfirmMessage
         ref={confirmDlgRef}
         title="Confirm"

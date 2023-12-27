@@ -11,7 +11,7 @@ const useGetUserGroups = () => {
     GET_USER_JOINED_GROUPS,
     {
       onError: (error) => {
-        logger.error('error', error)
+        logger.error('Get user groups failed', error)
         showError(`Get user groups failed ${parseError(error)}`)
       },
     }
@@ -42,6 +42,7 @@ const useGetUserGroups = () => {
   }
 
   return {
+    allGroups: data ? getIdAndName(data.getUserJoinedGroups.joinedGroups) : [],
     ownedGroups: ownedGroups(),
     joinedGroups: joinedGroups(),
     loading,

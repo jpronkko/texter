@@ -30,7 +30,7 @@ const GroupSelectPage = () => {
 
   const { ownedGroups, joinedGroups, loading, error } = useGetUserGroups()
   const [removeUserFromGroup] = useRemoveUserFromGroup()
-  const [logOut] = useLogInOut()
+  const [, logOut] = useLogInOut()
 
   useUserAddSubsription(user.id)
   useUserRemoveSubscription(user.id)

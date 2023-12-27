@@ -87,6 +87,7 @@ const GroupMembersTable = ({ groupId }) => {
       sortable: false,
       renderCell: (params) => (
         <Button
+          id="remove-user-button"
           variant="contained"
           disabled={params.row.role === 'OWNER'}
           onClick={() => preapreRemoveUserFromGroup(params.row.id)}
@@ -108,7 +109,10 @@ const GroupMembersTable = ({ groupId }) => {
     : []
 
   return (
-    <Container id="group-members-table">
+    <Container
+      id="group-members-table"
+      sx={{ minHeight: 225 }}
+    >
       <ConfirmMessage
         ref={confirmDlgRef}
         title="Confirm"

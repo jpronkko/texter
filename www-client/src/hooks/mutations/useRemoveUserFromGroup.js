@@ -12,7 +12,7 @@ const useRemoveUserFromGroup = () => {
   const [showError] = useError()
   const [mutation, result] = useMutation(REMOVE_USER_FROM_GROUP, {
     onError: (error) => {
-      logger.error('remove user from group error:', error)
+      logger.error('Remove user from group error:', error)
       showError(`Remove user from group failed: ${parseError(error)}`)
     },
     update: (cache, response) => {
@@ -43,8 +43,18 @@ const useRemoveUserFromGroup = () => {
           }
         )
       }
-      const groupMembersInCache = cache.readQuery({ query: GET_GROUP_MEMBERS })
-      logger.info('groupMembersInCache', groupMembersInCache)
+      const groupMembersInCache = cache.readQuery({
+        query: GET_GROUP_MEMBERS,
+        variables: { groupId: groupId },
+      })
+      logger.info(
+        'groupMembersInCache',
+        groupMembersInCache,
+        'groupId',
+        groupId,
+        'userId',
+        userId
+      )
       if (!groupMembersInCache) return
 
       cache.updateQuery(

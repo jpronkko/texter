@@ -71,7 +71,7 @@ describe('group creation, selection, user invitations to group', function () {
     cy.get('#group-description-title').contains('newtestdescription')
   })
 
-  it('invite user to group', function () {
+  it('invite user to group and accept invitation works', function () {
     cy.addUser({
       username: this.user2.username,
       name: this.user2.name,
@@ -95,6 +95,121 @@ describe('group creation, selection, user invitations to group', function () {
     cy.acceptInvitation(this.testgroup.name)
     cy.get('#other-joined-groups').get('#group-name').contains('Common')
     cy.contains(this.testgroup.name) //get('#other-joined-groups').get(this.testgroup.name)
+  })
+
+  it('invite user to group and cancel invitation works', function () {
+    cy.addUser({
+      username: this.user2.username,
+      name: this.user2.name,
+      email: this.user2.email,
+      password: this.user2.password,
+    })
+    cy.createTestGroup()
+    cy.goGroupMangePage()
+    cy.createInvitation(this.user2.name)
+
+    cy.get('#group-members-table')
+      .get('.MuiDataGrid-cell')
+      .contains(this.user2.username)
+    cy.get('#invitations-table')
+      .get('.MuiDataGrid-cell')
+      .contains(this.user2.username)
+      .parent()
+      .get('#cancel-invitation-button')
+      .click()
+    cy.get('#confirm-ok-button').click()
+    cy.get('#invitations-table')
+      .get('.MuiDataGrid-cell')
+      .contains(this.user2.username)
+      .parent()
+      .parent()
+      .contains('Cancelled')
+  })
+
+  it('invite user to group and reject invitation works', function () {
+    cy.addUser({
+      username: this.user2.username,
+      name: this.user2.name,
+      email: this.user2.email,
+      password: this.user2.password,
+    })
+    cy.createTestGroup()
+    cy.goGroupMangePage()
+    cy.createInvitation(this.user2.name)
+
+    cy.get('#group-members-table')
+      .get('.MuiDataGrid-cell')
+      .contains(this.user2.username)
+    cy.logout()
+
+    cy.login({
+      username: this.user2.username,
+      password: this.user2.password,
+    })
+
+    cy.get('#invitation-menu-button').click()
+    cy.get('#invitation-label')
+      .contains(this.testgroup.name)
+      .parent()
+      .get('#invitation-reject-button')
+      .click()
+    cy.logout()
+    cy.login({
+      username: this.user1.username,
+      password: this.user1.password,
+    })
+    cy.goGroupMangePage()
+    cy.get('#invitations-table')
+      .get('.MuiDataGrid-cell')
+      .contains(this.user2.username)
+      .parent()
+      .parent()
+      .contains('Rejected')
+  })
+
+  it('invite user to group and remove user from group works', function () {
+    cy.addUser({
+      username: this.user2.username,
+      name: this.user2.name,
+      email: this.user2.email,
+      password: this.user2.password,
+    })
+    cy.createTestGroup()
+    cy.goGroupMangePage()
+    cy.createInvitation(this.user2.name)
+    cy.logout()
+
+    cy.login({
+      username: this.user2.username,
+      password: this.user2.password,
+    })
+
+    cy.get('#invitation-menu-button').click()
+    cy.get('#invitation-label')
+      .contains(this.testgroup.name)
+      .parent()
+      .get('#invitation-accept-button')
+      .click()
+    cy.logout()
+
+    cy.login({
+      username: this.user1.username,
+      password: this.user1.password,
+    })
+    cy.goGroupMangePage()
+    cy.get('#group-members-table')
+      .get('.MuiDataGrid-cell')
+      .contains(this.user2.username)
+      .parent()
+      .parent()
+      .within(() => {
+        cy.get('#remove-user-button').click()
+      })
+    cy.get('#confirm-ok-button').click()
+    cy.get('#group-members-table')
+      .get('.MuiDataGrid-cell')
+      .contains(this.user2.username)
+      .should('not.exist')
   })
 
   it('leave group', function () {

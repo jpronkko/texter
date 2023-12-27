@@ -6,10 +6,9 @@ const useSentInvitations = () => {
   const { data, error, loading, refetch, ...result } =
     useQuery(GET_SENT_INVITATIONS)
 
-  
   return {
     sentInvitations: data ? data.getSentInvitations : [],
-    
+
     loading,
     error,
     refetch,

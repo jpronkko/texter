@@ -54,7 +54,7 @@ module.exports = {
       // Password length can't be validated by mongoose as only hash is stored
       if (password.length < MIN_PASSWORD_LENGTH) {
         logger.error('Create user: password too short')
-        throw new GraphQLError('Password too short!')
+        throw new GraphQLError('password too short')
       }
 
       try {

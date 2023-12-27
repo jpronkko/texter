@@ -53,6 +53,7 @@ const RecvInvItem = ({ invitation, closeMenu }) => {
             Accept
           </Button>
           <Button
+            id="invitation-reject-button"
             variant="contained"
             sx={{ ml: 1 }}
             onClick={handleReject}

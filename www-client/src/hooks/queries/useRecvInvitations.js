@@ -11,7 +11,7 @@ const useRecvInvitations = () => {
     GET_RECV_INVITATIONS,
     {
       onError: (error) => {
-        logger.error('get sent invitations error:', error)
+        logger.error('Get sent invitations error:', error)
         showError(parseError(error))
       },
     }

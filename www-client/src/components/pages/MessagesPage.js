@@ -18,7 +18,7 @@ import InputTextDlg from '../dialogs/InputTextDlg'
 import MessageList from '../MessageList'
 import Loading from '../Loading'
 import useNotifyMessage from '../../hooks/ui/useNotifyMessage'
-
+import logger from '../../utils/logger'
 const drawerWidth = 250
 
 const MessagesPage = () => {
@@ -27,7 +27,7 @@ const MessagesPage = () => {
   const user = useSelector((state) => state.user.userData)
   const [showMessage] = useNotifyMessage()
 
-  const { joinedGroups } = useGetUserGroups()
+  const { allGroups } = useGetUserGroups()
 
   const { topics, error, loading } = useGetTopics(selectedGroup.id)
   const [createTopic] = useCreateTopic()
@@ -50,14 +50,14 @@ const MessagesPage = () => {
     if (!selectedGroup.id) {
       return
     }
-    const isInGroup = joinedGroups.find(
-      (group) => group.id === selectedGroup.id
-    )
-    if (isInGroup) {
+    const isInGroup = allGroups.find((group) => group.id === selectedGroup.id)
+    if (!isInGroup) {
       showMessage('You exited group ' + selectedGroup.name + '.')
+      logger.info('You exited group ' + JSON.stringify(selectedGroup, null, 4))
+      logger.info('Joined groups: ' + JSON.stringify(allGroups, null, 4))
       navigate('/')
     }
-  }, [joinedGroups])
+  }, [allGroups])
 
   useEffect(() => {
     if (!selectedTopic.name && topics && topics.length > 0) {
@@ -102,8 +102,8 @@ const MessagesPage = () => {
 
   // Display Add Topic button only if user is OWNER or ADMIN of the group
   const renderAddTopicButton = () => {
-    const group = joinedGroups.find((group) => group.id === selectedGroup.id)
-    if (group && group.role !== 'ADMIN') return null
+    const group = allGroups.find((group) => group.id === selectedGroup.id)
+    if (group && group.role !== 'OWNER' && group.role !== 'ADMIN') return null
 
     return (
       <Button
