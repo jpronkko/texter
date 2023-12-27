@@ -1,5 +1,7 @@
 .env
 /build
+/cypress/screenshots
+/cypress/videos
 /node_modules
 /.vscode
 

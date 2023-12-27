@@ -4,12 +4,15 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    types: [opened, synchronize]
   workflow_dispatch:
 
 env:
   PROD_MONGODB_URI: ${{ secrets.PROD_MONGODB_URI }}
   TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
   SECRET: ${{ secrets.SECRET }}
+  PORT: "8080"
 
 jobs:
   build_and_test:
@@ -22,22 +25,26 @@ jobs:
         with:
           node-version: "20.x"
 
-      - name: npm install, build, and test
+      - name: Install dependencies
         run: npm install
       - name: lint
         run: npm run eslint
-      - name: build
-        run: npm run build
-      - name: api test
-        run: npm run api-test
-      - name: component test
+
+      - name: UI component test
         run: npm run component-test
+
+      - name: Build
+        run: npm run build
+
+      - name: API test
+        run: npm run api-test
       - name: e2e test
         uses: cypress-io/github-action@v5
         with:
           command: npm run e2e-test
           start: npm run start
-      #    npm run test --if-present
+          wait-on: "http://localhost:8080"
+
       - name: Zip artifact for deployment
         run: cd ./server && zip release.zip ./* -r && mv release.zip ../
 
@@ -48,9 +55,10 @@ jobs:
           path: release.zip
 
   deploy:
-    runs-on: ubuntu-latest
     needs: [build_and_test]
     if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+
     environment:
       name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
