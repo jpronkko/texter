@@ -42,7 +42,7 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           command: npm run e2e-test
-          start: npm run start
+          start: npm run start:test
           wait-on: "http://localhost:8080"
 
       - name: Zip artifact for deployment
