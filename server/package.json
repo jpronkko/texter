@@ -23,6 +23,7 @@
     "dev": "NODE_ENV=development nodemon index.js",
     "build": "rm -fr build && cd ../www-client && npm run build && cp -r build ../server",
     "eslint": "eslint .",
+    "test_env": "NODE_ENV=test node index.js",
     "test_mode": "NODE_ENV=test nodemon index.js",
     "test": "NODE_ENV=test jest --verbose --runInBand --detectOpenHandles",
     "test_topic": "NODE_ENV=test jest 'graphql/topics.test.js' --verbose --runInBand --detectOpenHandles",

@@ -18,7 +18,7 @@
     "component-test": "npm run test --prefix www-client",
     "api-test": "npm run test --prefix server",
     "e2e-test": "npm run test:e2e --prefix server",
-    "start:test": "npm run test_mode --prefix server"
+    "start:test": "npm run test_env --prefix server"
   },
   "keywords": [],
   "author": "",
