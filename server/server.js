@@ -32,7 +32,10 @@ const startServer = async () => {
     app.use('/test', testRouter)
   }
 
-  if (process.env.NODE_ENV === 'production') {
+  if (
+    process.env.NODE_ENV === 'production' ||
+    process.env.NODE_ENV === 'test'
+  ) {
     app.use(express.static('build'))
   }
 

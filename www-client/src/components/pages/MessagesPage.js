@@ -18,7 +18,7 @@ import InputTextDlg from '../dialogs/InputTextDlg'
 import MessageList from '../MessageList'
 import Loading from '../Loading'
 import useNotifyMessage from '../../hooks/ui/useNotifyMessage'
-import logger from '../../utils/logger'
+
 const drawerWidth = 250
 
 const MessagesPage = () => {
@@ -53,8 +53,6 @@ const MessagesPage = () => {
     const isInGroup = allGroups.find((group) => group.id === selectedGroup.id)
     if (!isInGroup) {
       showMessage('You exited group ' + selectedGroup.name + '.')
-      logger.info('You exited group ' + JSON.stringify(selectedGroup, null, 4))
-      logger.info('Joined groups: ' + JSON.stringify(allGroups, null, 4))
       navigate('/')
     }
   }, [allGroups])

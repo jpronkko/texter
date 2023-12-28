@@ -47,7 +47,7 @@ Cypress.Commands.add('login', ({ username, password }) => {
     const userData = result.body.data.login
     localStorage.setItem('texter-login', JSON.stringify(userData))
     localStorage.setItem('texter-token', userData.token)
-    cy.visit(main_url)
+    cy.openPage()
   })
 })
 
@@ -94,7 +94,6 @@ Cypress.Commands.add('acceptInvitation', (name) => {
 Cypress.Commands.add('addGroup', ({ name, description }) => {
   const mutation = `mutation CreateGroup { createGroup(name: "${name}", description: "${description}"){ id name description ownerId } }`
   const storedToken = localStorage.getItem('texter-token')
-  cy.task('log', 'group add stored token' + storedToken)
 
   cy.request({
     method: 'POST',

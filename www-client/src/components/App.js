@@ -21,7 +21,6 @@ import MessagesPage from './pages/MessagesPage'
 import TopBar from './TopBar'
 
 import { getLoginData } from '../utils/loginData'
-import logger from '../utils/logger'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -32,14 +31,6 @@ const App = () => {
       dispatch(logIn(loginData))
     }
   }, [])
-
-  const handleCreateUser = async (data) => {
-    logger.info('Create user input data:', data)
-  }
-
-  const loginUser = async (data) => {
-    logger.info('Login user input data:', data)
-  }
 
   return (
     <div>
@@ -63,11 +54,11 @@ const App = () => {
           />
           <Route
             path="/create_account"
-            element={<CreateUserPage handleCreate={handleCreateUser} />}
+            element={<CreateUserPage />}
           />
           <Route
             path="/login"
-            element={<LoginPage handleLogin={loginUser} />}
+            element={<LoginPage />}
           />
           <Route
             path="*"

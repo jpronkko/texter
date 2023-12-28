@@ -14,7 +14,6 @@ const checkUserInGroup = (user, groupId) => {
   if (userGroups.find((item) => item.group.toString() === groupId)) {
     return true
   }
-  logger.error(`User ${JSON.stringify(user, null, 4)} not in group ${groupId}!`)
   return false
 }
 

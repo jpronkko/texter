@@ -3,10 +3,6 @@ const { mongoClearDb } = require('../services/mongo')
 
 const groupsModel = require('../models/groups.model')
 const usersModel = require('../models/users.model')
-// const Group = require('../models/groups.mongo')
-// const Topic = require('../models/topics.mongo')
-// const Message = require('../models/messages.mongo')
-// const Invitation = require('../models/messages.mongo')
 
 const { getHash } = require('../utils/pwtoken')
 const testUsers = require('../utils/testUsers')
@@ -29,13 +25,7 @@ testRouter.post('/addusers', async (request, response) => {
       testUser.email,
       pwhash
     )
-    logger.info('Created user', user)
-    const updatedUser = await usersModel.addUserToGroup(
-      user.userId,
-      group.id,
-      'ADMIN'
-    )
-    logger.info('Added user to common group:', updatedUser)
+    await usersModel.addUserToGroup(user.userId, group.id, 'ADMIN')
   }
   logger.info('Done adding test users.')
   response.status(204).end()

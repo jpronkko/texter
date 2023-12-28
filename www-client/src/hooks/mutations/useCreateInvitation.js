@@ -12,12 +12,6 @@ import logger from '../../utils/logger'
 
 const updateCache = (cache, query, newInvitation) => {
   cache.updateQuery(query, ({ getSentInvitations }) => {
-    logger.info(
-      'update get invitations query',
-      query,
-      ' getSentInvitaitons: ',
-      getSentInvitations
-    )
     return {
       getSentInvitations: uniqueById([newInvitation, ...getSentInvitations]),
     }

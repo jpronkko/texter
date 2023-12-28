@@ -6,7 +6,6 @@ module.exports = defineConfig({
       on('task', {
         log(message) {
           cy.task('log', message)
-          //console.log(message + '\n\n')
           return null
         },
       })

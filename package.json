@@ -12,8 +12,6 @@
     "dev-server": "npm run dev --prefix server",
     "client": "npm start --prefix www-client",
     "dev": "npm run dev-server & npm run client",
-    "deploy": "npm run build --prefix client && npm start --prefix server",
-    "deploy-cluster": "npm run build --prefix client && npm run cluster --prefix server",
     "start": "npm start --prefix server",
     "component-test": "npm run test --prefix www-client",
     "api-test": "npm run test --prefix server",
