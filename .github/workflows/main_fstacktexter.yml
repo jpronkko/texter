@@ -39,7 +39,7 @@ jobs:
       - name: API test
         run: npm run api-test
       - name: e2e test
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v5
         with:
           command: npm run e2e-test
           start: npm run start:test
