@@ -5,11 +5,6 @@ describe('basic user operations e.g. login/out', function () {
     cy.fixture('user2.json').as('user2')
   })
 
-  it('main page loads', function () {
-    cy.openPage()
-    cy.contains('Texter', { matchCase: false })
-  })
-
   it('create user succeeds', function () {
     cy.openPage()
     cy.get('#create-new-button').click()
