@@ -94,6 +94,7 @@ module.exports = {
           credentials: { username, password },
         } = args
 
+        logger.info('Login attempt:', username)
         const tokenAndUser = await usersModel.login(username, password)
         return tokenAndUser
       } catch (error) {
