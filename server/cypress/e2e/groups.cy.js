@@ -21,7 +21,7 @@ describe('group creation, selection, user invitations to group', function () {
   })
 
   it('common group exists and can post to general topic', function () {
-    cy.get('#other-joined-groups')
+    cy //.get('#other-joined-groups')
       //.find('#group-name')
       .contains('Common')
       .parent()

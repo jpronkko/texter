@@ -6,13 +6,8 @@ module.exports = defineConfig({
     options: {
       browser: 'chrome',
     },
-    setupNodeEvents(on) {
-      on('task', {
-        log(message) {
-          cy.task('log', message)
-          return null
-        },
-      })
+    setupNodeEvents(on, config) {
+      return config
     },
   },
 })

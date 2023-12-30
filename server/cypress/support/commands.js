@@ -28,6 +28,9 @@ Cypress.Commands.add('addUser', ({ username, name, email, password }) => {
     method: 'POST',
     url: api_url,
     body: { query: mutation },
+  }).then((result) => {
+    // eslint-disable-next-line no-console
+    console.log('addUser:', JSON.stringify(result.body))
   })
 })
 
@@ -43,6 +46,8 @@ Cypress.Commands.add('login', ({ username, password }) => {
     body: { query: mutation },
   }).then((result) => {
     if (result.body.errors) {
+      // eslint-disable-next-line no-console
+      console.log('login:', JSON.stringify(result.body.errors))
       return
     }
     const userData = result.body.data.login
