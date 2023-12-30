@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { api_url, main_url, reset_url } from './connections'
 
 Cypress.Commands.add('resetData', () => {
@@ -53,8 +54,9 @@ Cypress.Commands.add('login', ({ username, password }) => {
     const userData = result.body.data.login
     localStorage.setItem('texter-login', JSON.stringify(userData))
     localStorage.setItem('texter-token', userData.token)
-    cy.openPage()
+    cy.visit(main_url)
     cy.get('#usermenu-button').should('contain', userData.username)
+    console.log('login:', JSON.stringify(result.body))
   })
 })
 

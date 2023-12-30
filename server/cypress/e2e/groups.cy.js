@@ -13,6 +13,9 @@ describe('group creation, selection, user invitations to group', function () {
         cy.login({
           username: this.user1.username,
           password: this.user1.password,
+        }).then(() => {
+          // eslint-disable-next-line no-console
+          console.log('user1 logged in')
         })
       })
 
