@@ -36,8 +36,17 @@ Cypress.Commands.add('addUser', ({ username, name, email, password }) => {
 })
 
 Cypress.Commands.add('login', ({ username, password }) => {
-  const mutation = `mutation Login { 
-    login(credentials: { username: "${username}", 
+  cy.openPage()
+  cy.get('#username').type(username)
+  cy.get('#password').type(password)
+  cy.get('#login-button').click()
+  //cy.get('#notify-message').contains(`${username} has logged in!`)
+})
+
+/* Cypress.Commands.add('login', ({ username, password }) => {
+  const mutation = `mutation Login {
+
+    login(credentials: { username: "${username}",
     password: "${password}"
   }){ token userId username email name } }`
 
@@ -59,7 +68,7 @@ Cypress.Commands.add('login', ({ username, password }) => {
     console.log('login:', JSON.stringify(result.body))
   })
 })
-
+ */
 Cypress.Commands.add('logout', () => {
   cy.get('#usermenu-button').click()
   cy.get('#usermenu').contains('Logout').as('logout')

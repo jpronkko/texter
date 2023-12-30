@@ -14,7 +14,7 @@ const NotifyMessage = () => {
   useEffect(() => {
     setTimeout(() => {
       dispatch(setClearMessage())
-    }, 4000)
+    }, 7000)
   }, [message])
 
   return <>{message ? <Alert id="notify-message">{message}</Alert> : null}</>
