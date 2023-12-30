@@ -49,6 +49,7 @@ Cypress.Commands.add('login', ({ username, password }) => {
     localStorage.setItem('texter-login', JSON.stringify(userData))
     localStorage.setItem('texter-token', userData.token)
     cy.openPage()
+    cy.get('#usermenu-button').should('contain', userData.username)
   })
 })
 
