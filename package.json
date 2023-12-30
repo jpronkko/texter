@@ -8,7 +8,7 @@
     "install-server": "npm install --prefix server",
     "install-client": "npm install --prefix www-client",
     "install": "npm run install-server && npm run install-client",
-    "eslint": "cd server && npm run eslint . && cd ../www-client && npm run eslint .", 
+    "eslint": "cd server && npm run eslint . && cd ../www-client && npm run eslint .",
     "dev-server": "npm run dev --prefix server",
     "client": "npm start --prefix www-client",
     "dev": "npm run dev-server & npm run client",
@@ -20,5 +20,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "hours-report": "^1.1.1"
+  }
 }

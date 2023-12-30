@@ -53,7 +53,8 @@ Cypress.Commands.add('login', ({ username, password }) => {
 
 Cypress.Commands.add('logout', () => {
   cy.get('#usermenu-button').click()
-  cy.get('#usermenu').contains('Logout').click()
+  cy.get('#usermenu').contains('Logout').as('logout')
+  cy.get('@logout').click()
   cy.get('#confirm-ok-button').click()
 })
 
@@ -68,12 +69,13 @@ Cypress.Commands.add('createTestGroup', () => {
     })
 })
 
-Cypress.Commands.add('goGroupMangePage', () => {
-  cy.get('#group-name')
-    .contains('testgroup')
+Cypress.Commands.add('goGroupManagePage', () => {
+  //cy.get('#group-name')
+  cy.contains('testgroup')
     .parent()
-    .get('#manage-group-button')
-    .click()
+    .find('#manage-group-button')
+    .as('manageGroupButton')
+  cy.get('@manageGroupButton').click()
 })
 
 Cypress.Commands.add('createInvitation', (name) => {

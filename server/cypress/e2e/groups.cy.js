@@ -22,11 +22,17 @@ describe('group creation, selection, user invitations to group', function () {
 
   it('common group exists and can post to general topic', function () {
     cy.get('#other-joined-groups')
-      .get('#group-name')
+      //.find('#group-name')
       .contains('Common')
-      .get('#select-group-button')
-      .click()
-    cy.get('#select-topic-button').contains('General').click()
+      .parent()
+      .parent()
+      //.contains('Common')
+      .find('#select-group-button')
+      .as('selectGroupButton')
+
+    cy.get('@selectGroupButton').click()
+    cy.get('#select-topic-button').contains('General').as('selectTopicButton')
+    cy.get('@selectTopicButton').click()
     cy.get('#message-input').type('test message')
     cy.get('#submit-message-button').click()
     cy.get('#message').contains('test message')
@@ -37,7 +43,7 @@ describe('group creation, selection, user invitations to group', function () {
     cy.get('#owned-groups').contains(this.testgroup.name)
     cy.get('#owned-groups').get('#group-name').contains(this.testgroup.name)
     cy.get('#owned-groups')
-      .get('#group-description')
+      .find('#group-description')
       .contains(this.testgroup.description)
   })
 
@@ -60,7 +66,7 @@ describe('group creation, selection, user invitations to group', function () {
 
   it('change group name and description', function () {
     cy.createTestGroup()
-    cy.goGroupMangePage()
+    cy.goGroupManagePage()
     cy.get('#group-name-change-button').click()
     cy.get('#input').type('newtestgroup')
     cy.get('#submit-button').click()
@@ -79,7 +85,7 @@ describe('group creation, selection, user invitations to group', function () {
       password: this.user2.password,
     })
     cy.createTestGroup()
-    cy.goGroupMangePage()
+    cy.goGroupManagePage()
     cy.createInvitation(this.user2.name)
 
     cy.get('#group-members-table')
@@ -105,7 +111,7 @@ describe('group creation, selection, user invitations to group', function () {
       password: this.user2.password,
     })
     cy.createTestGroup()
-    cy.goGroupMangePage()
+    cy.goGroupManagePage()
     cy.createInvitation(this.user2.name)
 
     cy.get('#group-members-table')
@@ -134,7 +140,7 @@ describe('group creation, selection, user invitations to group', function () {
       password: this.user2.password,
     })
     cy.createTestGroup()
-    cy.goGroupMangePage()
+    cy.goGroupManagePage()
     cy.createInvitation(this.user2.name)
 
     cy.get('#group-members-table')
@@ -158,7 +164,7 @@ describe('group creation, selection, user invitations to group', function () {
       username: this.user1.username,
       password: this.user1.password,
     })
-    cy.goGroupMangePage()
+    cy.goGroupManagePage()
     cy.get('#invitations-table')
       .get('.MuiDataGrid-cell')
       .contains(this.user2.username)
@@ -175,7 +181,7 @@ describe('group creation, selection, user invitations to group', function () {
       password: this.user2.password,
     })
     cy.createTestGroup()
-    cy.goGroupMangePage()
+    cy.goGroupManagePage()
     cy.createInvitation(this.user2.name)
     cy.logout()
 
@@ -196,7 +202,7 @@ describe('group creation, selection, user invitations to group', function () {
       username: this.user1.username,
       password: this.user1.password,
     })
-    cy.goGroupMangePage()
+    cy.goGroupManagePage()
     cy.get('#group-members-table')
       .get('.MuiDataGrid-cell')
       .contains(this.user2.username)
@@ -220,7 +226,7 @@ describe('group creation, selection, user invitations to group', function () {
       password: this.user2.password,
     })
     cy.createTestGroup()
-    cy.goGroupMangePage()
+    cy.goGroupManagePage()
     cy.createInvitation(this.user2.name)
     cy.logout()
 
