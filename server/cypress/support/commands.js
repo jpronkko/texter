@@ -7,7 +7,6 @@ Cypress.Commands.add('resetData', () => {
 Cypress.Commands.add('openPage', () => {
   cy.visit(main_url)
   cy.location('pathname').should('eq', '/')
-  cy.wait(2000)
 })
 
 Cypress.Commands.add('addUser', ({ username, name, email, password }) => {
