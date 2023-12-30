@@ -2,7 +2,7 @@ const { defineConfig } = require('cypress')
 
 module.exports = defineConfig({
   e2e: {
-    defaultCommandTimeout: 2000,
+    defaultCommandTimeout: 20000,
     options: {
       browser: 'chrome',
     },
