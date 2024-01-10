@@ -13,7 +13,8 @@ describe('basic user operations e.g. login/out', function () {
     cy.get('#email').type(this.user1.email)
     cy.get('#password').type(this.user1.password)
     cy.get('#create-submit-button').click()
-    cy.get('#notify-message').contains(`${this.user1.username} has logged in!`)
+    //cy.get('#notify-message').contains(`${this.user1.username} has logged in!`)
+    cy.get('#usermenu-button').contains(this.user1.username)
   })
 
   it('login succeeds with correct password', function () {
@@ -27,7 +28,8 @@ describe('basic user operations e.g. login/out', function () {
     cy.get('#username').type(this.user1.username)
     cy.get('#password').type(this.user1.password)
     cy.get('#login-button').click()
-    cy.get('#notify-message').contains(`${this.user1.username} has logged in!`)
+    //cy.get('#notify-message').contains(`${this.user1.username} has logged in!`)
+    cy.get('#usermenu-button').contains(this.user1.username)
   })
 
   it('login fails with incorrect password', function () {

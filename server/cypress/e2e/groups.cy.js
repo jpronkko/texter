@@ -102,8 +102,8 @@ describe('group creation, selection, user invitations to group', function () {
     })
 
     cy.acceptInvitation(this.testgroup.name)
-    cy.get('#other-joined-groups').get('#group-name').contains('Common')
-    cy.contains(this.testgroup.name) //get('#other-joined-groups').get(this.testgroup.name)
+    cy.get('#other-joined-groups').contains('Common')
+    cy.get('#other-joined-groups').contains(this.testgroup.name) //get('#other-joined-groups').get(this.testgroup.name)
   })
 
   it('invite user to group and cancel invitation works', function () {
@@ -118,14 +118,16 @@ describe('group creation, selection, user invitations to group', function () {
     cy.createInvitation(this.user2.name)
 
     cy.get('#group-members-table')
-      .get('.MuiDataGrid-cell')
+      // .find('.MuiDataGrid-cell') //.get('.MuiDataGrid-cell')
       .contains(this.user2.username)
     cy.get('#invitations-table')
-      .get('.MuiDataGrid-cell')
+      .get('.MuiDataGrid-cell') //.get('.MuiDataGrid-cell')
       .contains(this.user2.username)
       .parent()
-      .get('#cancel-invitation-button')
-      .click()
+      .find('#cancel-invitation-button')
+      .as('cancelInvitationButton')
+    cy.get('@cancelInvitationButton').click()
+
     cy.get('#confirm-ok-button').click()
     cy.get('#invitations-table')
       .get('.MuiDataGrid-cell')
@@ -161,7 +163,9 @@ describe('group creation, selection, user invitations to group', function () {
       .contains(this.testgroup.name)
       .parent()
       .get('#invitation-reject-button')
-      .click()
+      .as('rejectInvitationButton')
+    cy.get('@rejectInvitationButton').click()
+
     cy.logout()
     cy.login({
       username: this.user1.username,
@@ -198,7 +202,8 @@ describe('group creation, selection, user invitations to group', function () {
       .contains(this.testgroup.name)
       .parent()
       .get('#invitation-accept-button')
-      .click()
+      .as('acceptInvitationButton')
+    cy.get('@acceptInvitationButton').click()
     cy.logout()
 
     cy.login({

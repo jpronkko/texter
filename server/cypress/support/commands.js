@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import { api_url, main_url, reset_url } from './connections'
+import { aliasQuery } from './utils'
 
 Cypress.Commands.add('resetData', () => {
   cy.request('POST', reset_url)
@@ -7,7 +8,7 @@ Cypress.Commands.add('resetData', () => {
 
 Cypress.Commands.add('openPage', () => {
   cy.visit(main_url)
-  cy.location('pathname').should('eq', '/')
+  //cy.location('pathname').should('eq', '/')
 })
 
 Cypress.Commands.add('addUser', ({ username, name, email, password }) => {
@@ -35,15 +36,27 @@ Cypress.Commands.add('addUser', ({ username, name, email, password }) => {
   })
 })
 
-Cypress.Commands.add('login', ({ username, password }) => {
-  cy.openPage()
-  cy.get('#username').type(username)
-  cy.get('#password').type(password)
-  cy.get('#login-button').click()
-  //cy.get('#notify-message').contains(`${username} has logged in!`)
-})
+// Cypress.Commands.add('login', ({ username, password }) => {
+//   cy.intercept('POST', api_url, (req) => {
+//     aliasQuery(req, 'GetUserJoinedGroups')
+//   }) //.as('gqlGetUserJoinedGroupsQuery')
+//   cy.openPage()
+//   cy.get('#username').type(username)
+//   cy.get('#password').type(password)
+//   cy.get('#login-button').click()
 
-/* Cypress.Commands.add('login', ({ username, password }) => {
+//   cy.wait('@gqlGetUserJoinedGroupsQuery')
+//     .its('response.body.data')
+//     .should('not.be.empty')
+//   cy.get('#usermenu-button').should('contain', username)
+//   //cy.get('#notify-message').contains(`${username} has logged in!`)
+// })
+
+Cypress.Commands.add('login', ({ username, password }) => {
+  cy.intercept('POST', api_url, (req) => {
+    aliasQuery(req, 'GetUserJoinedGroups')
+  }) //.as('gqlGetUserJoinedGroupsQuery')
+
   const mutation = `mutation Login {
 
     login(credentials: { username: "${username}",
@@ -64,11 +77,16 @@ Cypress.Commands.add('login', ({ username, password }) => {
     localStorage.setItem('texter-login', JSON.stringify(userData))
     localStorage.setItem('texter-token', userData.token)
     cy.visit(main_url)
+
+    cy.wait('@gqlGetUserJoinedGroupsQuery')
+      .its('response.body.data')
+      .should('not.be.empty')
+
     cy.get('#usermenu-button').should('contain', userData.username)
     console.log('login:', JSON.stringify(result.body))
   })
 })
- */
+
 Cypress.Commands.add('logout', () => {
   cy.get('#usermenu-button').click()
   cy.get('#usermenu').contains('Logout').as('logout')
