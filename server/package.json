@@ -38,7 +38,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "devDependencies": {
-    "cypress": "^13.6.2",
+    "cypress": "^13.6.3",
     "eslint": "^8.43.0",
     "eslint-plugin-cypress": "^2.15.1",
     "eslint-plugin-jest": "^27.6.0",
