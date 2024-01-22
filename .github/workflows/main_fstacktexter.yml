@@ -33,9 +33,6 @@ jobs:
       - name: UI component test
         run: npm run component-test
 
-      #- name: Build
-      #  run: npm run build
-
       - name: API test
         run: npm run api-test
 
@@ -44,15 +41,11 @@ jobs:
 
         with:
           working-directory: ./server
-
-          #   command: npm run e2e-test
           build: npm run build
-          #start: npm run start:test
           start: npm run test_mode
           browser: chrome
           wait-on: http://localhost:8080
           record: true
-          # parallel: true
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
