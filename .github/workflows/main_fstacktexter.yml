@@ -41,10 +41,14 @@ jobs:
 
       - name: e2e test
         uses: cypress-io/github-action@v6
+
         with:
+          working-directory: ./server
+
           #   command: npm run e2e-test
           build: npm run build
-          start: npm run start:test
+          #start: npm run start:test
+          start: npm run test_mode
           browser: chrome
           wait-on: http://localhost:8080
           record: true
