@@ -99,6 +99,9 @@ Cypress.Commands.add('logout', () => {
   cy.get('#usermenu').contains('Logout').as('logout')
   cy.get('@logout').click()
   cy.get('#confirm-ok-button').click()
+  cy.location('pathname').should('eq', '/login')
+  cy.get('#usermenu-button').should('not.exist')
+  cy.get('#login-button').should('exist')
 })
 
 Cypress.Commands.add('createTestGroup', () => {
