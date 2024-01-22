@@ -33,17 +33,25 @@ jobs:
       - name: UI component test
         run: npm run component-test
 
-      - name: Build
-        run: npm run build
+      #- name: Build
+      #  run: npm run build
 
       - name: API test
         run: npm run api-test
+
       - name: e2e test
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
-          command: npm run e2e-test
+          #   command: npm run e2e-test
+          build: npm run build
           start: npm run start:test
+          browser: chrome
           wait-on: http://localhost:8080
+          record: true
+          # parallel: true
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Zip artifact for deployment
         run: cd ./server && zip release.zip ./* -r && mv release.zip ../
