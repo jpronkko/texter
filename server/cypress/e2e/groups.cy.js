@@ -117,12 +117,10 @@ describe('group creation, selection, user invitations to group', function () {
     cy.goGroupManagePage()
     cy.createInvitation(this.user2.name)
 
-    cy.get('#group-members-table')
-      // .find('.MuiDataGrid-cell') //.get('.MuiDataGrid-cell')
-      .contains(this.user2.username)
     cy.get('#invitations-table')
       .get('.MuiDataGrid-cell') //.get('.MuiDataGrid-cell')
       .contains(this.user2.username)
+      .parent()
       .parent()
       .find('#cancel-invitation-button')
       .as('cancelInvitationButton')

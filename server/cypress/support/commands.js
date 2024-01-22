@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { api_url, main_url, reset_url } from './connections'
-import { aliasQuery } from './utils'
+import { aliasMutation, aliasQuery } from './utils'
 
 Cypress.Commands.add('resetData', () => {
   cy.request('POST', reset_url)
@@ -54,11 +54,15 @@ Cypress.Commands.add('addUser', ({ username, name, email, password }) => {
 
 Cypress.Commands.add('login', ({ username, password }) => {
   cy.intercept('POST', api_url, (req) => {
+    Cypress.log({
+      displayName: 'login intercept',
+      message: JSON.stringify(req.body),
+    })
     aliasQuery(req, 'GetUserJoinedGroups')
+    aliasMutation(req, 'Login')
   }) //.as('gqlGetUserJoinedGroupsQuery')
 
   const mutation = `mutation Login {
-
     login(credentials: { username: "${username}",
     password: "${password}"
   }){ token userId username email name } }`
@@ -78,12 +82,15 @@ Cypress.Commands.add('login', ({ username, password }) => {
     localStorage.setItem('texter-token', userData.token)
     cy.visit(main_url)
 
+    /*cy.wait('@gqlLoginMutation')
+      .its('response.body.data')
+      .should('not.be.empty')*/
     cy.wait('@gqlGetUserJoinedGroupsQuery')
       .its('response.body.data')
       .should('not.be.empty')
 
     cy.get('#usermenu-button').should('contain', userData.username)
-    console.log('login:', JSON.stringify(result.body))
+    Cypress.log({ displayName: 'login:', message: JSON.stringify(result.body) })
   })
 })
 
