@@ -56,6 +56,8 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REACT_APP_API_ENDPOINT: $${{ vars.REACT_APP_API_ENDPOINT }}
+          REACT_APP_WS_ENDPOINT: $${{ vars.REACT_APP_WS_ENDPOINT }}
 
       - name: Zip artifact for deployment
         run: cd ./server && zip release.zip ./* -r && mv release.zip ../
