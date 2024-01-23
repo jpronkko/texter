@@ -8,7 +8,6 @@ Cypress.Commands.add('resetData', () => {
 
 Cypress.Commands.add('openPage', () => {
   cy.visit(main_url)
-  //cy.location('pathname').should('eq', '/')
 })
 
 Cypress.Commands.add('addUser', ({ username, name, email, password }) => {
@@ -31,26 +30,12 @@ Cypress.Commands.add('addUser', ({ username, name, email, password }) => {
     url: api_url,
     body: { query: mutation },
   }).then((result) => {
-    // eslint-disable-next-line no-console
-    console.log('addUser:', JSON.stringify(result.body))
+    Cypress.log({
+      displayName: 'addUser:',
+      message: JSON.stringify(result.body),
+    })
   })
 })
-
-// Cypress.Commands.add('login', ({ username, password }) => {
-//   cy.intercept('POST', api_url, (req) => {
-//     aliasQuery(req, 'GetUserJoinedGroups')
-//   }) //.as('gqlGetUserJoinedGroupsQuery')
-//   cy.openPage()
-//   cy.get('#username').type(username)
-//   cy.get('#password').type(password)
-//   cy.get('#login-button').click()
-
-//   cy.wait('@gqlGetUserJoinedGroupsQuery')
-//     .its('response.body.data')
-//     .should('not.be.empty')
-//   cy.get('#usermenu-button').should('contain', username)
-//   //cy.get('#notify-message').contains(`${username} has logged in!`)
-// })
 
 Cypress.Commands.add('login', ({ username, password }) => {
   cy.intercept('POST', api_url, (req) => {
@@ -60,7 +45,7 @@ Cypress.Commands.add('login', ({ username, password }) => {
     })
     aliasQuery(req, 'GetUserJoinedGroups')
     aliasMutation(req, 'Login')
-  }) //.as('gqlGetUserJoinedGroupsQuery')
+  })
 
   const mutation = `mutation Login {
     login(credentials: { username: "${username}",
@@ -81,14 +66,9 @@ Cypress.Commands.add('login', ({ username, password }) => {
     localStorage.setItem('texter-login', JSON.stringify(userData))
     localStorage.setItem('texter-token', userData.token)
     cy.visit(main_url)
-
-    /*cy.wait('@gqlLoginMutation')
-      .its('response.body.data')
-      .should('not.be.empty')*/
     cy.wait('@gqlGetUserJoinedGroupsQuery')
       .its('response.body.data')
       .should('not.be.empty')
-
     cy.get('#usermenu-button').should('contain', userData.username)
     Cypress.log({ displayName: 'login:', message: JSON.stringify(result.body) })
   })
@@ -116,12 +96,29 @@ Cypress.Commands.add('createTestGroup', () => {
 })
 
 Cypress.Commands.add('goGroupManagePage', () => {
-  //cy.get('#group-name')
+  cy.intercept('POST', api_url, (req) => {
+    aliasQuery(req, 'GetSentInvitations')
+    aliasQuery(req, 'GetGroupMembers')
+    //aliasQuery(req, 'GetUsersNotInGroup')
+  })
+
   cy.contains('testgroup')
     .parent()
     .find('#manage-group-button')
     .as('manageGroupButton')
   cy.get('@manageGroupButton').click()
+
+  cy.wait('@gqlGetSentInvitationsQuery')
+    .its('response.body.data')
+    .should('not.be.empty')
+
+  cy.wait('@gqlGetGroupMembersQuery')
+    .its('response.body.data')
+    .should('not.be.empty')
+
+  /*cy.wait('@gqlGetUsersNotInGroupQuery')
+    .its('response.body.data')
+    .should('not.be.empty')*/
 })
 
 Cypress.Commands.add('createInvitation', (name) => {

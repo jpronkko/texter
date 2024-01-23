@@ -215,8 +215,14 @@ describe('group creation, selection, user invitations to group', function () {
       .parent()
       .parent()
       .within(() => {
-        cy.get('#remove-user-button').click()
+        cy.get('#remove-user-button').as('removeUserButton')
       })
+    //.get('#remove-user-button')
+    //.as('removeUserButton')
+    /*.within(() => {
+        cy.get('#remove-user-button').click()
+      })*/
+    cy.get('@removeUserButton').click()
     cy.get('#confirm-ok-button').click()
     cy.get('#group-members-table')
       .get('.MuiDataGrid-cell')
