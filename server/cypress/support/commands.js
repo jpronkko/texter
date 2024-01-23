@@ -108,7 +108,7 @@ Cypress.Commands.add('goGroupManagePage', () => {
     .should('not.be.empty')
 
   cy.wait('@gqlGetGroupMembersQuery')
-    .its('response.body.data')
+    .its('response.body.data.getGroupMembers')
     .should('not.be.empty')
 })
 

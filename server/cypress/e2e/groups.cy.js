@@ -146,9 +146,9 @@ describe('group creation, selection, user invitations to group', function () {
     cy.goGroupManagePage()
     cy.createInvitation(this.user2.name)
 
-    cy.get('#group-members-table')
-      .get('.MuiDataGrid-cell')
-      .contains(this.user2.username)
+    cy.get('#invitations-table').within(() => {
+      cy.get('.MuiDataGrid-cell').contains(this.user2.username)
+    })
     cy.logout()
 
     cy.login({
@@ -170,12 +170,13 @@ describe('group creation, selection, user invitations to group', function () {
       password: this.user1.password,
     })
     cy.goGroupManagePage()
-    cy.get('#invitations-table')
-      .get('.MuiDataGrid-cell')
-      .contains(this.user2.username)
-      .parent()
-      .parent()
-      .contains('Rejected')
+    cy.get('#invitations-table').within(() => {
+      cy.get('.MuiDataGrid-cell')
+        .contains(this.user2.username)
+        .parent()
+        .parent()
+        .contains('Rejected')
+    })
   })
 
   it('invite user to group and remove user from group works', function () {
@@ -210,13 +211,16 @@ describe('group creation, selection, user invitations to group', function () {
     })
     cy.goGroupManagePage()
     cy.get('#group-members-table').within(() => {
-      cy.get('.MuiDataGrid-cell')
-        .contains(this.user2.username)
-        .should('be.visible')
+      cy.get('.MuiDataGrid-cell').contains(this.user2.username).as('username2')
+
+      cy.get('@username2').should('be.visible')
+
+      cy.get('@username2')
         .parent()
         .parent()
         .within(() => {
           cy.get('#remove-user-button').as('removeUserButton')
+          cy.get('@removeUserButton').should('be.visible')
           cy.get('@removeUserButton').click()
         })
     })
