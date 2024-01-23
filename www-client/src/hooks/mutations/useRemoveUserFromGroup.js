@@ -12,8 +12,8 @@ const useRemoveUserFromGroup = () => {
   const [showError] = useError()
   const [mutation, result] = useMutation(REMOVE_USER_FROM_GROUP, {
     onError: (error) => {
-      logger.error('Remove user from group error:', error)
-      showError(`Remove user from group failed: ${parseError(error)}`)
+      logger.error('Removing user from group error:', error)
+      showError(`Removing user from group failed: ${parseError(error)}`)
     },
     update: (cache, response) => {
       const removedUser = response.data.removeUserFromGroup

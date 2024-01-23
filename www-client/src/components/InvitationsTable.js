@@ -33,6 +33,7 @@ const InvitationsTable = () => {
 
   const onCancelInvitation = async () => {
     await cancelInvitation(invitationToCancel)
+    invitationToCancel = undefined
   }
 
   const columns = [

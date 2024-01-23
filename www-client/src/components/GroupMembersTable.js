@@ -27,13 +27,14 @@ const GroupMembersTable = ({ groupId }) => {
 
   const confirmDlgRef = useRef()
 
-  const preapreRemoveUserFromGroup = async (userId) => {
+  const preapreRemoveUserFromGroup = (userId) => {
     userToRemove = userId
     confirmDlgRef.current.open()
   }
 
   const onRemoveUser = async () => {
     await removeUserFromGroup(userToRemove, groupId)
+    userToRemove = undefined
   }
 
   const roleToTitle = {
