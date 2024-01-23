@@ -10,11 +10,13 @@ import ConfirmMessage from './dialogs/ConfirmMessage'
 import useGetGroupMembers from '../hooks/queries/useGetGroupMembers'
 import useUpdateUserRole from '../hooks/mutations/useUpdateUserRole'
 import useRemoveUserFromGroup from '../hooks/mutations/useRemoveUserFromGroup'
+//import useError from '../hooks/ui/useErrorMessage'
 
 const GroupMembersTable = ({ groupId }) => {
   const { members, loading } = useGetGroupMembers(groupId)
   const [updateUserRole] = useUpdateUserRole()
   const [removeUserFromGroup] = useRemoveUserFromGroup()
+  // const [showError] = useError()
 
   const handleUserRoleChange = async (userId, roleTitle) => {
     const role = Object.keys(roleToTitle).find(
@@ -29,11 +31,15 @@ const GroupMembersTable = ({ groupId }) => {
 
   const preapreRemoveUserFromGroup = (userId, username) => {
     userToRemove = { userId, username }
-    confirmDlgRef.current.open()
+
+    // eslint-disable-next-line no-console
+    console.log('preapreRemoveUserFromGroup', userToRemove)
+    confirmDlgRef.current.open({ userId, username })
   }
 
-  const onRemoveUser = async () => {
-    await removeUserFromGroup(userToRemove?.userId, groupId)
+  const onRemoveUser = async (okObject) => {
+    //if (!userToRemove) showError('No user specified')
+    await removeUserFromGroup(okObject.userId, groupId)
     userToRemove = undefined
   }
 

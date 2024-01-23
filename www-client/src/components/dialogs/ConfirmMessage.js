@@ -10,15 +10,17 @@ import DialogTitle from '@mui/material/DialogTitle'
 const ConfirmMessage = forwardRef((props, ref) => {
   const { title, message, onOk } = props
   const [visible, setVisible] = useState(false)
+  const [okObject, setOkObject] = useState({})
 
   const handleOk = () => {
     setVisible(false)
     if (onOk) {
-      onOk()
+      onOk(okObject)
     }
   }
 
-  const open = () => {
+  const open = (okObject) => {
+    setOkObject(okObject)
     setVisible(true)
   }
 
