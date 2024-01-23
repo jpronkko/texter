@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { api_url, main_url, reset_url } from './connections'
 import { aliasMutation, aliasQuery } from './utils'
 
@@ -39,10 +38,6 @@ Cypress.Commands.add('addUser', ({ username, name, email, password }) => {
 
 Cypress.Commands.add('login', ({ username, password }) => {
   cy.intercept('POST', api_url, (req) => {
-    Cypress.log({
-      displayName: 'login intercept',
-      message: JSON.stringify(req.body),
-    })
     aliasQuery(req, 'GetUserJoinedGroups')
     aliasMutation(req, 'Login')
   })
@@ -58,8 +53,10 @@ Cypress.Commands.add('login', ({ username, password }) => {
     body: { query: mutation },
   }).then((result) => {
     if (result.body.errors) {
-      // eslint-disable-next-line no-console
-      console.log('login:', JSON.stringify(result.body.errors))
+      Cypress.log({
+        displayName: 'login error:',
+        message: JSON.stringify(result.body.errors),
+      })
       return
     }
     const userData = result.body.data.login
@@ -70,7 +67,6 @@ Cypress.Commands.add('login', ({ username, password }) => {
       .its('response.body.data')
       .should('not.be.empty')
     cy.get('#usermenu-button').should('contain', userData.username)
-    Cypress.log({ displayName: 'login:', message: JSON.stringify(result.body) })
   })
 })
 
@@ -99,7 +95,6 @@ Cypress.Commands.add('goGroupManagePage', () => {
   cy.intercept('POST', api_url, (req) => {
     aliasQuery(req, 'GetSentInvitations')
     aliasQuery(req, 'GetGroupMembers')
-    //aliasQuery(req, 'GetUsersNotInGroup')
   })
 
   cy.contains('testgroup')
@@ -115,10 +110,6 @@ Cypress.Commands.add('goGroupManagePage', () => {
   cy.wait('@gqlGetGroupMembersQuery')
     .its('response.body.data')
     .should('not.be.empty')
-
-  /*cy.wait('@gqlGetUsersNotInGroupQuery')
-    .its('response.body.data')
-    .should('not.be.empty')*/
 })
 
 Cypress.Commands.add('createInvitation', (name) => {
@@ -145,8 +136,6 @@ Cypress.Commands.add('addGroup', ({ name, description }) => {
     url: api_url,
     headers: { Authorization: `bearer ${storedToken}` },
     body: { query: mutation },
-  }).then((result) => {
-    cy.task('log', 'group add' + JSON.stringify(result))
   })
 })
 
@@ -159,7 +148,5 @@ Cypress.Commands.add('addUserToGroup', ({ userId, groupId }) => {
     url: api_url,
     headers: { Authorization: `bearer ${storedToken['token']}` },
     body: { query: mutation },
-  }).then((result) => {
-    cy.task('log', 'group add' + JSON.stringify(result))
   })
 })

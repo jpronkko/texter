@@ -27,13 +27,13 @@ const GroupMembersTable = ({ groupId }) => {
 
   const confirmDlgRef = useRef()
 
-  const preapreRemoveUserFromGroup = (userId) => {
-    userToRemove = userId
+  const preapreRemoveUserFromGroup = (userId, username) => {
+    userToRemove = { userId, username }
     confirmDlgRef.current.open()
   }
 
   const onRemoveUser = async () => {
-    await removeUserFromGroup(userToRemove, groupId)
+    await removeUserFromGroup(userToRemove?.userId, groupId)
     userToRemove = undefined
   }
 
@@ -91,7 +91,9 @@ const GroupMembersTable = ({ groupId }) => {
           id="remove-user-button"
           variant="contained"
           disabled={params.row.role === 'OWNER'}
-          onClick={() => preapreRemoveUserFromGroup(params.row.id)}
+          onClick={() =>
+            preapreRemoveUserFromGroup(params.row.id, params.row.username)
+          }
         >
           <PersonRemove />
         </Button>
@@ -117,7 +119,7 @@ const GroupMembersTable = ({ groupId }) => {
       <ConfirmMessage
         ref={confirmDlgRef}
         title="Confirm"
-        message="Are you sure you want to remove this user?"
+        message="Are you sure you want to remove user?"
         onOk={onRemoveUser}
       />
       <DataGrid

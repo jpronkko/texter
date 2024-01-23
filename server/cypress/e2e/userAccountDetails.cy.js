@@ -49,7 +49,6 @@ describe('user account details', function () {
     cy.get('#error-dialog-message').contains('wrong password')
     cy.get('#error-dialog-ok-button').click()
     cy.get('#cancel-email-button').click()
-    // cy.get('#user-email').contains(this.user1.email)
   })
 
   it('change password works with correct password', function () {
@@ -63,6 +62,7 @@ describe('user account details', function () {
     cy.get('#submit-password-button').click()
     cy.logout()
     cy.location('pathname').should('eq', '/login')
+
     cy.login({
       username: this.user1.username,
       password: newPassword,

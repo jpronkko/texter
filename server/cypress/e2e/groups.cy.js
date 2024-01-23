@@ -209,7 +209,6 @@ describe('group creation, selection, user invitations to group', function () {
       password: this.user1.password,
     })
     cy.goGroupManagePage()
-    cy.screenshot()
     cy.get('#group-members-table').within(() => {
       cy.get('.MuiDataGrid-cell')
         .contains(this.user2.username)
