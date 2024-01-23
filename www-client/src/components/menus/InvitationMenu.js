@@ -53,6 +53,7 @@ const RecvInvItem = ({ invitation, closeMenu }) => {
             Accept
           </Button>
           <Button
+            id="invitation-reject-button"
             variant="contained"
             sx={{ ml: 1 }}
             onClick={handleReject}
@@ -69,8 +70,7 @@ const InvitationMenu = () => {
   const username = useSelector((state) => state.user.userData.username)
   const userId = useSelector((state) => state.user.userData.id)
 
-  const { recvInvitations /* fetchMore, loading, error, refetch */ } =
-    useRecvInvitations(userId)
+  const { recvInvitations } = useRecvInvitations(userId)
 
   useRecvInvSubscription(userId)
   useInvStatusSubscription(userId)

@@ -22,19 +22,26 @@
     "start": "NODE_ENV=production node index.js",
     "dev": "NODE_ENV=development nodemon index.js",
     "build": "rm -fr build && cd ../www-client && npm run build && cp -r build ../server",
+    "eslint": "eslint .",
+    "test_env": "NODE_ENV=test node index.js",
     "test_mode": "NODE_ENV=test nodemon index.js",
     "test": "NODE_ENV=test jest --verbose --runInBand --detectOpenHandles",
     "test_topic": "NODE_ENV=test jest 'graphql/topics.test.js' --verbose --runInBand --detectOpenHandles",
     "test_user": "NODE_ENV=test jest 'graphql/users.test.js' --verbose --runInBand --detectOpenHandles",
     "test_group": "NODE_ENV=test jest 'graphql/groups.test.js' --verbose --runInBand --detectOpenHandles",
     "test_inv": "NODE_ENV=test jest 'graphql/invitations.test.js' --verbose --runInBand --detectOpenHandles",
-    "test_messages": "NODE_ENV=test jest 'graphql/messages.test.js' --verbose --runInBand --detectOpenHandles"
+    "test_messages": "NODE_ENV=test jest 'graphql/messages.test.js' --verbose --runInBand --detectOpenHandles",
+    "test:e2e": "NODE_ENV=test cypress run",
+    "cypress:open": "NODE_ENV=test cypress open"
   },
   "name": "server",
   "version": "1.0.0",
   "main": "server.js",
   "devDependencies": {
+    "cypress": "^13.6.3",
     "eslint": "^8.43.0",
+    "eslint-plugin-cypress": "^2.15.1",
+    "eslint-plugin-jest": "^27.6.0",
     "jest": "^29.5.0",
     "nodemon": "^2.0.22",
     "supertest": "^6.3.3"

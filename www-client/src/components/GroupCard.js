@@ -6,7 +6,6 @@ import {
   CardActionArea,
   CardActions,
   CardContent,
-  // CardMedia,
   Typography,
 } from '@mui/material'
 
@@ -20,12 +19,6 @@ const GroupCard = ({
   return (
     <Card sx={{ minWidth: 300 }}>
       <CardActionArea onClick={() => handleSelectGroup(group)}>
-        {/*  <CardMedia
-          component="img"
-          height="140"
-          image="contemplative-reptile.jpg"
-          alt="green iguana"
-        /> */}
         <CardContent sx={{ backgroundColor: 'background.default' }}>
           <Typography
             id="group-name"

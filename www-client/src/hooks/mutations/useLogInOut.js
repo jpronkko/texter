@@ -2,9 +2,9 @@ import { useApolloClient, useMutation } from '@apollo/client'
 import { useDispatch } from 'react-redux'
 
 import { logIn, logOut } from '../../app/userSlice'
-
 import { LOGIN } from '../../graphql/mutations'
 import useNotifyMessage from '../ui/useNotifyMessage'
+
 import useError from '../ui/useErrorMessage'
 import { parseError } from '../../utils/parseError'
 import { setLoginData } from '../../utils/loginData'
@@ -19,7 +19,7 @@ const useLogInOut = () => {
   const [loginMutation, result] = useMutation(LOGIN, {
     onError: (error) => {
       logger.error('Login error:', error)
-      showError(`Login failed: ${parseError(error)}`)
+      showError(`Login error: ${parseError(error)}`)
     },
     onCompleted: (data) => {
       showMessage(`${data.login.username} has logged in!`)
@@ -33,7 +33,6 @@ const useLogInOut = () => {
 
     const loginData = loginResult.data?.login
     if (!loginData) {
-      logger.error('Login failed')
       return null
     }
     setLoginData(loginData)
@@ -43,12 +42,11 @@ const useLogInOut = () => {
   }
 
   const logout = async () => {
-    console.log('apollo reset store')
     try {
       await client.resetStore()
       await client.clearStore()
     } catch (e) {
-      logger.error('reset store failed', e)
+      logger.error('Reset store failed', e)
     }
     localStorage.clear()
     dispatch(logOut())

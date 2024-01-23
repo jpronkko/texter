@@ -32,10 +32,8 @@ const InvitationsTable = () => {
   }
 
   const onCancelInvitation = async () => {
-    console.log('cancelInvitation', invitationToCancel)
-    const cancelledInvitation = await cancelInvitation(invitationToCancel)
-    console.log('cancelledInvitation', cancelledInvitation)
-    //confirmDlgRef.current.close()
+    await cancelInvitation(invitationToCancel)
+    invitationToCancel = undefined
   }
 
   const columns = [
@@ -48,8 +46,8 @@ const InvitationsTable = () => {
     {
       field: 'status',
       headerName: 'Invitation status',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
+      description: 'Whether invitation is pending, accepted or not',
+      sortable: true,
       width: 200,
     },
     {
@@ -67,6 +65,7 @@ const InvitationsTable = () => {
       sortable: false,
       renderCell: (params) => (
         <Button
+          id="cancel-invitation-button"
           variant="contained"
           disabled={
             params.row.status === Status['CANCELLED'] ||
@@ -104,10 +103,6 @@ const InvitationsTable = () => {
         <DataGrid
           rows={rows}
           columns={columns}
-          onSelectionModelChange={(newSelection) => {
-            console.log(newSelection)
-            // Perform any desired actions with the selected rows
-          }}
           loading={loading}
           initialState={{
             pagination: {
@@ -122,7 +117,7 @@ const InvitationsTable = () => {
   }
 
   return (
-    <Container>
+    <Container id="invitations-table">
       <ConfirmMessage
         ref={confirmDlgRef}
         title="Confirm"

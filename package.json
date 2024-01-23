@@ -8,15 +8,20 @@
     "install-server": "npm install --prefix server",
     "install-client": "npm install --prefix www-client",
     "install": "npm run install-server && npm run install-client",
+    "eslint": "cd server && npm run eslint . && cd ../www-client && npm run eslint .",
     "dev-server": "npm run dev --prefix server",
     "client": "npm start --prefix www-client",
     "dev": "npm run dev-server & npm run client",
-    "deploy": "npm run build --prefix client && npm start --prefix server",
-    "deploy-cluster": "npm run build --prefix client && npm run cluster --prefix server",
     "start": "npm start --prefix server",
-    "test": "npm test --prefix server && npm test --prefix client"
+    "component-test": "npm run test --prefix www-client",
+    "api-test": "npm run test --prefix server",
+    "e2e-test": "npm run test:e2e --prefix server",
+    "start:test": "npm run test_env --prefix server"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "hours-report": "^1.1.1"
+  }
 }

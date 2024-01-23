@@ -4,14 +4,15 @@ import { CREATE_GROUP } from '../../graphql/mutations'
 import { GET_USER_JOINED_GROUPS } from '../../graphql/queries'
 
 import useError from '../ui/useErrorMessage'
+import { parseError } from '../../utils/parseError'
 import logger from '../../utils/logger'
 
 const useCreateGroup = () => {
   const [showError] = useError()
   const [mutation, result] = useMutation(CREATE_GROUP, {
     onError: (error) => {
-      showError(error.toString())
-      logger.error('create group error:', error)
+      logger.error('Create group failed:', error)
+      showError(`Create group failed: ${parseError(error)}!`)
     },
     update: (store, response) => {
       // There is only one JoinedGroupInfo per userId in the store.
@@ -21,9 +22,6 @@ const useCreateGroup = () => {
         query: GET_USER_JOINED_GROUPS,
         variables: { userId: newGroup.ownerId },
       })
-      console.log('useCreateGroup: new group', newGroup)
-      console.log('useCreateGroup: groups in store', joinedGroupInfo)
-
       store.writeQuery({
         query: GET_USER_JOINED_GROUPS,
         data: {
@@ -48,9 +46,7 @@ const useCreateGroup = () => {
   })
 
   const createGroup = async (name, description) => {
-    logger.info('create group:', name, description)
-    const createResult = await mutation({ variables: { name, description } }) //var_object)
-    logger.info('Create group result:', createResult)
+    const createResult = await mutation({ variables: { name, description } })
     return createResult.data?.createGroup
   }
 

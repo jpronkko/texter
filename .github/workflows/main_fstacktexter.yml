@@ -4,30 +4,54 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    types: [opened, synchronize]
   workflow_dispatch:
 
 env:
   PROD_MONGODB_URI: ${{ secrets.PROD_MONGODB_URI }}
-  SECRET: ${{ secrets.SECRET }}
   TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+  SECRET: ${{ secrets.SECRET }}
+  PORT: ${{ vars.PORT }}
 
 jobs:
-  build:
+  build_and_test:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
           node-version: "20.x"
 
-      - name: npm install, build, and test
-        run: |
-          npm install
-          npm run build --if-present
-      #    npm run test --if-present
+      - name: Install dependencies
+        run: npm install
+      - name: lint
+        run: npm run eslint
+
+      - name: UI component test
+        run: npm run component-test
+
+      - name: API test
+        run: npm run api-test
+
+      - name: e2e test
+        uses: cypress-io/github-action@v6
+
+        with:
+          working-directory: ./server
+          build: npm run build
+          start: npm run test_mode
+          browser: chrome
+          wait-on: http://localhost:8080
+          record: true
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REACT_APP_API_ENDPOINT: ${{ vars.REACT_APP_API_ENDPOINT }}
+          REACT_APP_WS_ENDPOINT: ${{ vars.REACT_APP_WS_ENDPOINT }}
+
       - name: Zip artifact for deployment
         run: cd ./server && zip release.zip ./* -r && mv release.zip ../
 
@@ -38,8 +62,10 @@ jobs:
           path: release.zip
 
   deploy:
+    needs: [build_and_test]
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
-    needs: build
+
     environment:
       name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}

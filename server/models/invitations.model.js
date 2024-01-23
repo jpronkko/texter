@@ -15,7 +15,7 @@ const getSentInvitations = async (userId) => {
     sentTime: -1,
   })
   if (!invitations) {
-    throw new Error(`Invitations from user ${userId} not found!`)
+    throw new Error('invitations from user not found!')
   }
   return invitations.map((item) => item.toJSON())
 }
@@ -26,7 +26,7 @@ const getReceivedInvitations = async (userId) => {
   })
   if (!invitations) {
     logger.error(`Invitations to user ${userId} not found!`)
-    throw new Error(`Invitations to user ${userId} not found!`)
+    throw new Error('invitations to user not found')
   }
   return invitations.map((item) => item.toJSON())
 }
@@ -34,7 +34,7 @@ const getReceivedInvitations = async (userId) => {
 const createInvitation = async (fromUserId, toUser, groupId) => {
   const userToInvite = await User.findOne({ username: toUser })
   if (!userToInvite) {
-    throw new Error('User to invite not found!')
+    throw new Error('user to invite not found')
   }
 
   const isInGroup = userToInvite.joinedGroups.find(
@@ -42,7 +42,7 @@ const createInvitation = async (fromUserId, toUser, groupId) => {
   )
   if (isInGroup) {
     logger.error('User is already in group!')
-    throw new Error('User is already in group!')
+    throw new Error('user is already in group')
   }
 
   const toUserId = userToInvite._id
@@ -63,7 +63,7 @@ const createInvitation = async (fromUserId, toUser, groupId) => {
       toUserId,
       groupId
     )
-    throw new Error(`There is already a pending invitation! ${invitations[0]}`)
+    throw new Error('there is already a pending invitation')
   }
   const newInvitation = new Invitation({
     groupId,
@@ -78,7 +78,7 @@ const createInvitation = async (fromUserId, toUser, groupId) => {
 const changeInvitationStatus = async (userId, invitationId, status) => {
   const invitation = await Invitation.findById(invitationId)
   if (!invitation) {
-    throw new Error('Invitation not found!')
+    throw new Error('invitation not found')
   }
 
   const invitationJSON = invitation.toJSON()
@@ -97,7 +97,7 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
         'current user',
         userId
       )
-      throw new Error('Not authorized to accept invitation!')
+      throw new Error('not authorized to accept invitation')
     }
 
     const groupId = await addUserToGroup(
@@ -108,7 +108,7 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
 
     if (!groupId) {
       logger.error('No user group found!')
-      throw new Error('No user group found!')
+      throw new Error('no user group found')
     }
   } else if (status === 'REJECTED') {
     if (invitationJSON.toUserId !== userId) {
@@ -119,7 +119,7 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
         'current user',
         userId
       )
-      throw new Error('Not authorized to reject invitation!')
+      throw new Error('not authorized to reject invitation')
     }
   } else if (status === 'CANCELLED') {
     if (invitationJSON.fromUserId !== userId) {
@@ -130,7 +130,7 @@ const changeInvitationStatus = async (userId, invitationId, status) => {
         'current user',
         userId
       )
-      throw new Error('Not authorized to cancel invitation!')
+      throw new Error('not authorized to cancel invitation')
     }
   }
 

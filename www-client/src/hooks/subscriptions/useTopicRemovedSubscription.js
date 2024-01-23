@@ -1,7 +1,6 @@
 import { useApolloClient, useSubscription } from '@apollo/client'
 
 import { GET_TOPICS } from '../../graphql/queries'
-
 import { TOPIC_REMOVED } from '../../graphql/subscriptions'
 
 const useTopicRemovedSubscription = (groupId) => {
@@ -9,7 +8,6 @@ const useTopicRemovedSubscription = (groupId) => {
   const { data, error, loading } = useSubscription(TOPIC_REMOVED, {
     variables: { groupId },
     onData: ({ data }) => {
-      console.log('Receiving removed topic data', data)
       const removedTopic = data.data.topicRemoved
       apolloClient.cache.updateQuery(
         {
@@ -18,7 +16,6 @@ const useTopicRemovedSubscription = (groupId) => {
           overwrite: true,
         },
         ({ getTopics }) => {
-          console.log('Subs: getTopics', getTopics)
           return {
             getTopics: getTopics.filter((item) => item.id !== removedTopic.id),
           }

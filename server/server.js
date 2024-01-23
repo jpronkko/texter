@@ -2,9 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const http = require('http')
 const bodyParser = require('body-parser')
-//const morganBody = require('morgan-body')
 const { expressMiddleware } = require('@apollo/server/express4')
-//const morgan = require('morgan')
 const jwt = require('jsonwebtoken')
 const config = require('./utils/config')
 const { mongoConnect, mongoDisconnect } = require('./services/mongo')
@@ -22,9 +20,7 @@ const startServer = async () => {
   const apolloServer = await startApolloServer(httpServer)
 
   app.use(cors())
-  //app.use(morgan('combined'))
   app.use(bodyParser.json())
-  //morganBody(app)
   app.use('/health', healthCheckRouter)
 
   if (
@@ -36,7 +32,10 @@ const startServer = async () => {
     app.use('/test', testRouter)
   }
 
-  if (process.env.NODE_ENV === 'production') {
+  if (
+    process.env.NODE_ENV === 'production' ||
+    process.env.NODE_ENV === 'test'
+  ) {
     app.use(express.static('build'))
   }
 

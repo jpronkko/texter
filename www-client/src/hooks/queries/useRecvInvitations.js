@@ -1,22 +1,24 @@
 import { useQuery } from '@apollo/client'
 
 import { GET_RECV_INVITATIONS } from '../../graphql/queries'
+import useError from '../ui/useErrorMessage'
+import { parseError } from '../../utils/parseError'
+import logger from '../../utils/logger'
 
 const useRecvInvitations = () => {
-  const { data, error, loading, fetchMore, refetch, ...result } =
-    useQuery(GET_RECV_INVITATIONS)
-
-  const handleFetchMore = () => {
-    fetchMore({
-      variables: {
-        after: data.getReceivedInvitations,
+  const [showError] = useError()
+  const { data, error, loading, refetch, ...result } = useQuery(
+    GET_RECV_INVITATIONS,
+    {
+      onError: (error) => {
+        logger.error('Get sent invitations error:', error)
+        showError(parseError(error))
       },
-    })
-  }
+    }
+  )
 
   return {
     recvInvitations: data?.getReceivedInvitations,
-    fetchMore: handleFetchMore,
     loading,
     error,
     refetch,

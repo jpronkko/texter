@@ -34,7 +34,7 @@ module.exports = {
 
     getUsersNotInGroup: async (root, args, { currentUser }) => {
       try {
-        checkUser(currentUser, 'Getting users not in group failed!')
+        checkUser(currentUser, 'not authorized')
         const { groupId } = args
         const usersNotInGroup = await usersModel.getUsersNotInGroup(groupId)
         return usersNotInGroup
@@ -54,12 +54,7 @@ module.exports = {
       // Password length can't be validated by mongoose as only hash is stored
       if (password.length < MIN_PASSWORD_LENGTH) {
         logger.error('Create user: password too short')
-        throw new GraphQLError('Password too short!', {
-          extensions: {
-            code: 'USER_CREATE_FAILED',
-            invalidArgs: args.user.password,
-          },
-        })
+        throw new GraphQLError('password too short')
       }
 
       try {
@@ -88,14 +83,8 @@ module.exports = {
 
         return tokenAndUser
       } catch (error) {
-        logger.error('Creating user failed', error, error.message)
-        throw new GraphQLError(error.message, {
-          extensions: {
-            code: 'USER_CREATE_FAILED',
-            invalidArgs: args.name,
-            error,
-          },
-        })
+        logger.error('Creating user failed', error)
+        throw new GraphQLError(error.message)
       }
     },
 
@@ -105,6 +94,7 @@ module.exports = {
           credentials: { username, password },
         } = args
 
+        logger.info('Login attempt:', username)
         const tokenAndUser = await usersModel.login(username, password)
         return tokenAndUser
       } catch (error) {
@@ -135,7 +125,7 @@ module.exports = {
         }
 
         if (newPassword.length < MIN_PASSWORD_LENGTH) {
-          throw new Error('password too short!')
+          throw new Error('password too short')
         }
 
         const userBaseData = await usersModel.changePassword(
@@ -243,7 +233,7 @@ module.exports = {
 
     updateUserRole: async (root, args, { currentUser }) => {
       try {
-        checkUser(currentUser, 'Updating user role failed!')
+        checkUser(currentUser, 'not authorized')
 
         const { userId, groupId, role } = args
         if (!checkUserOwnsGroup(currentUser, groupId)) {
@@ -267,7 +257,6 @@ module.exports = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(['USER_ADDED_TO_GROUP']),
         (payload, variables) => {
-          console.log('payload', payload)
           return payload.userAddedToGroup.userId === variables.userId
         }
       ),
@@ -276,7 +265,6 @@ module.exports = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(['USER_REMOVED_FROM_GROUP']),
         (payload, variables) => {
-          console.log('payload', payload)
           return payload.userRemovedFromGroup.userId === variables.userId
         }
       ),

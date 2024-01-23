@@ -6,8 +6,7 @@ const RecvInvItem = ({ invitation }) => {
   const [acceptInvitation, rejectInvitation] = useModifyRecvInv()
 
   const handleAccept = async () => {
-    const retval = await acceptInvitation(invitation.id)
-    console.log('retval', retval)
+    await acceptInvitation(invitation.id)
   }
 
   const handleReject = async () => {

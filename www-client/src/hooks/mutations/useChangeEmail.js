@@ -16,12 +16,11 @@ const useChangeEmail = () => {
 
   const [mutation, result] = useMutation(CHANGE_EMAIL, {
     onError: (error) => {
-      showError(`Changing e-mail failed: ${parseError(error)}!`)
       logger.error('Change e-mail error:', error)
+      showError(`Changing e-mail failed: ${parseError(error)}!`)
     },
-    onCompleted: (data) => {
+    onCompleted: () => {
       dispatch(setMessage('E-mail changed'))
-      logger.info('Change e-mail completed:', data)
     },
   })
 
@@ -33,7 +32,6 @@ const useChangeEmail = () => {
       },
     })
 
-    console.log('change email result:', changeResult)
     if (changeResult.errors) return
 
     const texterStorage = JSON.parse(localStorage.getItem('texter-login'))
@@ -41,7 +39,6 @@ const useChangeEmail = () => {
     localStorage.setItem('texter-login', JSON.stringify(texterStorage))
     dispatch(setEmail(newEmail))
 
-    logger.info('change email result:', changeResult)
     return changeResult.data?.changeEmail
   }
 

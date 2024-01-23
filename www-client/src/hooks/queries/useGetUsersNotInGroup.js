@@ -1,10 +1,9 @@
-//import { useLazyQuery } from '@apollo/client'
-
 import { useQuery } from '@apollo/client'
 
 import { GET_USERS_NOT_IN_GROUP } from '../../graphql/queries'
 import logger from '../../utils/logger'
 import useError from '../ui/useErrorMessage'
+import { parseError } from '../../utils/parseError'
 
 const useGetUsersNotInGroup = (groupId) => {
   const [showError] = useError()
@@ -14,8 +13,8 @@ const useGetUsersNotInGroup = (groupId) => {
       variables: { groupId },
       skip: !groupId,
       onError: (error) => {
-        showError(`Getting users failed: ${error.toString()}`)
-        logger.error('error', error)
+        logger.error('Getting users not in group failed', error)
+        showError(`Getting users not in group failed: ${parseError(error)}`)
       },
     }
   )

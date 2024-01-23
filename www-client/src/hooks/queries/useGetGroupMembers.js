@@ -2,6 +2,8 @@ import { useQuery } from '@apollo/client'
 
 import { GET_GROUP_MEMBERS } from '../../graphql/queries'
 import useError from '../ui/useErrorMessage'
+import { parseError } from '../../utils/parseError'
+import logger from '../../utils/logger'
 
 const useGetGroupMembers = (groupId) => {
   const [showError] = useError()
@@ -12,8 +14,8 @@ const useGetGroupMembers = (groupId) => {
         groupId: groupId,
       },
       onError: (error) => {
-        showError(`Get group members failed: ${error.toString()}`)
-        console.log('error', error)
+        logger.error('Get group members failed:', error)
+        showError(`Get group members failed: ${parseError(error)}`)
       },
     }
   )

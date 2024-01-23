@@ -3,6 +3,7 @@ import { useMutation } from '@apollo/client'
 import { GET_USER_JOINED_GROUPS } from '../../graphql/queries'
 import { UPDATE_USER_ROLE } from '../../graphql/mutations'
 import useError from '../ui/useErrorMessage'
+import { parseError } from '../../utils/parseError'
 import logger from '../../utils/logger'
 
 const useUpdateUserRole = () => {
@@ -13,21 +14,16 @@ const useUpdateUserRole = () => {
     const updateResult = await mutation({
       variables: { userId, groupId, role },
       onError: (error) => {
-        showError(`Update user role failed: ${error.toString()}`)
-        logger.error('updateUserRole error:', error)
+        logger.error('Update user role error:', error)
+        showError(`Update user role failed: ${parseError(error)}`)
       },
       update: (store, response) => {
         const updatedUserRole = response.data.updateUserRole
-        console.log('-> useUpdateUserRole: updated user role', updatedUserRole)
 
         const joinedGroupInfo = store.readQuery({
           query: GET_USER_JOINED_GROUPS,
           variables: { userId: updatedUserRole.user },
         })
-        console.log(
-          'useUpdateUserRole: groups in store',
-          joinedGroupInfo.getUserJoinedGroups.joinedGroups
-        )
         const updatedJoinedGroups =
           joinedGroupInfo.getUserJoinedGroups.joinedGroups.map((group) => {
             if (group.groupId === updatedUserRole.groupId) {
@@ -39,10 +35,7 @@ const useUpdateUserRole = () => {
               return group
             }
           })
-        console.log(
-          'useUpdateUserRole: updated joined groups',
-          updatedJoinedGroups
-        )
+
         store.writeQuery({
           query: GET_USER_JOINED_GROUPS,
           data: {

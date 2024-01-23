@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/client'
 
 import { REMOVE_USER_FROM_GROUP } from '../../graphql/mutations'
-// eslint-disable-next-line no-unused-vars
 import { GET_GROUP_MEMBERS } from '../../graphql/queries'
 import { GET_USER_JOINED_GROUPS } from '../../graphql/queries'
 
@@ -13,8 +12,8 @@ const useRemoveUserFromGroup = () => {
   const [showError] = useError()
   const [mutation, result] = useMutation(REMOVE_USER_FROM_GROUP, {
     onError: (error) => {
-      logger.error('remove user from group error:', error)
-      showError(`Remove user from group failed: ${parseError(error)}`)
+      logger.error('Removing user from group error:', error)
+      showError(`Removing user from group failed: ${parseError(error)}`)
     },
     update: (cache, response) => {
       const removedUser = response.data.removeUserFromGroup
@@ -33,7 +32,6 @@ const useRemoveUserFromGroup = () => {
             overwrite: true,
           },
           ({ getUserJoinedGroups }) => {
-            console.log('getUserJoinedGroups', getUserJoinedGroups)
             return {
               getUserJoinedGroups: {
                 userId: getUserJoinedGroups.userId,
@@ -45,8 +43,11 @@ const useRemoveUserFromGroup = () => {
           }
         )
       }
-      const groupMembersInCache = cache.readQuery({ query: GET_GROUP_MEMBERS })
-      console.log('Remove user members in cache', groupMembersInCache)
+      const groupMembersInCache = cache.readQuery({
+        query: GET_GROUP_MEMBERS,
+        variables: { groupId: groupId },
+      })
+
       if (!groupMembersInCache) return
 
       cache.updateQuery(

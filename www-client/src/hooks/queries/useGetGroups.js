@@ -1,10 +1,9 @@
-//import { useLazyQuery } from '@apollo/client'
-
 import { useQuery } from '@apollo/client'
 
 import { GET_USER_JOINED_GROUPS } from '../../graphql/queries'
-import logger from '../../utils/logger'
 import useError from '../ui/useErrorMessage'
+import { parseError } from '../../utils/parseError'
+import logger from '../../utils/logger'
 
 const useGetUserGroups = () => {
   const [showError] = useError()
@@ -12,8 +11,8 @@ const useGetUserGroups = () => {
     GET_USER_JOINED_GROUPS,
     {
       onError: (error) => {
-        showError(`Get user groups failed ${error.toString()}`)
-        logger.error('error', error)
+        logger.error('Get user groups failed', error)
+        showError(`Get user groups failed ${parseError(error)}`)
       },
     }
   )
@@ -43,6 +42,7 @@ const useGetUserGroups = () => {
   }
 
   return {
+    allGroups: data ? getIdAndName(data.getUserJoinedGroups.joinedGroups) : [],
     ownedGroups: ownedGroups(),
     joinedGroups: joinedGroups(),
     loading,
@@ -50,10 +50,6 @@ const useGetUserGroups = () => {
     refetch,
     ...result,
   }
-
-  /*const [getGroups, { loading , error, data }] = useLazyQuery(GET_USERS_GROUPS)
-
-  return [getGroups, loading, error, data]*/
 }
 
 export default useGetUserGroups

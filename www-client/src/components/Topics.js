@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch /* useSelector */ } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 import { Button, Typography } from '@mui/material'
 import { AddBox } from '@mui/icons-material'
@@ -8,23 +8,17 @@ import { setTopic } from '../app/selectionSlice'
 import useGetTopics from '../hooks/queries/useGetTopics'
 
 import AccordionDetails from './AccordionDetails'
+import Loading from './Loading'
 
 const Topics = ({ group, isOwned, handleCreateTopic, selectGroupOfTopic }) => {
   const { topics, error, loading } = useGetTopics(group?.id)
-  //const selectedTopic = useSelector((state) => state.selection.topic)
   const dispatch = useDispatch()
-
-  //console.log('group', group, 'topics', topics)
 
   const handleSelectTopic = async (topic) => {
     dispatch(setTopic(topic))
     selectGroupOfTopic(group)
   }
 
-  /* const backgroundColor = (item) =>
-    selectedTopic?.id === item.id ? '#f0a070' : 'green'
-    style={{ backgroundColor: backgroundColor(item) }}
-   */
   const renderTopics = () => {
     if (topics) {
       return topics.map((item) => (
@@ -36,7 +30,7 @@ const Topics = ({ group, isOwned, handleCreateTopic, selectGroupOfTopic }) => {
         </AccordionDetails>
       ))
     } else if (loading) {
-      return <Typography>Loading...</Typography>
+      return <Loading />
     }
   }
 
@@ -44,7 +38,6 @@ const Topics = ({ group, isOwned, handleCreateTopic, selectGroupOfTopic }) => {
     return (
       <Button
         variant="text"
-        //startIcon={<AddBox />}
         style={{ justifyContent: 'flex-start' }}
         onClick={handleCreateTopic}
       >

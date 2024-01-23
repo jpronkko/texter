@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-//mongoose.set('strictQuery', false)
 const config = require('../utils/config')
 const logger = require('../utils/logger')
 
@@ -38,8 +37,6 @@ const mongoConnect = async () => {
 }
 
 const mongoDisconnect = () => {
-  //await mongoose.disconnect()
-  //await mongoose.connection.close()
   if (db) {
     logger.info('Disconnecting from MongoDB!')
     db.disconnect()
@@ -52,7 +49,7 @@ const mongoClearDb = async () => {
 
   await Promise.all(
     Object.values(collections).map(async (collection) => {
-      await collection.deleteMany({}) // an empty mongodb selector object ({}) must be passed as the filter argument
+      await collection.deleteMany({})
     })
   )
 }

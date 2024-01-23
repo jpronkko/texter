@@ -1,7 +1,6 @@
 const Group = require('./groups.mongo')
 const topicsModel = require('./topics.model')
 const User = require('./users.mongo')
-const logger = require('../utils/logger')
 const mongoose = require('mongoose')
 
 const findGroup = async (groupId) => {
@@ -29,12 +28,12 @@ const findOrCreateCommonGroup = async () => {
   })
   const savedGroup = await group.save()
   if (!savedGroup) {
-    throw new Error('Group save failed!')
+    throw new Error('group save failed')
   }
 
   const topic = await topicsModel.createTopic(savedGroup._id, 'General')
   if (!topic) {
-    throw new Error('Topic save failed!')
+    throw new Error('topic save failed')
   }
   return savedGroup.toJSON()
 }
@@ -42,13 +41,13 @@ const findOrCreateCommonGroup = async () => {
 const createGroup = async (user, name, description) => {
   const existingGroup = await findGroupWithName(user.id, name)
   if (existingGroup) {
-    throw new Error(`User already has group with name ${name}.`)
+    throw new Error(`user already has group with name ${name}`)
   }
 
   const group = new Group({ name, description, ownerId: user.id })
   const savedGroup = await group.save()
   if (!savedGroup) {
-    throw new Error('Group save failed!')
+    throw new Error('group save failed')
   }
 
   const userToUpdate = await User.findById(user.id)
@@ -58,11 +57,7 @@ const createGroup = async (user, name, description) => {
     role: 'OWNER',
   })
 
-  try {
-    await userToUpdate.save()
-  } catch (error) {
-    console.error(error)
-  }
+  await userToUpdate.save()
 
   return savedGroup.toJSON()
 }
@@ -78,7 +73,6 @@ const getTopics = async (groupId) => {
 }
 
 const getGroupMembers = async (groupId) => {
-  logger.info('getGroupMembers', groupId)
   const user = await User.find({
     'joinedGroups.group': new mongoose.Types.ObjectId(groupId),
   })
@@ -95,7 +89,7 @@ const getGroupMembers = async (groupId) => {
       role: group.role,
     }
   })
-  logger.info('---usersData', usersData)
+
   if (usersData) {
     return usersData
   }
@@ -105,13 +99,13 @@ const getGroupMembers = async (groupId) => {
 const modifyGroup = async (groupId, name, description) => {
   const group = await Group.findById(groupId)
   if (!group) {
-    throw new Error('No such group!')
+    throw new Error('no such group')
   }
   group.name = name
   group.description = description
   const savedGroup = await group.save()
   if (!savedGroup) {
-    throw new Error('Group save failed!')
+    throw new Error('group save failed')
   }
   return savedGroup.toJSON()
 }

@@ -11,7 +11,7 @@ module.exports = {
   Mutation: {
     createMessage: async (root, args, { currentUser }) => {
       try {
-        checkUser(currentUser, 'Not authorized to create a message!')
+        checkUser(currentUser, 'not authorized')
 
         const {
           messageInput: { topicId, body },
@@ -19,7 +19,7 @@ module.exports = {
 
         if (!checkUserInTopicGroup(currentUser, topicId)) {
           logger.error('User not in correct group', currentUser, topicId)
-          throw new Error('User not in correct group!')
+          throw new Error('user not in correct group')
         }
         const message = await messagesModel.createMessage(
           currentUser,
@@ -33,9 +33,7 @@ module.exports = {
         return message
       } catch (error) {
         logger.error('Error at create message resolver:', error)
-        throw new GraphQLError('Message error resolver!', {
-          extensions: { code: 'MESSAGE_ERROR', invalidArgs: args.name, error },
-        })
+        throw new GraphQLError(error.message)
       }
     },
   },

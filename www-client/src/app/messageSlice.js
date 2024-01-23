@@ -9,16 +9,14 @@ export const messageSlice = createSlice({
   },
   reducers: {
     setMessages: (state, action) => {
-      console.log('Setting groups messages!!!', action.payload)
       state.messages = action.payload
-      console.log('msg', state.messages)
     },
     addMessage: (state, action) => {
       state.messages.push(action.payload)
     },
     clearMessages: (state) => {
       state.messages = []
-    }
+    },
   },
   extraReducers(builder) {
     builder.addCase(logOut, (state) => {
@@ -26,12 +24,12 @@ export const messageSlice = createSlice({
       state.name = ''
       state.messages = []
     }),
-    builder.addCase(clearGroup, (state) => {
-      state.id = ''
-      state.name = ''
-      state.messages = []
-    })
-  }
+      builder.addCase(clearGroup, (state) => {
+        state.id = ''
+        state.name = ''
+        state.messages = []
+      })
+  },
 })
 
 export const { setGroup, addMessage, setMessages } = messageSlice.actions

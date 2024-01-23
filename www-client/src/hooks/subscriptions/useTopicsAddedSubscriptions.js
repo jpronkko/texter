@@ -9,7 +9,6 @@ const useTopicsAddedSubscription = (groupId) => {
   const { data, error, loading } = useSubscription(TOPIC_ADDED_TO_GROUP, {
     variables: { groupId },
     onData: ({ data }) => {
-      console.log('Receiving new topics data', data)
       const newTopic = data.data.topicAddedToGroup
       apolloClient.cache.updateQuery(
         {
@@ -17,7 +16,6 @@ const useTopicsAddedSubscription = (groupId) => {
           variables: { groupId: groupId },
         },
         ({ getTopics }) => {
-          console.log('Subs: getTopics', getTopics)
           return {
             getTopics: uniqueById(getTopics.concat(newTopic)),
           }

@@ -2,8 +2,10 @@
 
 # dependencies
 /node_modules
-/cypress/screenshots
-/cypress/videos
+/cypress
+cypress.config.js
+#/cypress/screenshots
+#/cypress/videos
 /.pnp
 .pnp.js
 

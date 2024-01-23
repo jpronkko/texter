@@ -18,11 +18,9 @@ import GroupAdminPage from './pages/GroupAdminPage'
 import ErrorDlg from './dialogs/ErrorDlg'
 import GroupSelectPage from './pages/GroupSelectPage'
 import MessagesPage from './pages/MessagesPage'
-import UserListPage from './pages/UserListPage'
 import TopBar from './TopBar'
 
 import { getLoginData } from '../utils/loginData'
-import logger from '../utils/logger'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -30,18 +28,9 @@ const App = () => {
   useEffect(() => {
     const loginData = getLoginData()
     if (loginData) {
-      logger.info('App: setting login data', loginData)
       dispatch(logIn(loginData))
     }
   }, [])
-
-  const handleCreateUser = async (data) => {
-    logger.info('Create user input data:', data)
-  }
-
-  const loginUser = async (data) => {
-    logger.info('Login user input data:', data)
-  }
 
   return (
     <div>
@@ -65,15 +54,11 @@ const App = () => {
           />
           <Route
             path="/create_account"
-            element={<CreateUserPage handleCreate={handleCreateUser} />}
+            element={<CreateUserPage />}
           />
           <Route
             path="/login"
-            element={<LoginPage handleLogin={loginUser} />}
-          />
-          <Route
-            path="/users"
-            element={<UserListPage />}
+            element={<LoginPage />}
           />
           <Route
             path="*"

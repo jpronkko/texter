@@ -1,49 +1,11 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import { api_url, main_url, reset_url } from './connections'
+import { aliasMutation, aliasQuery } from './utils'
 
 Cypress.Commands.add('resetData', () => {
   cy.request('POST', reset_url)
 })
 
-Cypress.Commands.add('print', (message) => {
-  cy.task('log', message)
-})
-
 Cypress.Commands.add('openPage', () => {
-  cy.visit(main_url)
-})
-
-Cypress.Commands.add('openPageWithToken', () => {
-  //const storedToken = JSON.parse(localStorage.getItem('texter-token'))
-  /*cy.visit(main_url, {
-    onBeforeLoad: (win) => {
-      win.localStorage.setItem('texter-token', JSON.stringify(storedToken))
-    },
-  })*/
   cy.visit(main_url)
 })
 
@@ -66,12 +28,22 @@ Cypress.Commands.add('addUser', ({ username, name, email, password }) => {
     method: 'POST',
     url: api_url,
     body: { query: mutation },
+  }).then((result) => {
+    Cypress.log({
+      displayName: 'addUser:',
+      message: JSON.stringify(result.body),
+    })
   })
 })
 
 Cypress.Commands.add('login', ({ username, password }) => {
-  const mutation = `mutation Login { 
-    login(credentials: { username: "${username}", 
+  cy.intercept('POST', api_url, (req) => {
+    aliasQuery(req, 'GetUserJoinedGroups')
+    aliasMutation(req, 'Login')
+  })
+
+  const mutation = `mutation Login {
+    login(credentials: { username: "${username}",
     password: "${password}"
   }){ token userId username email name } }`
 
@@ -81,21 +53,31 @@ Cypress.Commands.add('login', ({ username, password }) => {
     body: { query: mutation },
   }).then((result) => {
     if (result.body.errors) {
-      cy.task('log', 'Login error: ' + JSON.stringify(result.body.errors))
+      Cypress.log({
+        displayName: 'login error:',
+        message: JSON.stringify(result.body.errors),
+      })
       return
     }
     const userData = result.body.data.login
-    cy.task('log', 'Login: ' + JSON.stringify(userData))
     localStorage.setItem('texter-login', JSON.stringify(userData))
     localStorage.setItem('texter-token', userData.token)
     cy.visit(main_url)
+    /*cy.wait('@gqlGetUserJoinedGroupsQuery')
+      .its('response.body.data')
+      .should('not.be.empty')*/
+    cy.get('#usermenu-button').should('contain', userData.username)
   })
 })
 
 Cypress.Commands.add('logout', () => {
   cy.get('#usermenu-button').click()
-  cy.get('#usermenu').contains('Logout').click()
+  cy.get('#usermenu').contains('Logout').as('logout')
+  cy.get('@logout').click()
   cy.get('#confirm-ok-button').click()
+  cy.location('pathname').should('eq', '/login')
+  cy.get('#usermenu-button').should('not.exist')
+  cy.get('#login-button').should('exist')
 })
 
 Cypress.Commands.add('createTestGroup', () => {
@@ -109,12 +91,25 @@ Cypress.Commands.add('createTestGroup', () => {
     })
 })
 
-Cypress.Commands.add('goGroupMangePage', () => {
-  cy.get('#group-name')
-    .contains('testgroup')
+Cypress.Commands.add('goGroupManagePage', () => {
+  cy.intercept('POST', api_url, (req) => {
+    aliasQuery(req, 'GetSentInvitations')
+    aliasQuery(req, 'GetGroupMembers')
+  })
+
+  cy.contains('testgroup')
     .parent()
-    .get('#manage-group-button')
-    .click()
+    .find('#manage-group-button')
+    .as('manageGroupButton')
+  cy.get('@manageGroupButton').click()
+
+  cy.wait('@gqlGetSentInvitationsQuery')
+    .its('response.body.data')
+    .should('not.be.empty')
+
+  cy.wait('@gqlGetGroupMembersQuery')
+    .its('response.body.data.getGroupMembers')
+    .should('not.be.empty')
 })
 
 Cypress.Commands.add('createInvitation', (name) => {
@@ -135,15 +130,12 @@ Cypress.Commands.add('acceptInvitation', (name) => {
 Cypress.Commands.add('addGroup', ({ name, description }) => {
   const mutation = `mutation CreateGroup { createGroup(name: "${name}", description: "${description}"){ id name description ownerId } }`
   const storedToken = localStorage.getItem('texter-token')
-  cy.task('log', 'group add stored token' + storedToken)
 
   cy.request({
     method: 'POST',
     url: api_url,
     headers: { Authorization: `bearer ${storedToken}` },
     body: { query: mutation },
-  }).then((result) => {
-    cy.task('log', 'group add' + JSON.stringify(result))
   })
 })
 
@@ -156,7 +148,5 @@ Cypress.Commands.add('addUserToGroup', ({ userId, groupId }) => {
     url: api_url,
     headers: { Authorization: `bearer ${storedToken['token']}` },
     body: { query: mutation },
-  }).then((result) => {
-    console.log('user added to group', result)
   })
 })

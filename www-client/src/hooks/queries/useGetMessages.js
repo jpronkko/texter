@@ -1,45 +1,25 @@
-import { useQuery /* useSubscription */ } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 
 import { GET_MESSAGES } from '../../graphql/queries'
-//import { MESSAGE_ADDED_TO_TOPIC } from '../graphql/subscriptions'
+
+import useError from '../ui/useErrorMessage'
+import { parseError } from '../../utils/parseError'
+import logger from '../../utils/logger'
 
 const useMessages = (topicId) => {
-  const { data, error, loading, fetchMore, refetch, ...result } = useQuery(
-    GET_MESSAGES,
-    {
-      variables: { topicId: topicId },
-      skip: !topicId,
-      fetchPolicy: 'cache-and-network',
-    }
-  )
-
-  /* useSubscription(MESSAGE_ADDED_TO_TOPIC, {
-    variables: {
-      topicId: topicId,
+  const [showError] = useError()
+  const { data, error, loading, refetch, ...result } = useQuery(GET_MESSAGES, {
+    variables: { topicId: topicId },
+    skip: !topicId,
+    fetchPolicy: 'cache-and-network',
+    onError: (error) => {
+      logger.error('Getting messages failed:', error)
+      showError(`Getting messages failed: ${parseError(error)}!`)
     },
-    onData: ({ data }) => {
-      console.log(data)
-    },
-  }) */
-  //console.log(`Repo id ${JSON.stringify(id)} data ${JSON.stringify(data)}`);
-
-  const handleFetchMore = () => {
-    /* const canFetchMore = !loading && data?.data.getMessages.pageInfo.hasNextPage;
-
-    if(!canFetchMore) {
-      return;
-    }*/
-
-    fetchMore({
-      variables: {
-        after: data.getMessages,
-      },
-    })
-  }
+  })
 
   return {
     messages: data?.getMessages,
-    fetchMore: handleFetchMore,
     loading,
     error,
     refetch,

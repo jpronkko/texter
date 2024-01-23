@@ -21,9 +21,6 @@ const TopBar = () => {
   const location = useLocation()
 
   const user = useSelector((state) => state.user.userData)
-  /* const group = useSelector((state) => state.selection.group)
-  const topic = useSelector((state) => state.selection.topic)
- */
   const userLoggedIn = () => user.username !== ''
 
   const renderGroup = () => {

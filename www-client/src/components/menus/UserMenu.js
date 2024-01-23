@@ -1,6 +1,4 @@
 import React, { useRef, useState } from 'react'
-
-//import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import Menu from '@mui/material/Menu'
@@ -21,7 +19,6 @@ const UserMenu = () => {
   const confirmDlgRef = useRef()
   const profileDlgRef = useRef()
 
-  //const navigate = useNavigate()
   const [, logout] = useLogInOut()
 
   const showLogout = () => {

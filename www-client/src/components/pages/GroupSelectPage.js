@@ -4,12 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { Button, Container, Grid } from '@mui/material'
 
-import ConfirmMessage from '../dialogs/ConfirmMessage'
-import CreateGroupDlg from '../dialogs/CreateGroupDlg'
-import GroupCard from '../GroupCard'
-import Loading from '../Loading'
-import TitleBox from '../TitleBox'
-
+import { clearGroup, setGroup } from '../../app/selectionSlice'
 import useCreateGroup from '../../hooks/mutations/useCreateGroup'
 import useGetUserGroups from '../../hooks/queries/useGetGroups'
 import useLogInOut from '../../hooks/mutations/useLogInOut'
@@ -17,7 +12,11 @@ import useRemoveUserFromGroup from '../../hooks/mutations/useRemoveUserFromGroup
 import useUserAddSubsription from '../../hooks/subscriptions/useUserAddSubscription'
 import useUserRemoveSubscription from '../../hooks/subscriptions/useUserRemoveSubscription'
 
-import { clearGroup, setGroup } from '../../app/selectionSlice'
+import ConfirmMessage from '../dialogs/ConfirmMessage'
+import CreateGroupDlg from '../dialogs/CreateGroupDlg'
+import GroupCard from '../GroupCard'
+import Loading from '../Loading'
+import TitleBox from '../TitleBox'
 
 const GroupSelectPage = () => {
   const navigate = useNavigate()
@@ -31,7 +30,7 @@ const GroupSelectPage = () => {
 
   const { ownedGroups, joinedGroups, loading, error } = useGetUserGroups()
   const [removeUserFromGroup] = useRemoveUserFromGroup()
-  const [logOut] = useLogInOut()
+  const [, logOut] = useLogInOut()
 
   useUserAddSubsription(user.id)
   useUserRemoveSubscription(user.id)
@@ -74,7 +73,6 @@ const GroupSelectPage = () => {
   const handleLeaveGroup = async (group) => {
     groupToLeave = group
     confirmDlgRef.current.open()
-    console.log('Leave group', group.name)
   }
 
   const leaveGroup = async () => {
