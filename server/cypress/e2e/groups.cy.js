@@ -209,25 +209,24 @@ describe('group creation, selection, user invitations to group', function () {
       password: this.user1.password,
     })
     cy.goGroupManagePage()
-    cy.get('#group-members-table')
-      .get('.MuiDataGrid-cell')
-      .contains(this.user2.username)
-      .parent()
-      .parent()
-      .within(() => {
-        cy.get('#remove-user-button').as('removeUserButton')
-      })
-    //.get('#remove-user-button')
-    //.as('removeUserButton')
-    /*.within(() => {
-        cy.get('#remove-user-button').click()
-      })*/
-    cy.get('@removeUserButton').click()
+    cy.screenshot()
+    cy.get('#group-members-table').within(() => {
+      cy.get('.MuiDataGrid-cell')
+        .contains(this.user2.username)
+        .should('be.visible')
+        .parent()
+        .parent()
+        .within(() => {
+          cy.get('#remove-user-button').as('removeUserButton')
+          cy.get('@removeUserButton').click()
+        })
+    })
     cy.get('#confirm-ok-button').click()
-    cy.get('#group-members-table')
-      .get('.MuiDataGrid-cell')
-      .contains(this.user2.username)
-      .should('not.exist')
+    cy.get('#group-members-table').within(() => {
+      cy.get('.MuiDataGrid-cell')
+        .contains(this.user2.username)
+        .should('not.exist')
+    })
   })
 
   it('leave group', function () {
