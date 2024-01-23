@@ -91,9 +91,10 @@ describe('group creation, selection, user invitations to group', function () {
     cy.goGroupManagePage()
     cy.createInvitation(this.user2.name)
 
-    cy.get('#group-members-table')
-      .get('.MuiDataGrid-cell')
-      .contains(this.user2.username)
+    cy.get('#invitations-table').within(() => {
+      cy.get('.MuiDataGrid-cell').contains(this.user2.username)
+    })
+
     cy.logout()
 
     cy.login({
@@ -117,22 +118,24 @@ describe('group creation, selection, user invitations to group', function () {
     cy.goGroupManagePage()
     cy.createInvitation(this.user2.name)
 
-    cy.get('#invitations-table')
-      .get('.MuiDataGrid-cell') //.get('.MuiDataGrid-cell')
-      .contains(this.user2.username)
-      .parent()
-      .parent()
-      .find('#cancel-invitation-button')
-      .as('cancelInvitationButton')
-    cy.get('@cancelInvitationButton').click()
+    cy.get('#invitations-table').within(() => {
+      cy.get('.MuiDataGrid-cell')
+        .contains(this.user2.username)
+        .parent()
+        .parent()
+        .find('#cancel-invitation-button')
+        .as('cancelInvitationButton')
+      cy.get('@cancelInvitationButton').click()
+    })
 
     cy.get('#confirm-ok-button').click()
-    cy.get('#invitations-table')
-      .get('.MuiDataGrid-cell')
-      .contains(this.user2.username)
-      .parent()
-      .parent()
-      .contains('Cancelled')
+    cy.get('#invitations-table').within(() => {
+      cy.get('.MuiDataGrid-cell')
+        .contains(this.user2.username)
+        .parent()
+        .parent()
+        .contains('Cancelled')
+    })
   })
 
   it('invite user to group and reject invitation works', function () {
@@ -200,9 +203,11 @@ describe('group creation, selection, user invitations to group', function () {
     cy.get('#invitation-label')
       .contains(this.testgroup.name)
       .parent()
-      .get('#invitation-accept-button')
-      .as('acceptInvitationButton')
-    cy.get('@acceptInvitationButton').click()
+      .within(() => {
+        cy.get('#invitation-accept-button').as('acceptInvitationButton')
+        cy.get('@acceptInvitationButton').click()
+      })
+
     cy.logout()
 
     cy.login({
@@ -211,6 +216,7 @@ describe('group creation, selection, user invitations to group', function () {
     })
     cy.goGroupManagePage()
     cy.get('#group-members-table').within(() => {
+      cy.get('.MuiDataGrid-cell').contains(this.user1.username)
       cy.get('.MuiDataGrid-cell').contains(this.user2.username).as('username2')
 
       cy.get('@username2').should('be.visible')
