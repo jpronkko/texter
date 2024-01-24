@@ -88,9 +88,9 @@ The repository contains both client and server files in its subfolders ```www-cl
   <figcaption>Fig 1. Project folder structure</figcaption>
 </figure>
 <br />
+<br />
 
-
-The toplevel also includes also subfolders for workflows (.github/workflows) and the mentioned package.json file, which refers to running targets of specified in server/package.json and www-client/package.json.
+The top level also includes also subfolders for workflows (.github/workflows) and the mentioned package.json file, which refers to running targets of specified in server/package.json and www-client/package.json.
 
 ### Server
 
