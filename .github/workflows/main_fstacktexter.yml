@@ -9,9 +9,12 @@ on:
   workflow_dispatch:
 
 env:
+  # Production and test uris for Mongodb Atlas connection
   PROD_MONGODB_URI: ${{ secrets.PROD_MONGODB_URI }}
   TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+  # Secret for JWT token
   SECRET: ${{ secrets.SECRET }}
+  # Port for the backend to listen on
   PORT: ${{ vars.PORT }}
 
 jobs:
@@ -21,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up Node.js version
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "20.x"
 
@@ -38,7 +41,6 @@ jobs:
 
       - name: e2e test
         uses: cypress-io/github-action@v6
-
         with:
           working-directory: ./server
           build: npm run build
@@ -47,8 +49,10 @@ jobs:
           wait-on: http://localhost:8080
           record: true
         env:
+          # These two are for the cypress dashboard
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # These are for the frontend to connect to the backend
           REACT_APP_API_ENDPOINT: ${{ vars.REACT_APP_API_ENDPOINT }}
           REACT_APP_WS_ENDPOINT: ${{ vars.REACT_APP_WS_ENDPOINT }}
 
@@ -56,10 +60,11 @@ jobs:
         run: cd ./server && zip release.zip ./* -r && mv release.zip ../
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: fstacktexter
           path: release.zip
+          overwrite: true
 
   deploy:
     needs: [build_and_test]
@@ -72,7 +77,7 @@ jobs:
 
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: fstacktexter
 
