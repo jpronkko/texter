@@ -9,9 +9,12 @@ on:
   workflow_dispatch:
 
 env:
+  # Production and test uris for Mongodb Atlas connection
   PROD_MONGODB_URI: ${{ secrets.PROD_MONGODB_URI }}
   TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+  # Secret for JWT token
   SECRET: ${{ secrets.SECRET }}
+  # Port for the backend to listen on
   PORT: ${{ vars.PORT }}
 
 jobs:
@@ -38,7 +41,6 @@ jobs:
 
       - name: e2e test
         uses: cypress-io/github-action@v6
-
         with:
           working-directory: ./server
           build: npm run build
@@ -47,8 +49,10 @@ jobs:
           wait-on: http://localhost:8080
           record: true
         env:
+          # These two are for the cypress dashboard
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # These are for the frontend to connect to the backend
           REACT_APP_API_ENDPOINT: ${{ vars.REACT_APP_API_ENDPOINT }}
           REACT_APP_WS_ENDPOINT: ${{ vars.REACT_APP_WS_ENDPOINT }}
 
