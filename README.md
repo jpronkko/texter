@@ -89,6 +89,7 @@ The repository contains both client and server files in its subfolders ```www-cl
 </figure>
 <br />
 
+
 The toplevel also includes also subfolders for workflows (.github/workflows) and the mentioned package.json file, which refers to running targets of specified in server/package.json and www-client/package.json.
 
 ### Server
@@ -110,5 +111,5 @@ There are some limitations in the current implementation. Some of them are liste
 
 - UI does not scale well for small displays.
 - The messaging itself is limited to simple text messages. Images and other information types would be beneficial as part of the messages.
-- Only simple password authentication is provided
+- Only simple password authentication is provided.
 - Testing code emphasizes E2E tests at the moment and especially UI component tests are very limited.
