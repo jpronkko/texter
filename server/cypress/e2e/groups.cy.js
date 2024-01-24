@@ -24,12 +24,9 @@ describe('group creation, selection, user invitations to group', function () {
   })
 
   it('common group exists and can post to general topic', function () {
-    cy //.get('#other-joined-groups')
-      //.find('#group-name')
-      .contains('Common')
+    cy.contains('Common')
       .parent()
       .parent()
-      //.contains('Common')
       .find('#select-group-button')
       .as('selectGroupButton')
 
@@ -52,12 +49,17 @@ describe('group creation, selection, user invitations to group', function () {
 
   it('post message to test topic in test group', function () {
     cy.createTestGroup()
-    cy.get('#owned-groups')
-      .get('#group-name')
-      .contains(this.testgroup.name)
-      .parent()
-      .get('#select-group-button')
-      .click()
+    cy.get('#owned-groups').within(() => {
+      cy.get('#group-name')
+        .contains(this.testgroup.name)
+        .parent()
+        .parent()
+        .parent()
+        .within(() => {
+          cy.get('#select-group-button').click()
+        })
+    })
+
     cy.get('#add-topic-button').click()
     cy.get('#input').type('testtopic')
     cy.get('#submit-button').click()
@@ -104,7 +106,7 @@ describe('group creation, selection, user invitations to group', function () {
 
     cy.acceptInvitation(this.testgroup.name)
     cy.get('#other-joined-groups').contains('Common')
-    cy.get('#other-joined-groups').contains(this.testgroup.name) //get('#other-joined-groups').get(this.testgroup.name)
+    cy.get('#other-joined-groups').contains(this.testgroup.name)
   })
 
   it('invite user to group and cancel invitation works', function () {
@@ -163,7 +165,7 @@ describe('group creation, selection, user invitations to group', function () {
     cy.get('#invitation-label')
       .contains(this.testgroup.name)
       .parent()
-      .get('#invitation-reject-button')
+      .find('#invitation-reject-button')
       .as('rejectInvitationButton')
     cy.get('@rejectInvitationButton').click()
 
