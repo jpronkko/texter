@@ -1,5 +1,6 @@
-import { Box, Button, Divider, Typography } from '@mui/material'
 import React from 'react'
+
+import { Box, Button, Divider, Typography } from '@mui/material'
 import useModifyRecvInv from '../hooks/mutations/useModifyRecvInv'
 
 const RecvInvItem = ({ invitation }) => {

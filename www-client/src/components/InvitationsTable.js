@@ -22,18 +22,14 @@ const InvitationsTable = () => {
     (inv) => inv.group.id === selectedGroup.id && inv.status !== 'ACCEPTED'
   )
 
-  let invitationToCancel = undefined
-
   const confirmDlgRef = useRef()
 
   const prepareCancelInvitation = (invitationId) => {
-    invitationToCancel = invitationId
-    confirmDlgRef.current.open()
+    confirmDlgRef.current.open({ invitationId })
   }
 
-  const onCancelInvitation = async () => {
-    await cancelInvitation(invitationToCancel)
-    invitationToCancel = undefined
+  const onCancelInvitation = async (okObject) => {
+    await cancelInvitation(okObject.invitationId)
   }
 
   const columns = [
