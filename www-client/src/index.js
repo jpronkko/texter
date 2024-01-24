@@ -48,6 +48,9 @@ const wsLink = new GraphQLWsLink(
   })
 )
 
+logger.info('REACT_APP_API_ENDPOINT', process.env.REACT_APP_API_ENDPOINT)
+logger.info('REACT_APP_WS_ENDPOINT', process.env.REACT_APP_WS_ENDPOINT)
+
 logger.info('API_ENDPOINT', API_ENDPOINT)
 logger.info('WS_ENDPOINT', WS_ENDPOINT)
 
