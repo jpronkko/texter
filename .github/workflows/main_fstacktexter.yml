@@ -39,7 +39,7 @@ jobs:
       - name: API test
         run: npm run api-test
 
-      - name: e2e test
+      - name: E2E test
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./server
@@ -56,14 +56,17 @@ jobs:
           REACT_APP_API_ENDPOINT: ${{ vars.REACT_APP_API_TEST_ENDPOINT }}
           REACT_APP_WS_ENDPOINT: ${{ vars.REACT_APP_WS_TEST_ENDPOINT }}
 
-      - name: Build
+      - name: Build to production
         run: npm run build
         env:
           REACT_APP_API_ENDPOINT: ${{ vars.REACT_APP_API_PROD_ENDPOINT }}
           REACT_APP_WS_ENDPOINT: ${{ vars.REACT_APP_WS_PROD_ENDPOINT }}
 
       - name: Zip artifact for deployment
-        run: cd ./server && zip release.zip ./* -r && mv release.zip ../
+        run: |
+          cd ./server && zip -r release.zip index.js server.js \
+          build graphql models node_modules routes services utils \
+          && mv release.zip ../
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
