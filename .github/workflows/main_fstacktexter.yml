@@ -11,7 +11,7 @@ on:
 env:
   # Production and test uris for Mongodb Atlas connection
   PROD_MONGODB_URI: ${{ secrets.PROD_MONGODB_URI }}
-  TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+  TEST_MONGODB_URI: "mongodb://localhost:27017" #
   # Secret for JWT token
   SECRET: ${{ secrets.SECRET }}
   # Port for the backend to listen on
@@ -48,8 +48,7 @@ jobs:
       - name: API test
         run: npm run api-test
         env:
-          MONGODB_URI: "mongodb://localhost:27017"
-          # MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          MONGODB_URI: "$TEST_MONGODB_URI"
           SECRET: ${{ secrets.SECRET }}
           PORT: ${{ vars.PORT }}
 
@@ -69,7 +68,7 @@ jobs:
           # These are for the frontend to connect to the backend
           REACT_APP_API_ENDPOINT: ${{ vars.REACT_APP_API_TEST_ENDPOINT }}
           REACT_APP_WS_ENDPOINT: ${{ vars.REACT_APP_WS_TEST_ENDPOINT }}
-          MONGODB_URI: "mongodb://localhost:27017"
+          MONGODB_URI: "$TEST_MONGODB_URI"
 
       - name: Build to production
         run: npm run build

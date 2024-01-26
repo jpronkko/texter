@@ -10,6 +10,8 @@ First it is necessary to create a user account, click the create a new account-b
   <img src="images/newuser.png" width="70%">
   <figcaption>Figure 1. Login screen</figcaption>
 </figure>
+<br />
+<br />
 
 Fill in the user account information and give a long enough of a password.
 
@@ -17,6 +19,8 @@ Fill in the user account information and give a long enough of a password.
   <img src="images/createuser.png" width="70%">
   <figcaption>Figure 2. New user screen</figcaption>
 </figure>
+<br />
+<br />
 
 After submitting the information, you enter the main view, which shows your own groups and other groups you have joined in as in in Figure 3. Click **Create** button in **Own Groups** bar on the right to create a new group.
 
@@ -25,6 +29,8 @@ After submitting the information, you enter the main view, which shows your own 
   <img src="images/mainscreen.png" width="70%">
   <figcaption>Figure 3. Main screen with group cards</figcaption>
 </figure>
+<br />
+<br />
 
 In the main screen find your newly created group card and click **Select** button on it (see Figure 4).
 
@@ -32,6 +38,8 @@ In the main screen find your newly created group card and click **Select** butto
   <img src="images/groupselect.png" width="70%">
   <figcaption>Figure 4. Main screen, selecting a group</figcaption>
 </figure>
+<br />
+<br />
 
 You will now see the messaging screen, in which topics are on the left bar. There are no topics at the moment, so lets create a one. Click the **Add Topic** button on the upper left (see Figure 5).
 
@@ -39,6 +47,8 @@ You will now see the messaging screen, in which topics are on the left bar. Ther
   <img src="images/addtopic.png" width="70%">
   <figcaption>Figure 5. Message screen, adding a topic</figcaption>
 </figure>
+<br />
+<br />
 
 After adding a topic, you can send a message to appear under it. Write the message in the text box below and click submit (see Figure 6).
 
@@ -46,15 +56,19 @@ After adding a topic, you can send a message to appear under it. Write the messa
   <img src="images/createmessage.png" width="70%">
   <figcaption>Figure 6. Message screen, adding a message</figcaption>
 </figure>
+<br />
+<br />
 
-The situation is a bit silly, because nobody else can see your messages. Therefore lets add another user to your group to discuss with. Go back to the main screen listing the groups by clicking the Browse Groups button in the top bar.
+The situation is a bit silly, because nobody else can see your messages. Therefore lets add another user to your group to discuss with. Go back to the main screen listing the groups by clicking the **Browse Groups** button in the top bar.
 
-Now go to group management by click the manage button in your group card as in Figure 7.
+Now go to group management by clicking the **Manage** button in your group card as shown in Figure 7.
 
 <figure>
   <img src="images/gomanage.png" width="70%">
   <figcaption>Figure 7. Message screen, going to group management</figcaption>
 </figure>
+<br />
+<br />
 
 In group management one can change group information, add invitations to users to join a group and remove users from a group. Lets invite some users to our group by clicking **Add Invitation** button in the **Invitations** below (Figure 8). A dialog appears (Figure 9) from which one can select users to invite. Only users, which are not group members yet are shown.
 
@@ -62,11 +76,15 @@ In group management one can change group information, add invitations to users t
   <img src="images/sendinginvitation.png" width="70%">
   <figcaption>Figure 8. Group management, sending invitation</figcaption>
 </figure>
+<br />
+<br />
 
 <figure>
   <img src="images/sendinginvitation2.png" width="70%">
   <figcaption>Figure 9. Group management, selecting users to invite</figcaption>
 </figure>
+<br />
+<br />
 
 If there are new invitations to a particular user, they appear in the top bar as shown in Figure 10. One can click the button and accept or reject an invitation from the menu (Figure 11).
 
@@ -74,11 +92,15 @@ If there are new invitations to a particular user, they appear in the top bar as
   <img src="images/recvinvitation.png" width="70%">
   <figcaption>Figure 10. Receiving invitation</figcaption>
 </figure>
+<br />
+<br />
 
 <figure>
   <img src="images/acceptinvitation.png" width="70%">
   <figcaption>Figure 11. Accepting an invitation</figcaption>
 </figure>
+<br />
+<br />
 
 If one wishes to change some of their profile parameters, such as e-mail address, one can click the user button in top bar on the right as shown in Figures 12 and 13.
 
@@ -86,6 +108,8 @@ If one wishes to change some of their profile parameters, such as e-mail address
   <img src="images/gotoprofile.png" width="70%">
   <figcaption>Figure 12. Go to the user profile</figcaption>
 </figure>
+<br />
+<br />
 
 <figure>
   <img src="images/userprofile.png" width="70%">
@@ -99,15 +123,15 @@ The requirements for the Texter are listed below:
 - A user can create an account based on username, password, name and e-mail address.
 - A user can modify the mentioned password and email.
 - A user can create groups with names and textual descriptions.
-- A user can invite other users to the groups.
+- A user can invite other users to their groups.
 - A user can cancel a sent invitation before it is accepted.
 - A user can accept or reject invitations from other users to their groups.
 - Upon accepting an invitation to a group, a user becomes a member of a group with two role options: member or admin.
 - A user can create discussion topics within groups they have created or in which they have admin rights.
-- A user can write text messages to the topics, which belong to groups they own or are members or admins of
+- A user can write text messages to the topics, which belong to groups they own or are ordinary members or admins of.
 - A user can leave a group.
 - Users can view their groups, topics and discussions both of which they own and are members of.
-- Users can manage groups they own by sending invitations to users not yet in the group and removing users from the group.
+- Users can manage groups they own by sending invitations to users not yet in the group and by removing users from the group.
 - Users can manage groups they own by changing their name and description.
 - Users can manage groups they own by removing discussion topics and their contents belonging to a particular group.
 
@@ -116,7 +140,7 @@ The requirements for the Texter are listed below:
 The Texter app utilises the following technologies:
 
 - React, Redux, Material UI and React Hook Forms for its frontend
-- GraphQL (Apollo) in client server communication and state management via its queries, mutations, subscriptions and its cache
+- Apollo (GraphQL) in client server communication and state management via its queries, mutations, subscriptions and its cache
 - Node, Express, Mongoose and Mongo in its server side implementation
 - Cypress for integration testing, Jest for server side API and client side component tests
 
@@ -128,7 +152,7 @@ One needs to have Node and an accessible Mongo database installed, after that on
 
 ### Server dot env file
 
-One needs to define the port the server is listening to and development and test connection urls of the MongoDB installation. Here is an example of a setup with local development and testing connections as well as a production MongoDB ATLAS connection:
+One needs to define the port the server is listening to and both development and test connection urls of the MongoDB installation. Here is an example of a setup with local development and testing connections as well as a production MongoDB ATLAS connection:
 
 ```javascript
 PORT=8080
@@ -153,15 +177,15 @@ The websocket interface is used by GraphQL subscription service.
 
 ### Running the application locally
 
-The root level package.json has some options to run the setup in development or test mode. To start both the client and the server for development, one needs to issue ```npm run dev``` -command from the terminal in the project root directory. Note that the mongodb needs to be up and running and that the connection string is correctly configured in the server/.env.
+The root level package.json has some options to run the setup in development or test mode. To start both the client and the server for development, one needs to issue ```npm run client``` and  ```npm run dev-server``` commands from the terminal windows in the project root directory. Note that **Mongo** needs to be up and running and that the connection string is correctly configured in the server/.env.
 
-To run client side component tests one can issue npm run component-test -command at the project root directory. To run server side API test one can run ```npm run api-test``` in the project root. Running integration tests locally on needs to run build first for the frontend: npm run build in the project. Then one has to start the server in the test mode by running ```npm start:test``` and finally from a separate terminal ```npm run e2e-test```.
+To run client side component tests one can issue npm run component-test -command at the project root directory. To run server side API test one can run ```npm run api-test``` in the project root. Running integration tests locally on needs to run build first for the frontend: ```npm run build``` in the project root. Then one has to start the server in the test mode by running ```npm start:test``` and finally from a separate terminal ```npm run e2e-test```.
 
 ## CI/CD & Running in Azure
 
-Currently there is a GitHub action workflow file in .github/workflows/, which specifies build, test and deployment steps to eventually deploy to Azure App Service. It is worth noting that the testing step requires environment variables (```PROD_MONGDB_URI```, ```TEST_MONGODB_URI```, ```SECRET``` and ```PORT``` as well as ```REACT_APP_API_TEST_ENDPOINT``` and ```REACT_APP_WS_TEST_ENDPOINT```) to be specified in GitHub repository secrets and variable settings, otherwise the test run or will fail. In Cypress testing ```REACT_APP_*``` endpoints refer to localhost. 
+Currently there is a GitHub Action workflow file in .github/workflows/, which specifies build, test and deployment steps to eventually deploy to Azure App Service. It is worth noting that the testing step requires environment variables (```PROD_MONGDB_URI```, ```SECRET``` and ```PORT``` as well as ```REACT_APP_API_TEST_ENDPOINT``` and ```REACT_APP_WS_TEST_ENDPOINT```) to be specified in GitHub repository secrets and variable settings, otherwise the test run or will fail. In Cypress testing ```REACT_APP_*``` endpoints refer to localhost. 
 
-The deployment step requires variables ```REACT_APP_API_PROD_ENDPOINT``` and ```REACT_APP_WS_PROD_ENDPOINT``` to be specified in GitHub settings and they refer to the production addresses of the server. Also a Azure publish-profile key is required. In Azure portal secrets ```PROD_MONGDB_URI```, ```TEST_MONGODB_URI```, ```SECRET```, ```PORT``` have to be specified.
+The deployment step requires variables ```REACT_APP_API_PROD_ENDPOINT``` and ```REACT_APP_WS_PROD_ENDPOINT``` to be specified in GitHub settings and they refer to the production addresses of the server. Also a Azure publish-profile key is required. In Azure portal secrets ```PROD_MONGDB_URI```, ```SECRET```, ```PORT``` have to be specified.
 
 The testing step includes API, UI component and E2E tests made with Jest and Cypress. Due to the fact that Cypress E2E tests can express pretty different behavior in a local machine compared to while running via actions in the pipeline, cloud based Cypress Dashboard was used to record artifacts, such as screenshots from the pipeline runs. For this to work one needs to setup a Cypress Cloud account (https://www.cypress.io/), create a project and configure the repository workflow file accordingly, e.g. incorporate related environment variables to the cypress running action definition (```CYPRESS_RECORD_KEY``` from the dashboard and the ```GITHUB_TOKEN```).
 
@@ -188,11 +212,11 @@ The server utilises a layered approach to handling incoming requests. GraphQL de
 
 Cypress E2E test code and helper files are located in the server side ```./server/cypress``` subfolder. Routes contain router modules used to serve the REST-style endpoints. Services folder contains modules used with functionality to launch Apollo and connect/disconnect to/from Mongo. Utils folder has module files containing functionality used in many different parts of the application, such as user permission, JWT token, environment configuration handling as well as logging.
 
-In server launch the main entrypoint is in index.js, which uses functionality in server.js to launch express server to serve the REST endpoints and the frontend, Apollo as middleware and websocket services needed to run GraphQL subscriptions. Mongo connection is also initiated.
+In server launch the main entrypoint is in index.js, which uses functionality in server.js to launch an Express server to serve the REST endpoints and the frontend, Apollo as middleware and websocket services needed to run GraphQL subscriptions. Mongo connection is also initiated.
 
 ### WWW-client
 
-The client follows an encapsulation philosophy, in which the network access is hidden from the UI components to custom hooks in ```./www-client/src/hooks```. UI is split to pages corresponding to the main screen views visibile to the user and other components used by pages such as dialogs, forms or drop down menus. Client state is managed by Redux and Apollo cache with the following division of responsibility: general UI related state is taken care by Redux and state related to the information retrieved from the server is mostly handled by Apollo and its cache. Redux is used in conjunction with error and notification messaging and holding selection information: which group and topic is currently selected. Apollo cache is relied on in information related to user group memebership, pending invitations to groups, particular topic related messages and so forth.
+The client follows an encapsulation philosophy, in which the network access is hidden from the UI components to custom hooks in ```./www-client/src/hooks```. UI uses Material UI currently. UI is split into pages corresponding to the main screen views visibile to the user. Pages use other components such as custom dialogs, forms and drop down menus. Client state is managed by Redux and Apollo cache with the following division of responsibility: general UI related state is taken care by Redux and state related to the information retrieved from the server is mostly handled by Apollo and its cache. Redux is used in conjunction with error and notification messaging. It also holds selection information: which group and topic is currently selected. Apollo cache is relied on in information related to user group memebership, pending invitations to groups, a topic related messages and so forth.
 
 ## Limitations
 

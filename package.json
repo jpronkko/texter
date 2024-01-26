@@ -11,7 +11,6 @@
     "eslint": "cd server && npm run eslint . && cd ../www-client && npm run eslint .",
     "dev-server": "npm run dev --prefix server",
     "client": "npm start --prefix www-client",
-    "dev": "npm run dev-server & npm run client",
     "start": "npm start --prefix server",
     "component-test": "npm run test --prefix www-client",
     "api-test": "npm run test --prefix server",
