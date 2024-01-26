@@ -11,7 +11,7 @@ on:
 env:
   # Production and test uris for Mongodb Atlas connection
   PROD_MONGODB_URI: ${{ secrets.PROD_MONGODB_URI }}
-  TEST_MONGODB_URI: "mongodb://localhost:27017" #
+  TEST_MONGODB_URI: "mongodb://localhost:27017"
   # Secret for JWT token
   SECRET: ${{ secrets.SECRET }}
   # Port for the backend to listen on

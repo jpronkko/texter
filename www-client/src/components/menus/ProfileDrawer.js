@@ -76,7 +76,6 @@ const ProfileDrawer = forwardRef((props, ref) => {
             backgroundColor: 'background.drawer',
           },
         }}
-        /* variant="permanent" */
         open={profileOpen}
         onClose={() => toggleProfile(false)}
         anchor="right"
