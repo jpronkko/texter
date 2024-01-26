@@ -64,7 +64,7 @@ jobs:
 
       - name: Zip artifact for deployment
         run: |
-          cd ./server && zip -r release.zip index.js server.js \
+          cd ./server && zip -r release.zip index.js package.json package-lock.json server.js \
           build graphql models node_modules routes services utils \
           && mv release.zip ../
 

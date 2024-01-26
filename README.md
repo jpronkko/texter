@@ -1,6 +1,41 @@
 # Texter
 
-Texter is like a poor man's Slack, in which users can create groups and invite people to the groups. Within groups users can create discussion topics and send messages to the discussions. At the moment its funcitonality is fairly limited as it has served as a study project for the author to study topics such as Material UI, GraphQL and Mongo. For the time being its current user interface is intended for desktop use only and no mobile app is provided. Small screen sizes are not supported. A running installation is currently availale at https://fstacktexter.azurewebsites.net. Work hours report is [here](workhours.md).
+Texter is like a poor man's Slack, in which users can create groups and invite people to the groups. Within groups users can create discussion topics and send messages to the discussions. At the moment its funcitonality is fairly limited as it has served as a study project for the author to study topics such as Material UI, GraphQL and Mongo. For the time being its current user interface is intended for desktop use only and no mobile app is provided. Small screen sizes are not supported. A running installation is currently availale at https://fstacktexter.azurewebsites.net. Working hours report is [here](workhours.md).
+
+## Basic usage
+
+First it is necessary to create a user account, click the create a new account-button in the login screen as in figure 1.
+
+<figure>
+  <img src="images/newuser.png" width="70%">
+  <figcaption>Fig 1. Login screen</figcaption>
+</figure>
+
+Fill in the user account information and give a long enough password.
+
+<figure>
+  <img src="images/createuser.png" width="70%">
+  <figcaption>Fig 2. New user screen</figcaption>
+</figure>
+
+After submitting the information, you enter the main view, which shows your own groups and other groups you have joined in asin in figure 3. Click Create butoon in Own Groups bar on the right to create a new group.
+
+
+<figure>
+  <img src="images/mainscreen.png" width="70%">
+  <figcaption>Fig 3. Main screen</figcaption>
+</figure>
+
+In the main screen select find your newly created group card and click Select button on it (see. figure 4).
+
+<figure>
+  <img src="images/groupselect.png" width="70%">
+  <figcaption>Fig 4. Main screen</figcaption>
+</figure>
+
+You will now see the messaging screen, in which topics are on the left bar. There are no topics at the moment, so lets create a one.
+
+
 
 ## Requirements for the implementation
 
