@@ -4,7 +4,7 @@ Texter is like a poor man's Slack, in which users can create groups and invite p
 
 ## Usage
 
-First it is necessary to create a user account, click the create a new account-button in the login screen as in Figure 1.
+First it is necessary to create a user account, click the **Create a New Account** button in the login screen as in Figure 1.
 
 <figure>
   <img src="images/newuser.png" width="70%">
