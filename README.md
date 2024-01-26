@@ -2,40 +2,95 @@
 
 Texter is like a poor man's Slack, in which users can create groups and invite people to the groups. Within groups users can create discussion topics and send messages to the discussions. At the moment its funcitonality is fairly limited as it has served as a study project for the author to study topics such as Material UI, GraphQL and Mongo. For the time being its current user interface is intended for desktop use only and no mobile app is provided. Small screen sizes are not supported. A running installation is currently availale at https://fstacktexter.azurewebsites.net. Working hours report is [here](workhours.md).
 
-## Basic usage
+## Usage
 
-First it is necessary to create a user account, click the create a new account-button in the login screen as in figure 1.
+First it is necessary to create a user account, click the create a new account-button in the login screen as in Figure 1.
 
 <figure>
   <img src="images/newuser.png" width="70%">
-  <figcaption>Fig 1. Login screen</figcaption>
+  <figcaption>Figure 1. Login screen</figcaption>
 </figure>
 
-Fill in the user account information and give a long enough password.
+Fill in the user account information and give a long enough of a password.
 
 <figure>
   <img src="images/createuser.png" width="70%">
-  <figcaption>Fig 2. New user screen</figcaption>
+  <figcaption>Figure 2. New user screen</figcaption>
 </figure>
 
-After submitting the information, you enter the main view, which shows your own groups and other groups you have joined in asin in figure 3. Click Create butoon in Own Groups bar on the right to create a new group.
+After submitting the information, you enter the main view, which shows your own groups and other groups you have joined in as in in Figure 3. Click **Create** button in **Own Groups** bar on the right to create a new group.
 
 
 <figure>
   <img src="images/mainscreen.png" width="70%">
-  <figcaption>Fig 3. Main screen</figcaption>
+  <figcaption>Figure 3. Main screen with group cards</figcaption>
 </figure>
 
-In the main screen select find your newly created group card and click Select button on it (see. figure 4).
+In the main screen find your newly created group card and click **Select** button on it (see Figure 4).
 
 <figure>
   <img src="images/groupselect.png" width="70%">
-  <figcaption>Fig 4. Main screen</figcaption>
+  <figcaption>Figure 4. Main screen, selecting a group</figcaption>
 </figure>
 
-You will now see the messaging screen, in which topics are on the left bar. There are no topics at the moment, so lets create a one.
+You will now see the messaging screen, in which topics are on the left bar. There are no topics at the moment, so lets create a one. Click the **Add Topic** button on the upper left (see Figure 5).
 
+<figure>
+  <img src="images/addtopic.png" width="70%">
+  <figcaption>Figure 5. Message screen, adding a topic</figcaption>
+</figure>
 
+After adding a topic, you can send a message to appear under it. Write the message in the text box below and click submit (see Figure 6).
+
+<figure>
+  <img src="images/createmessage.png" width="70%">
+  <figcaption>Figure 6. Message screen, adding a message</figcaption>
+</figure>
+
+The situation is a bit silly, because nobody else can see your messages. Therefore lets add another user to your group to discuss with. Go back to the main screen listing the groups by clicking the Browse Groups button in the top bar.
+
+Now go to group management by click the manage button in your group card as in Figure 7.
+
+<figure>
+  <img src="images/gomanage.png" width="70%">
+  <figcaption>Figure 7. Message screen, going to group management</figcaption>
+</figure>
+
+In group management one can change group information, add invitations to users to join a group and remove users from a group. Lets invite some users to our group by clicking **Add Invitation** button in the **Invitations** below (Figure 8). A dialog appears (Figure 9) from which one can select users to invite. Only users, which are not group members yet are shown.
+
+<figure>
+  <img src="images/sendinginvitation.png" width="70%">
+  <figcaption>Figure 8. Group management, sending invitation</figcaption>
+</figure>
+
+<figure>
+  <img src="images/sendinginvitation2.png" width="70%">
+  <figcaption>Figure 9. Group management, selecting users to invite</figcaption>
+</figure>
+
+If there are new invitations to a particular user, they appear in the top bar as shown in Figure 10. One can click the button and accept or reject an invitation from the menu (Figure 11).
+
+<figure>
+  <img src="images/recvinvitation.png" width="70%">
+  <figcaption>Figure 10. Receiving invitation</figcaption>
+</figure>
+
+<figure>
+  <img src="images/acceptinvitation.png" width="70%">
+  <figcaption>Figure 11. Accepting an invitation</figcaption>
+</figure>
+
+If one wishes to change some of their profile parameters, such as e-mail address, one can click the user button in top bar on the right as shown in Figures 12 and 13.
+
+<figure>
+  <img src="images/gotoprofile.png" width="70%">
+  <figcaption>Figure 12. Go to the user profile</figcaption>
+</figure>
+
+<figure>
+  <img src="images/userprofile.png" width="70%">
+  <figcaption>Figure 13. User profile</figcaption>
+</figure>
 
 ## Requirements for the implementation
 
@@ -116,11 +171,11 @@ The functional blocks of the application include the web page based client, a se
 
 In general the application is fairly dynamic in its nature in the sense that several subscrioptions are used to signal corresponding clients of such events as user group invitations, messages and leaving from a group.
 
-The repository contains both client and server files in its subfolders ```www-client``` and ```server``` respectively. The outline of the directory structure is presented below in figure 1. Some folders are omitted here, such as ```./.github``` or ```./server/build```.
+The repository contains both client and server files in its subfolders ```www-client``` and ```server``` respectively. The outline of the directory structure is presented below in figure 14. Some folders are omitted here, such as ```./.github``` or ```./server/build```.
 
 <figure>
   <img src="images/folders.png" width="40%" height="40%">
-  <figcaption>Fig 1. Project folder structure</figcaption>
+  <figcaption>Fig 14. Project folder structure</figcaption>
 </figure>
 <br />
 <br />
