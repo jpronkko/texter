@@ -70,6 +70,11 @@ const startServer = async () => {
     })
   )
 
+  app.get('*', (req, res) => {
+    res.redirect('/')
+    //res.sendFile('index.html', { root: 'build' })
+  })
+
   httpServer.listen(config.PORT, () =>
     logger.info(
       `Server is now running on http://localhost:${config.PORT} and waiting for connections...`
