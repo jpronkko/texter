@@ -25,7 +25,11 @@ const schema = yup.object({
 
 const LoginForm = ({ handleLogin }) => {
   const navigate = useNavigate()
-  const { control, handleSubmit } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm({
     defaultValues: {
       username: '',
       password: '',
@@ -57,37 +61,39 @@ const LoginForm = ({ handleLogin }) => {
           }}
         >
           <Typography variant="h5"> Sign in</Typography>
-          <FormTextInput
-            id="username"
-            name="username"
-            control={control}
-            label="Username"
-          />
-          <FormTextInput
-            id="password"
-            testId="password"
-            name="password"
-            control={control}
-            label="Password"
-            type="password"
-          />
-          <Button
-            id="login-button"
-            onClick={handleSubmit(onSubmit)}
-            variant={'contained'}
-          >
-            Submit
-          </Button>
+          <fieldset disabled={isSubmitting}>
+            <FormTextInput
+              id="username"
+              name="username"
+              control={control}
+              label="Username"
+            />
+            <FormTextInput
+              id="password"
+              testId="password"
+              name="password"
+              control={control}
+              label="Password"
+              type="password"
+            />
+            <Button
+              id="login-button"
+              onClick={handleSubmit(onSubmit)}
+              variant={'contained'}
+            >
+              {isSubmitting ? 'Logging in ...' : 'Login'}
+            </Button>
 
-          <Divider />
-          <Typography>Do not have an account?</Typography>
-          <Button
-            id="create-new-button"
-            variant={'contained'}
-            onClick={() => navigate('/create_account')}
-          >
-            Create a New Account
-          </Button>
+            <Divider />
+            <Typography>Do not have an account?</Typography>
+            <Button
+              id="create-new-button"
+              variant={'contained'}
+              onClick={() => navigate('/create_account')}
+            >
+              Create a New Account
+            </Button>
+          </fieldset>
         </Paper>
       </Grid>
     </div>
