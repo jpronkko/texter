@@ -20,7 +20,7 @@ describe('LoginForm', () => {
     expect(screen.getByLabelText('Username')).toBeInTheDocument()
     expect(screen.getByLabelText('Password')).toBeInTheDocument()
 
-    expect(screen.getByText('Submit')).toBeDefined()
+    expect(screen.getByText('Login')).toBeDefined()
     expect(screen.getByText('Create a New Account')).toBeDefined()
   })
 
@@ -34,7 +34,7 @@ describe('LoginForm', () => {
     const passwordInput = screen.getByLabelText('Password')
     await user.type(passwordInput, 'testpassword')
 
-    const submitButton = screen.getByText('Submit')
+    const submitButton = screen.getByText('Login')
     await user.click(submitButton)
 
     // Check if handleLogin is called with the correct data
