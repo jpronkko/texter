@@ -72,7 +72,6 @@ const startServer = async () => {
 
   app.get('*', (req, res) => {
     res.redirect('/')
-    //res.sendFile('index.html', { root: 'build' })
   })
 
   httpServer.listen(config.PORT, () =>
