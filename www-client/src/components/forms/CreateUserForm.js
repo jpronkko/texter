@@ -29,7 +29,12 @@ const schema = yup.object({
 
 const CreateUserForm = ({ handleCreate }) => {
   const navigate = useNavigate()
-  const { control, reset, handleSubmit } = useForm({
+  const {
+    control,
+    reset,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm({
     defaultValues: {
       name: '',
       email: '',
@@ -64,45 +69,47 @@ const CreateUserForm = ({ handleCreate }) => {
           }}
         >
           <Typography variant="h4"> Create a new account</Typography>
-          <FormTextInput
-            id="name"
-            name="name"
-            control={control}
-            label="Name"
-          />
-          <FormTextInput
-            id="email"
-            name="email"
-            control={control}
-            label="E-mail"
-          />
-          <FormTextInput
-            id="username"
-            name="username"
-            control={control}
-            label="Username"
-          />
-          <FormTextInput
-            id="password"
-            testId="password"
-            name="password"
-            control={control}
-            label="Password"
-            type="password"
-          />
-          <Button
-            id="create-submit-button"
-            onClick={handleSubmit(onSubmit)}
-            variant={'contained'}
-          >
-            Submit
-          </Button>
-          <Button
-            onClick={() => reset()}
-            variant={'outlined'}
-          >
-            Reset
-          </Button>
+          <fieldset disabled={isSubmitting}>
+            <FormTextInput
+              id="name"
+              name="name"
+              control={control}
+              label="Name"
+            />
+            <FormTextInput
+              id="email"
+              name="email"
+              control={control}
+              label="E-mail"
+            />
+            <FormTextInput
+              id="username"
+              name="username"
+              control={control}
+              label="Username"
+            />
+            <FormTextInput
+              id="password"
+              testId="password"
+              name="password"
+              control={control}
+              label="Password"
+              type="password"
+            />
+            <Button
+              id="create-submit-button"
+              onClick={handleSubmit(onSubmit)}
+              variant={'contained'}
+            >
+              {isSubmitting ? 'Creating ...' : 'Create'}
+            </Button>
+            <Button
+              onClick={() => reset()}
+              variant={'outlined'}
+            >
+              Reset
+            </Button>
+          </fieldset>
           <Divider />
           Already have an account?
           <Button

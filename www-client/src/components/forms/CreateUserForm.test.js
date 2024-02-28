@@ -33,7 +33,7 @@ describe('Test CreateUserForm rendering and input', () => {
     const passwordInput = screen.getByTestId('password')
     expect(passwordInput).toBeDefined()
 
-    const submitButton = screen.getByText('Submit')
+    const submitButton = screen.getByText('Create')
     expect(submitButton).toBeDefined()
   })
 
@@ -54,7 +54,7 @@ describe('Test CreateUserForm rendering and input', () => {
     const passwordInput = screen.getByTestId('password')
     await user.type(passwordInput, userData.password)
 
-    const submitButton = screen.getByText('Submit')
+    const submitButton = screen.getByText('Create')
     await user.click(submitButton)
 
     expect(onSubmitMock.mock.calls).toHaveLength(1)
