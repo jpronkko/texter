@@ -78,17 +78,20 @@ const LoginForm = ({ handleLogin }) => {
             />
             <Button
               id="login-button"
+              sx={{ marginTop: '10px' }}
               onClick={handleSubmit(onSubmit)}
               variant={'contained'}
             >
               {isSubmitting ? 'Logging in ...' : 'Login'}
             </Button>
 
-            <Divider />
+            <Divider sx={{ margin: '10px' }} />
+
             <Typography>Do not have an account?</Typography>
             <Button
               id="create-new-button"
               variant={'contained'}
+              sx={{ marginTop: '10px' }}
               onClick={() => navigate('/create_account')}
             >
               Create a New Account

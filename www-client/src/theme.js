@@ -36,7 +36,7 @@ const themeOptions = {
     MuiButton: {
       styleOverrides: {
         root: {
-          margin: '2px',
+          margin: '2px 5px',
           borderRadius: '8px',
         },
       },
