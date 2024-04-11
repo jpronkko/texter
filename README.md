@@ -1,6 +1,6 @@
 # Texter
 
-Texter is like a poor man's Slack, in which users can create groups and invite people to the groups. Within groups users can create discussion topics and send messages to the discussions. At the moment its funcitonality is fairly limited as it has served as a study project for the author to study topics such as Material UI, GraphQL and Mongo. For the time being its current user interface is intended for desktop use only and no mobile app is provided. Small screen sizes are not supported. A running installation is currently availale at https://fstacktexter.azurewebsites.net. Working hours report is [here](workhours.md).
+Texter is like a poor man's Slack, in which users can create groups and invite people to the groups. Within groups users can create discussion topics and send messages to the discussions. At the moment its funcitonality is fairly limited as it has served as a study project for the author to study topics such as Material UI, GraphQL and Mongo. For the time being its current user interface is intended for desktop use only and no mobile app is provided. Small screen sizes are not supported. A running installation is currently availale at https://fstacktexter.azurewebsites.net.
 
 ## Usage
 
