@@ -54,9 +54,9 @@ const LoginForm = ({ handleLogin }) => {
           elevation={3}
           style={{
             display: 'grid',
-            width: '400px',
+            maxWidth: '23rem',
             gridRowGap: '20px',
-            padding: '20px',
+            padding: '15px',
             margin: '10px 10px',
             border: '1px solid #009',
           }}
