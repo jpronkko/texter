@@ -64,7 +64,7 @@ const FormTextInput = ({
       fullWidth
       inputRef={field.ref} // send input ref, so we can focus on input when error appears
       InputProps={inputProps}
-      sx={{ p: 0 }}
+      sx={{ p: 0, mb: 2 }}
     />
   )
 }

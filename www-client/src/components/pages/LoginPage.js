@@ -17,35 +17,44 @@ const Login = () => {
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        gap: '1rem',
-        margin: '3rem',
-        justifyContent: 'center',
-      }}
-    >
-      <div style={{ marginTop: '1rem' }}>
-        <Typography
-          variant="h4"
-          color="primary"
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '2rem',
+          margin: '4rem',
+          justifyContent: 'center',
+        }}
+      >
+        <div
           style={{
-            width: '40rem',
-            textAlign: 'left',
+            display: 'inline-block',
+            marginTop: '1rem',
           }}
         >
-          Texter is a simple group messaging app in the vein of Slack or
-          Discord.
-        </Typography>
-        <br />
-        <Typography
-          variant="h5"
-          color="primary"
-        >
-          Please create an account or log in to continue.
-        </Typography>
+          <Typography
+            variant="h4"
+            color="primary"
+            style={{
+              minWidth: '10rem',
+              maxWidth: '40rem',
+              textAlign: 'left',
+            }}
+          >
+            Texter is a simple group messaging app in the vein of Slack or
+            Discord.
+          </Typography>
+          <br />
+          <Typography
+            variant="h5"
+            color="primary"
+          >
+            Please create an account or log in to continue.
+          </Typography>
+        </div>
+        <LoginForm handleLogin={handleLogin} />
       </div>
-      <LoginForm handleLogin={handleLogin} />
     </div>
   )
 }

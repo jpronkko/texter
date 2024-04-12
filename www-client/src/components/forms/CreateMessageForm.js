@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
-import { Button, Grid, Divider } from '@mui/material'
+import { Button, Divider } from '@mui/material'
 
 import FormTextInput from './FormTextInput'
 
@@ -27,16 +27,14 @@ const CreateMessageForm = ({ handleCreate }) => {
 
   return (
     <div>
-      <Divider />
-      <Grid
-        container
-        spacing={1}
-        sx={{ my: 1, alignItems: 'center' }}
+      <Divider sx={{ mt: 1, mb: 1 }} />
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
       >
-        <Grid
-          item
-          xs={11.0}
-        >
+        <div style={{ display: 'inline-block', flexGrow: 6 }}>
           <FormTextInput
             id="message-input"
             name="message"
@@ -45,11 +43,8 @@ const CreateMessageForm = ({ handleCreate }) => {
             multiline={true}
             rows={5}
           />
-        </Grid>
-        <Grid
-          item
-          xs={1.0}
-        >
+        </div>
+        <div style={{ display: 'inline-block', margin: '10px' }}>
           <Button
             id="submit-message-button"
             type="submit"
@@ -58,8 +53,8 @@ const CreateMessageForm = ({ handleCreate }) => {
           >
             Submit
           </Button>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </div>
   )
 }

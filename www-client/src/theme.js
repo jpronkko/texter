@@ -4,7 +4,7 @@ import createTheme from '@mui/material/styles/createTheme'
 const darkBlue = '#101c6b'
 const darkerBlue = '#0b1550'
 const lightBlue = '#f1f4fa'
-const nearWhite = '#fafbff'
+const nearWhite = '#fefeff'
 
 const themeOptions = {
   palette: {
@@ -37,7 +37,7 @@ const themeOptions = {
       styleOverrides: {
         root: {
           margin: '2px 5px',
-          borderRadius: '8px',
+          borderRadius: '10px',
         },
       },
     },

@@ -43,7 +43,7 @@ const LoginForm = ({ handleLogin }) => {
   }
 
   return (
-    <div>
+    <div style={{ display: 'inline-block' }}>
       <Grid
         container
         alignContent="center"
@@ -58,45 +58,51 @@ const LoginForm = ({ handleLogin }) => {
             gridRowGap: '20px',
             padding: '20px',
             margin: '10px 10px',
+            border: '1px solid #009',
           }}
         >
           <Typography variant="h5"> Sign in</Typography>
-          <fieldset disabled={isSubmitting}>
-            <FormTextInput
-              id="username"
-              name="username"
-              control={control}
-              label="Username"
-            />
-            <FormTextInput
-              id="password"
-              testId="password"
-              name="password"
-              control={control}
-              label="Password"
-              type="password"
-            />
-            <Button
-              id="login-button"
-              sx={{ marginTop: '10px' }}
-              onClick={handleSubmit(onSubmit)}
-              variant={'contained'}
+          <form>
+            <fieldset
+              disabled={isSubmitting}
+              style={{ border: 'none' }}
             >
-              {isSubmitting ? 'Logging in ...' : 'Login'}
-            </Button>
+              <FormTextInput
+                id="username"
+                name="username"
+                control={control}
+                label="Username"
+              />
+              <FormTextInput
+                id="password"
+                testId="password"
+                name="password"
+                control={control}
+                label="Password"
+                type="password"
+              />
+              <Button
+                id="login-button"
+                sx={{ marginTop: '10px' }}
+                onClick={handleSubmit(onSubmit)}
+                variant={'contained'}
+              >
+                {isSubmitting ? 'Logging in ...' : 'Login'}
+              </Button>
 
-            <Divider sx={{ margin: '10px' }} />
+              <Divider sx={{ margin: '10px' }} />
 
-            <Typography>Do not have an account?</Typography>
-            <Button
-              id="create-new-button"
-              variant={'contained'}
-              sx={{ marginTop: '10px' }}
-              onClick={() => navigate('/create_account')}
-            >
-              Create a New Account
-            </Button>
-          </fieldset>
+              <Typography>Do not have an account?</Typography>
+              <Button
+                id="create-new-button"
+                variant={'contained'}
+                sx={{ marginTop: '10px' }}
+                onClick={() => navigate('/create_account')}
+              >
+                Create a New Account
+              </Button>
+            </fieldset>
+          </form>
         </Paper>
       </Grid>
     </div>
