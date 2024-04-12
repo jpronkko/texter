@@ -11,41 +11,39 @@ import InputTextDlg from '../dialogs/InputTextDlg'
 
 const GroupItem = ({ id, title, body, handleChange }) => {
   return (
-    <Grid
-      container
-      direction={'row'}
-      sx={{ mb: 1.5 }}
+    <div
+      style={{
+        display: 'flex',
+        flexGrow: 1,
+        flexDirection: 'column',
+      }}
     >
-      <Grid
-        item
-        xs={12}
-      >
+      <div style={{}}>
         <Typography variant="h6">{title}</Typography>
-      </Grid>
-      <Grid
-        item
-        xs={10.8}
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
       >
         <Typography
           id={id + '-title'}
           variant="body1"
+          sx={{ flexGrow: 1 }}
         >
           {body}
         </Typography>
-      </Grid>
-      <Grid
-        item
-        xs={1.2}
-      >
         <Button
           id={id + '-change-button'}
           variant="contained"
           onClick={handleChange}
+          sx={{ mt: '10px', mb: '10px', mr: '10px' }}
         >
           <Typography>Change</Typography>
         </Button>
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   )
 }
 

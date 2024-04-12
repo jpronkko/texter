@@ -104,7 +104,6 @@ const GroupSelectPage = () => {
   const renderedOtherJoinedGroups = joinedGroups.map((group) => (
     <Grid
       item
-      xs={4}
       key={group.id}
     >
       <GroupCard
@@ -139,10 +138,7 @@ const GroupSelectPage = () => {
         direction="column"
         alignItems="left"
       >
-        <Grid
-          item
-          xs={12}
-        >
+        <Grid item>
           <TitleBox title={'Own Groups'}>
             <Button
               id="create-group-button"
@@ -158,13 +154,16 @@ const GroupSelectPage = () => {
           id="owned-groups"
           container
           direction={'row'}
-          spacing={2}
+          rowSpacing={2}
+          columnSpacing={{ xs: 2, sm: 3, md: 4 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
         >
           {renderedOwnedGroups}
         </Grid>
         <Grid
           item
           xs={12}
+          sx={{ mt: 2 }}
         >
           <TitleBox title={'Other Joined Groups'}></TitleBox>
         </Grid>
@@ -172,7 +171,9 @@ const GroupSelectPage = () => {
           id="other-joined-groups"
           container
           direction={'row'}
-          spacing={2}
+          rowSpacing={2}
+          columnSpacing={{ xs: 2, sm: 3, md: 4 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
         >
           {renderedOtherJoinedGroups}
         </Grid>

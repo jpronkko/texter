@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
-import { Button, Divider, Grid, Paper, Typography } from '@mui/material'
+import { Button, Divider, Paper, Typography } from '@mui/material'
 
 import FormTextInput from './FormTextInput'
 import { useNavigate } from 'react-router-dom'
@@ -51,77 +51,83 @@ const CreateUserForm = ({ handleCreate }) => {
   }
 
   return (
-    <div>
-      <Grid
-        container
-        alignContent="center"
-        spacing={-1}
-        direction="column"
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <Paper
+        elevation={3}
+        style={{
+          display: 'grid',
+          width: '400px',
+          gridRowGap: '20px',
+          padding: '20px',
+          margin: '20px',
+          border: '1px solid #009',
+        }}
       >
-        <Paper
-          elevation={0}
-          style={{
-            display: 'grid',
-            width: '400px',
-            gridRowGap: '20px',
-            padding: '20px',
-            margin: '10px 10px',
-          }}
+        <Typography variant="h4"> Create a new account</Typography>
+        <fieldset
+          disabled={isSubmitting}
+          style={{ border: 'none' }}
         >
-          <Typography variant="h4"> Create a new account</Typography>
-          <fieldset disabled={isSubmitting}>
-            <FormTextInput
-              id="name"
-              name="name"
-              control={control}
-              label="Name"
-            />
-            <FormTextInput
-              id="email"
-              name="email"
-              control={control}
-              label="E-mail"
-            />
-            <FormTextInput
-              id="username"
-              name="username"
-              control={control}
-              label="Username"
-            />
-            <FormTextInput
-              id="password"
-              testId="password"
-              name="password"
-              control={control}
-              label="Password"
-              type="password"
-            />
-            <Button
-              id="create-submit-button"
-              onClick={handleSubmit(onSubmit)}
-              variant={'contained'}
-            >
-              {isSubmitting ? 'Creating ...' : 'Create'}
-            </Button>
-            <Button
-              onClick={() => reset()}
-              variant={'outlined'}
-            >
-              Reset
-            </Button>
-          </fieldset>
-          <Divider />
-          Already have an account?
+          <FormTextInput
+            id="name"
+            name="name"
+            control={control}
+            label="Name"
+          />
+          <FormTextInput
+            id="email"
+            name="email"
+            control={control}
+            label="E-mail"
+          />
+          <FormTextInput
+            id="username"
+            name="username"
+            control={control}
+            label="Username"
+          />
+          <FormTextInput
+            id="password"
+            testId="password"
+            name="password"
+            control={control}
+            label="Password"
+            type="password"
+          />
           <Button
+            id="create-submit-button"
+            onClick={handleSubmit(onSubmit)}
             variant={'contained'}
-            onClick={() => navigate('/login')}
           >
-            Login
+            {isSubmitting ? 'Creating ...' : 'Create'}
           </Button>
-        </Paper>
-      </Grid>
+          <Button
+            onClick={() => reset()}
+            variant={'outlined'}
+          >
+            Reset
+          </Button>
+        </fieldset>
+        <Divider />
+        Already have an account?
+        <Button
+          variant={'contained'}
+          onClick={() => navigate('/login')}
+        >
+          Login
+        </Button>
+      </Paper>
     </div>
   )
 }
 
 export default CreateUserForm
+
+/*       <Grid
+        container
+        alignContent="center"
+        spacing={-1}
+        direction="column"
+      >
+          </Grid>
+*/
