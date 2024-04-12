@@ -51,16 +51,25 @@ const CreateUserForm = ({ handleCreate }) => {
   }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+    >
       <Paper
         elevation={3}
         style={{
-          display: 'grid',
-          width: '400px',
+          display: 'flex',
+          flexDirection: 'column',
+          maxWidth: '20rem',
           gridRowGap: '20px',
           padding: '20px',
-          margin: '20px',
+          marginTop: '3rem',
+          marginLeft: '1rem',
+          marginRight: '1rem',
           border: '1px solid #009',
+          justifyContent: 'center',
         }}
       >
         <Typography variant="h4"> Create a new account</Typography>

@@ -17,19 +17,25 @@ const Login = () => {
   }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+    >
       <div
         style={{
           display: 'flex',
           flexWrap: 'wrap',
           gap: '2rem',
-          margin: '4rem',
-          justifyContent: 'center',
+          margin: '3rem',
         }}
       >
         <div
           style={{
-            display: 'inline-block',
+            display: 'flex',
+            maxWidth: '25rem',
+            flexDirection: 'column',
             marginTop: '1rem',
           }}
         >
@@ -37,8 +43,6 @@ const Login = () => {
             variant="h4"
             color="primary"
             style={{
-              minWidth: '10rem',
-              maxWidth: '40rem',
               textAlign: 'left',
             }}
           >
