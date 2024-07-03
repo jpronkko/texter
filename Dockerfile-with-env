@@ -1,0 +1,63 @@
+# Build stage
+FROM node:22-alpine AS build-stage
+WORKDIR /usr/src/app
+
+# Copy both client and server to the build container
+COPY ./www-client /usr/src/app/www-client
+COPY ./server /usr/src/app/server
+COPY ./package.json /usr/src/app/package.json
+COPY ./package-lock.json /usr/src/app/package-lock.json
+
+RUN npm install -g npm@10.8.1
+# Install client packages
+WORKDIR /usr/src/app/www-client
+RUN npm ci
+
+# Install server packages
+WORKDIR /usr/src/app/server
+RUN npm ci
+
+# Build both client and server according to the build script in package.json
+ARG REACT_APP_API_ENDPOINT
+ENV REACT_APP_API_ENDPOINT $REACT_APP_API_ENDPOINT
+ARG REACT_APP_WS_ENDPOINT
+ENV REACT_APP_WS_ENDPOINT $REACT_APP_WS_ENDPOINT
+
+WORKDIR /usr/src/app
+RUN npm run build
+WORKDIR /usr/src/app/server
+RUN tar -czf build.tar.gz \
+  build \
+  package.json \ 
+  package-lock.json \ 
+  index.js \
+  server.js \
+  graphql/ \
+  models/ \
+  routes/ \
+  services/ \
+  utils/
+# Production stage
+FROM node:22-alpine AS production-stage
+
+RUN npm install -g npm@10.8.1
+
+ARG PORT
+ENV PORT $PORT
+ARG PROD_MONGODB_URI
+ENV PROD_MONGODB_URI $PROD_MONGODB_URI
+ARG SECRET
+ENV SECRET $SECRET
+
+WORKDIR /usr/src/app
+#COPY  --from=build-stage /usr/src/app/server/.env .
+COPY --from=build-stage /usr/src/app/server/build.tar.gz /usr/src/app/build.tar.gz
+RUN tar -xzf /usr/src/app/build.tar.gz -C /usr/src/app
+RUN npm ci
+
+RUN echo "PORT=${PORT}"
+EXPOSE ${PORT}
+RUN chown -R node /usr/src/app
+USER node
+
+CMD ["npm", "run", "start"]

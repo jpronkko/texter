@@ -32,12 +32,8 @@ const startServer = async () => {
     app.use('/test', testRouter)
   }
 
-  if (
-    process.env.NODE_ENV === 'production' ||
-    process.env.NODE_ENV === 'test'
-  ) {
-    app.use(express.static('build'))
-  }
+  logger.info('Adding static files from build folder.')
+  app.use(express.static('build'))
 
   app.use(
     '/api',
@@ -71,7 +67,7 @@ const startServer = async () => {
   )
 
   app.get('*', (req, res) => {
-    res.redirect('/')
+    express.static('build')
   })
 
   httpServer.listen(config.PORT, () =>
