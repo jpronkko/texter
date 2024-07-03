@@ -1,6 +1,6 @@
 # Texter
 
-Texter is like a poor man's Slack, in which users can create groups and invite people to the groups. Within groups users can create discussion topics and send messages to the discussions. At the moment its funcitonality is fairly limited as it has served as a study project for the author to study topics such as Material UI, GraphQL and Mongo. For the time being its current user interface is intended for desktop use only and no mobile app is provided. Small screen sizes are not supported. A running installation is currently availale at https://fstacktexter.azurewebsites.net.
+Texter is like a poor man's Slack, in which users can create groups and invite people to the groups. Within groups users can create discussion topics and send messages to the discussions. At the moment its funcitonality is fairly limited as it has served as a study project for the author to study topics such as Material UI, GraphQL and Mongo. For the time being its current user interface is intended for desktop use only and no mobile app is provided.
 
 ## Usage
 
@@ -144,7 +144,7 @@ The Texter app utilises the following technologies:
 - Node, Express, Mongoose and Mongo in its server side implementation
 - Cypress for integration testing, Jest for server side API and client side component tests
 
-The repositries are in GitHub and GitHub Actions have been configured to deliver code via accepted pull requests to testing and deployment to Azure App Service. The CI/CD pipeline uses a protected main branch for delivery to production. To qualify for deployment, code must pass linting, component, API and integration testing within the pipeline. Cypress Dashboard has been used to observe test progess and results in the pipeline. 
+The repositries are in GitHub and GitHub Actions have been configured to deliver code via accepted pull requests to testing and deployment to Azure App Service. To qualify for deployment, code must pass linting, component, API and integration testing within the pipeline. 
 
 ## Notes on installation
 

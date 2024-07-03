@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - MONGO_DB_URI="mongodb://mongo:27017"
+    ports:
+      - "5000:5000"
+    environment:
+      MONGODB_DB_URI: "mongodb://mongo:27017"

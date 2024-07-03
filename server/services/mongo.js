@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const config = require('../utils/config')
 const logger = require('../utils/logger')
 
-logger.info('Connecting to MongoDB')
+logger.info('Connecting to MongoDB', config.MONGODB_URI)
 
 let db = null
 let disconnected = false
